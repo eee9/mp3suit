@@ -4,8 +4,10 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -28,25 +30,30 @@ class MainActivity : ComponentActivity() {
     enableEdgeToEdge()
     setContent {
       Mp3suitTheme {
-        Scaffold(
-          bottomBar = {
-            BottomAppBar(
-              containerColor = Color.Blue,
-              contentColor = Color.White
-            ) {
-              Text(
-                "Bottom Navigation Content",
-                modifier = Modifier.fillMaxWidth().padding(16.dp),
-                textAlign = TextAlign.Center
-              )
+        Column(
+          modifier = Modifier
+            .fillMaxSize() // Fills the maximum available space
+            .padding(16.dp),
+          verticalArrangement = Arrangement.Bottom, // Pushes children to the bottom
+          horizontalAlignment = Alignment.CenterHorizontally // Centers the child horizontally
+        ) {
+          // Other content can be added here, and it will be pushed up
+          // above the button due to Arrangement.Bottom
+
+          Row(
+            modifier = Modifier
+              .fillMaxWidth()
+//              .background(Color.DarkGray)
+              .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+          ) {
+            Button(onClick = { /* Click 1 */ }) {
+              Text("Button A")
             }
-          }
-        ) { innerPadding ->
-          // The main screen content goes here.
-          // It's important to apply the innerPadding to avoid content
-          // being obscured by the bottom bar.
-          Column(modifier = Modifier.padding(innerPadding)) {
-            Text("Screen Body Content")
+            Button(onClick = { /* Click 2 */ }) {
+              Text("Button B")
+            }
           }
         }
       }
