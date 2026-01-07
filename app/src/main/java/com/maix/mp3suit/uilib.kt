@@ -1,19 +1,29 @@
 package com.maix.mp3suit
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
@@ -26,21 +36,166 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.maix.mp3suit.ui.theme.Mp3suitTheme
+import com.maix.mp3suit.ui.theme.Purple40
 
 class uilib {
 
+  // source: https://www.geeksforgeeks.org/kotlin/building-ui-using-jetpack-compose-in-android/
+  data class BottomMenuContent (
+    val title: String,
+    @DrawableRes val iconId: Int,
+    val iconId2: ImageVector
+  )
+
+
+  @Preview(widthDp = 700, heightDp = 1400)
+  @Composable
+  fun HomeScreen() {
+    // this is the most outer box having all the views inside it
+    Box(
+      modifier = Modifier
+        .background(Color.Blue)
+        .fillMaxSize()
+    ) {
+      Column {
+        for(i in 1.. 30) TextMx("some text N $i")
+        TextMx("text 001")
+        TextMx("text 002")
+        TextMx("text 003")
+        TextMx("text 004")
+        TextMx("text 005")
+        TextMx("text 006")
+
+      }
+      BottomMenu(items = listOf(
+        BottomMenuContent("Home1", R.drawable.ic_launcher_background, Icons.Default.Settings),
+        BottomMenuContent("Home2", R.drawable.ic_launcher_background, Icons.Default.Settings),
+        BottomMenuContent("Home3", R.drawable.ic_launcher_background, Icons.Default.Settings),
+        BottomMenuContent("Home4", R.drawable.ic_launcher_background, Icons.Default.Settings),
+      ), modifier = Modifier.align(Alignment.BottomCenter))
+    }
+  }
+
+  @Composable
+  fun Box() {
+    Box(
+      modifier = Modifier
+        .background(Purple40)
+        .fillMaxSize()
+    )
+  }
+
+  @Composable
+  fun U() {
+    BottomMenu(items = listOf(
+      BottomMenuContent("Home1", R.drawable.ic_launcher_background, Icons.Default.Settings),
+      BottomMenuContent("Home2", R.drawable.ic_launcher_background, Icons.Default.Settings),
+      BottomMenuContent("Home3", R.drawable.ic_launcher_background, Icons.Default.Settings),
+      BottomMenuContent("Home4", R.drawable.ic_launcher_background, Icons.Default.Settings),
+//      BottomMenuContent("Explore", 0, Icons.Default.Settings),
+//      BottomMenuContent("Dark Mode", Icons.Default.Menu),
+//      BottomMenuContent("Videos", Icons.Default.Build),
+//      BottomMenuContent("Profile", Icons.Default.Settings),
+
+//      BottomMenuContent("Home", Icons.Default.Settings),
+//      BottomMenuContent("Explore", Icons.Default.Settings),
+//      BottomMenuContent("Dark Mode", Icons.Default.Menu),
+//      BottomMenuContent("Videos", Icons.Default.Build),
+//      BottomMenuContent("Profile", Icons.Default.Settings),
+    ))
+//      , modifier = Modifier(Alignment.BottomCenter))
+  }
+
+  @Composable
+  fun BottomMenu(
+    items: List<BottomMenuContent>,
+    modifier: Modifier = Modifier,
+    activeHighlightColor: Color = Color.Green,
+    activeTextColor: Color = Color.White,
+    inactiveTextColor: Color = Color.Blue,
+    initialSelectedItemIndex: Int = 0
+  ) {
+    var selectedItemIndex by remember {
+      mutableIntStateOf(initialSelectedItemIndex)
+    }
+    Row(
+      horizontalArrangement = Arrangement.SpaceAround,
+      verticalAlignment = Alignment.CenterVertically,
+      modifier = modifier
+//        .fillMaxWidth()
+        .background(Color.Blue)
+        .padding(15.dp)
+
+    ) {
+      items.forEachIndexed { index, item ->
+        BottomMenuItem(
+          item = item,
+          isSelected = index == selectedItemIndex,
+          activeHighlightColor = activeHighlightColor,
+          activeTextColor = activeTextColor,
+          inactiveTextColor = inactiveTextColor
+        ) {
+          selectedItemIndex = index
+        }
+      }
+    }
+  }
+
+  @Composable
+  fun BottomMenuItem(
+    item: BottomMenuContent,
+    isSelected: Boolean = false,
+    activeHighlightColor: Color = Color.Green,
+    activeTextColor: Color = Color.White,
+    inactiveTextColor: Color = Color.Blue,
+    onItemClick: () -> Unit
+  ) {
+    Column(
+      horizontalAlignment = Alignment.CenterHorizontally,
+      verticalArrangement = Arrangement.Center,
+      modifier = Modifier.clickable {
+        onItemClick()
+      }
+    ) {
+      Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+          .clip(RoundedCornerShape(10.dp))
+          .background(if (isSelected) activeHighlightColor else Color.Transparent)
+          .padding(10.dp)
+      ) {
+//        item.iconId2
+        Icon(
+          painter = painterResource(id = item.iconId),
+          contentDescription = item.title,
+          tint = if (isSelected) activeTextColor else inactiveTextColor,
+          modifier = Modifier.size(20.dp)
+        )
+      }
+      Text(
+        text = item.title,
+        color = if(isSelected) activeTextColor else inactiveTextColor
+      )
+    }
+  }
+
+  // ===============================================================================================
   @Composable
   fun mp3suit() {
     Mp3suitTheme {
@@ -343,6 +498,81 @@ class uilib {
       Text(text = "Item 1")
       Text(text = "Item 2")
       Text(text = "Item 3")
+    }
+  }
+
+  @Composable
+  fun BoxExample() {
+    Box(
+      modifier = Modifier.size(100.dp), // Set a fixed size for the box
+      contentAlignment = Alignment.Center // Center content within the box
+    ) {
+      // A background element
+      Box(modifier = Modifier.matchParentSize().background(Color.Cyan)) {
+        // This will be displayed first
+      }
+      // A text element on top of the background
+      Text(text = "Hello", color = Color.Black)
+    }
+  }
+
+  @Composable
+  fun TextMx(text: String) {
+    Text(
+      modifier = Modifier
+        .height(50.dp)
+        .background(Color.LightGray),
+      text = " [ $text ] "
+    )
+  }
+
+  @Composable
+  fun RowExample() {
+    Row(
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(16.dp), // Fill width and add padding
+      horizontalArrangement = Arrangement.SpaceAround // Evenly distribute space horizontally
+    ) {
+      TextMx(text = "Left")
+      TextMx(text = "Center")
+      TextMx(text = "Right")
+    }
+  }
+
+  @Composable
+  fun BasicLayoutExample() {
+    Column(
+      modifier = Modifier
+        .fillMaxSize()
+        .background(Color.Green)
+        .padding(16.dp),
+      verticalArrangement = Arrangement.Center, // Centers children vertically
+      horizontalAlignment = Alignment.CenterHorizontally // Centers children horizontally
+    ) {
+      Text("Item 1 in Column /Q16")
+      Spacer(modifier = Modifier
+        .height(16.dp)
+        .background(Color.Red)
+      )
+      Row(
+        modifier = Modifier
+          .background(Color.Yellow)
+          .fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceAround // Distributes children evenly with space
+      ) {
+        TextMx("Item A in Row")
+        TextMx("Item B in Row")
+      }
+      Spacer(modifier = Modifier.height(16.dp))
+      Box(
+        modifier = Modifier
+          .background(Color.Cyan)
+          .size(100.dp),
+        contentAlignment = Alignment.Center // Centers child within the Box
+      ) {
+        Text("Box Content")
+      }
     }
   }
 
