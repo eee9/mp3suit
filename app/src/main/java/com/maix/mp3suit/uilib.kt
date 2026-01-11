@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -22,6 +23,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Settings
@@ -35,6 +37,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -43,7 +46,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
@@ -51,10 +56,185 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.provider.FontsContractCompat
 import com.maix.mp3suit.ui.theme.Mp3suitTheme
 import com.maix.mp3suit.ui.theme.Purple40
 
 class uilib {
+
+  @Composable
+  fun ScrollableTextFieldExample() {
+    var text by remember { mutableStateOf("Initial long text that will eventually scroll vertically...") }
+
+    // Add a very long initial text to demonstrate scrolling
+    LaunchedEffect(Unit) {
+      text = List(50) { index -> "Line $index: This is a very long line of text intended to force scrolling." }.joinToString(separator = "\\n")
+    }
+
+    // A container with a fixed height to make the internal content scrollable
+    Column(modifier = Modifier.height(200.dp).padding(16.dp)) {
+      TextField(
+        value = text,
+        onValueChange = { text = it },
+        modifier = Modifier
+          .fillMaxWidth()
+          // Apply the verticalScroll modifier
+          .verticalScroll(rememberScrollState()),
+        label = { androidx.compose.material3.Text("Enter long text here") }
+      )
+    }
+  }
+
+  @Composable
+  fun Screen1() {
+//    Box(modifier = Modifier
+    Column(modifier = Modifier
+      .fillMaxSize()
+      .background(Color.Yellow)
+      .padding(3.dp)
+    ) {
+      Header()
+      var largeText by remember { mutableStateOf("") }
+      OutlinedTextField(
+        value = largeText,
+        onValueChange = { largeText = it },
+        label = { Text("Large Input Field") },
+        modifier = Modifier
+//          .background(Color.LightGray)
+          .fillMaxWidth()
+          .weight(1f),
+        maxLines = Int.MAX_VALUE, // Allows the field itself to scroll internally
+      )
+      Footer()
+    }
+  }
+
+  @Composable
+  fun ColumnWithRemainingSpaceExample() {
+    Column(
+      modifier = Modifier
+//        .fillMaxHeight()
+        .fillMaxSize()
+        .background(Color.Yellow)
+        .padding(30.dp)
+//        .height(50.dp) // Give the Row a fixed height for demonstration
+    ) {
+      Icon(Icons.Filled.Add, contentDescription = null, modifier = Modifier.size(60.dp).background(Color.Magenta))
+
+      // This Text fills all the horizontal space left between the Icons
+      Text(
+        text = "Text that fills remaining space",
+        modifier = Modifier
+          .background(Color.Blue)
+          .fillMaxWidth()
+          .weight(1f)
+      )
+
+      Icon(Icons.Filled.Add, contentDescription = null, modifier = Modifier.size(40.dp))
+    }
+  }
+
+  @Composable
+  fun RowWithRemainingSpaceExample() {
+    Row(
+      modifier = Modifier
+        .fillMaxWidth()
+        .height(50.dp) // Give the Row a fixed height for demonstration
+    ) {
+      Icon(Icons.Filled.Add, contentDescription = null, modifier = Modifier.size(40.dp))
+
+      // This Text fills all the horizontal space left between the Icons
+      Text(
+        text = "Text that fills remaining space",
+        modifier = Modifier.weight(1f)
+      )
+
+      Icon(Icons.Filled.Add, contentDescription = null, modifier = Modifier.size(40.dp))
+    }
+  }
+
+
+  @Composable
+  fun FillRemainingSpaceExample() {
+    Column(
+      modifier = Modifier.fillMaxSize() // Make the Column fill the screen/parent
+    ) {
+      Text("Top Text")
+
+      // This Spacer fills all the vertical space left after measuring the Texts
+      Spacer(
+        modifier = Modifier
+          .background(Color.Magenta)
+          .weight(1f)
+      )
+
+      Text("Bottom Text")
+    }
+  }
+
+  @Composable
+  fun Box() {
+    Box(
+      modifier = Modifier
+        .background(Color.Yellow)
+        .fillMaxSize()
+    )
+  }
+
+  @Composable
+  fun BoxVS() {
+    val scrollState = rememberScrollState()
+    val gradient =
+      Brush.verticalGradient(
+        listOf(Color.Red, Color.Blue, Color.Green),
+        0.0f,
+        10000.0f,
+        TileMode.Repeated,
+      )
+    Box(
+      Modifier.verticalScroll(scrollState)
+        .fillMaxWidth()
+        .requiredHeight(10000.dp)
+        .background(brush = gradient)
+    )
+  }
+
+  @Composable
+  fun Columns() {
+    Column(
+      modifier = Modifier
+        .fillMaxSize() // Fills the maximum available space
+        .background(Color.Blue)
+        .padding(20.dp),
+//      verticalArrangement = Arrangement.Top, // Pushes children to the bottom
+//      horizontalAlignment = Alignment.Start // Centers the child horizontally
+    ) {
+      TextMx("Line 1")
+      TextMx("Line 2")
+      TextMx("Line 3")
+      Text(
+        text = "Line last",
+//        Modifier.verticalScroll(true)
+      )
+      Box(
+        modifier = Modifier
+//          .fillMaxSize() // Fills the maximum available space
+          .background(Color.Magenta)
+          .padding(40.dp),
+//        contentAlignment = Alignment.Bottom as Alignment,
+      ) {
+        Text("In a box 2")
+      }
+      Box(
+        modifier = Modifier
+          .fillMaxSize() // Fills the maximum available space
+          .background(Color.Green)
+          .padding(10.dp),
+      ) {
+        Text("In a box 1")
+      }
+    }
+  }
 
   // source: https://www.geeksforgeeks.org/kotlin/building-ui-using-jetpack-compose-in-android/
   data class BottomMenuContent (
@@ -90,15 +270,6 @@ class uilib {
         BottomMenuContent("Home4", R.drawable.ic_launcher_background, Icons.Default.Settings),
       ), modifier = Modifier.align(Alignment.BottomCenter))
     }
-  }
-
-  @Composable
-  fun Box() {
-    Box(
-      modifier = Modifier
-        .background(Purple40)
-        .fillMaxSize()
-    )
   }
 
   @Composable
@@ -194,6 +365,7 @@ class uilib {
       )
     }
   }
+  // source: https://www.geeksforgeeks.org/kotlin/building-ui-using-jetpack-compose-in-android/
 
   // ===============================================================================================
   @Composable
@@ -355,8 +527,8 @@ class uilib {
   fun Footer() {
     Column(
       modifier = Modifier
-        .fillMaxSize() // Fills the maximum available space
-        .padding(16.dp),
+//        .fillMaxSize() // Fills the maximum available space
+        .padding(2.dp),
       verticalArrangement = Arrangement.Bottom, // Pushes children to the bottom
       horizontalAlignment = Alignment.CenterHorizontally // Centers the child horizontally
     ) {
@@ -371,9 +543,9 @@ class uilib {
         Button(onClick = { /* Click 1 */ }) {
           Text("Test...")
         }
-//      Button(onClick = { closeApp() }) {
-//        Text("Exit")
-//      }
+      Button(onClick = { /* closeApp() */}) {
+        Text("Exit")
+      }
       }
     }
   }

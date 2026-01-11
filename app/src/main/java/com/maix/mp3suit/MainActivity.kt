@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.maix.mp3suit.ui.theme.Mp3suitTheme
+import com.maix.mp3suit.uilib.*
 
 class MainActivity : ComponentActivity() {
 
@@ -12,11 +13,19 @@ class MainActivity : ComponentActivity() {
     super.onCreate(savedInstanceState)
 //    enableEdgeToEdge() // use all device screen
 
+    val ui = uilib()
     setContent {
       Mp3suitTheme {
-//        uilib().Box()
+//        uilib().BoxVS()
+//        uilib().Columns()
 //        uilib().U()
-        uilib().HomeScreen()
+//        uilib().HomeScreen()
+//        uilib().FillRemainingSpaceExample()
+//        uilib.RowWithRemainingSpaceExample()
+//        uilib.ColumnWithRemainingSpaceExample()
+          ui.Screen1()
+//          ui.ScrollableTextFieldScreen()
+//          ui.ScrollableTextFieldExample()
       }
     }
   }
