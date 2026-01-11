@@ -51,7 +51,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.DeviceFontFamilyName
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -61,6 +64,7 @@ import com.maix.mp3suit.ui.theme.Mp3suitTheme
 import com.maix.mp3suit.ui.theme.Purple40
 
 class uilib {
+
 
   @Composable
   fun ScrollableTextFieldExample() {
@@ -83,6 +87,162 @@ class uilib {
         label = { androidx.compose.material3.Text("Enter long text here") }
       )
     }
+  }
+
+  @Composable
+  fun Screen2() {
+
+    Column(modifier = Modifier
+      .fillMaxSize()
+      .background(Color.Yellow)
+      .padding(3.dp)
+    ) {
+      Text(
+        text = "mp3suit",
+        modifier = Modifier.padding(vertical = 4.dp, horizontal = 16.dp),
+        fontFamily = FontFamily(
+          Font(
+            DeviceFontFamilyName("sans-serif-smallcaps"),
+            weight = FontWeight.Light
+          )
+        ),
+        fontSize = 24.sp
+      )
+      Text(
+        text = "sans-serif-smallcaps",
+        modifier = Modifier.padding(vertical = 4.dp, horizontal = 16.dp),
+        fontFamily = FontFamily(
+          Font(
+            DeviceFontFamilyName("sans-serif-smallcaps"),
+            weight = FontWeight.Light
+          )
+        ),
+        fontSize = 24.sp
+      )
+      Text(
+        text = "Roboto Condensed Light",
+        modifier = Modifier.padding(vertical = 4.dp, horizontal = 16.dp),
+        fontFamily = FontFamily(
+          Font(
+            DeviceFontFamilyName("sans-serif-condensed"),
+            weight = FontWeight.Light
+          )
+        ),
+        fontSize = 24.sp
+      )
+      Text(
+        text = "Roboto Condensed Regular",
+        modifier = Modifier.padding(vertical = 4.dp, horizontal = 16.dp),
+        fontFamily = FontFamily(Font(DeviceFontFamilyName("sans-serif-condensed"))),
+        fontSize = 24.sp
+      )
+      Text(
+        text = "Roboto Condensed Medium",
+        modifier = Modifier.padding(vertical = 4.dp, horizontal = 16.dp),
+        fontFamily = FontFamily(
+          Font(
+            DeviceFontFamilyName("sans-serif-condensed"),
+            weight = FontWeight.Medium
+          )
+        ),
+        fontSize = 24.sp
+      )
+      Text(
+        text = "Roboto Condensed Bold",
+        modifier = Modifier.padding(vertical = 4.dp, horizontal = 16.dp),
+        fontFamily = FontFamily(Font(DeviceFontFamilyName("sans-serif"), weight = FontWeight.Bold)),
+        fontSize = 24.sp
+      )
+      Text(
+        text = "Roboto Thin",
+        modifier = Modifier.padding(vertical = 4.dp, horizontal = 16.dp),
+        fontFamily = FontFamily(Font(DeviceFontFamilyName("sans-serif"), weight = FontWeight.Thin)),
+        fontSize = 24.sp
+      )
+      Text(
+        text = "Roboto Light",
+        modifier = Modifier.padding(vertical = 4.dp, horizontal = 16.dp),
+        fontFamily = FontFamily(
+          Font(
+            DeviceFontFamilyName("sans-serif"),
+            weight = FontWeight.Light
+          )
+        ),
+        fontSize = 24.sp
+      )
+      Text(
+        text = "Roboto Regular",
+        modifier = Modifier.padding(vertical = 4.dp, horizontal = 16.dp),
+        fontFamily = FontFamily(Font(DeviceFontFamilyName("sans-serif"))),
+        fontSize = 24.sp
+      )
+      Text(
+        text = "Roboto Bold",
+        modifier = Modifier.padding(vertical = 4.dp, horizontal = 16.dp),
+        fontFamily = FontFamily(Font(DeviceFontFamilyName("sans-serif"), weight = FontWeight.Bold)),
+        fontSize = 24.sp
+      )
+      Text(
+        text = "Roboto Black",
+        modifier = Modifier.padding(vertical = 4.dp, horizontal = 16.dp),
+        fontFamily = FontFamily(
+          Font(
+            DeviceFontFamilyName("sans-serif"),
+            weight = FontWeight.Black
+          )
+        ),
+        fontSize = 24.sp
+      )
+      Text(
+        text = "Noto Serif",
+        modifier = Modifier.padding(vertical = 4.dp, horizontal = 16.dp),
+        fontFamily = FontFamily(Font(DeviceFontFamilyName("serif"))),
+        fontSize = 24.sp
+      )
+      Text(
+        text = "Noto Serif Bold",
+        modifier = Modifier.padding(vertical = 4.dp, horizontal = 16.dp),
+        fontFamily = FontFamily(Font(DeviceFontFamilyName("serif"), weight = FontWeight.Bold)),
+        fontSize = 24.sp
+      )
+      Text(
+        text = "Droid Sans Mono",
+        modifier = Modifier.padding(vertical = 4.dp, horizontal = 16.dp),
+        fontFamily = FontFamily(Font(DeviceFontFamilyName("monospace"))),
+        fontSize = 24.sp
+      )
+      Text(
+        text = "Cutive Mono",
+        modifier = Modifier.padding(vertical = 4.dp, horizontal = 16.dp),
+        fontFamily = FontFamily(Font(DeviceFontFamilyName("serif-monospace"))),
+        fontSize = 24.sp
+      )
+      Text(
+        text = "Coming soon",
+        modifier = Modifier.padding(vertical = 4.dp, horizontal = 16.dp),
+        fontFamily = FontFamily(Font(DeviceFontFamilyName("casual"))),
+        fontSize = 24.sp
+      )
+      Text(
+        text = "Dancing Script",
+        modifier = Modifier.padding(vertical = 4.dp, horizontal = 16.dp),
+        fontFamily = FontFamily(Font(DeviceFontFamilyName("cursive"))),
+        fontSize = 24.sp
+      )
+      Text(
+        text = "Dancing Script Bold",
+        modifier = Modifier.padding(vertical = 4.dp, horizontal = 16.dp),
+        fontFamily = FontFamily(Font(DeviceFontFamilyName("cursive"), weight = FontWeight.Bold)),
+        fontSize = 24.sp
+      )
+      Text(
+        text = "Carrois Gothic SC",
+        modifier = Modifier.padding(vertical = 4.dp, horizontal = 16.dp),
+        fontFamily = FontFamily(Font(DeviceFontFamilyName("sans-serif-smallcaps"))),
+        fontSize = 24.sp
+      )
+    }
+
   }
 
   @Composable

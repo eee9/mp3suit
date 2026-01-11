@@ -16,16 +16,7 @@ class MainActivity : ComponentActivity() {
     val ui = uilib()
     setContent {
       Mp3suitTheme {
-//        uilib().BoxVS()
-//        uilib().Columns()
-//        uilib().U()
-//        uilib().HomeScreen()
-//        uilib().FillRemainingSpaceExample()
-//        uilib.RowWithRemainingSpaceExample()
-//        uilib.ColumnWithRemainingSpaceExample()
-          ui.Screen1()
-//          ui.ScrollableTextFieldScreen()
-//          ui.ScrollableTextFieldExample()
+          ui.Screen2()
       }
     }
   }
