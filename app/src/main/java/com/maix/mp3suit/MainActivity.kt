@@ -16,7 +16,13 @@ class MainActivity : ComponentActivity() {
     val ui = uilib()
     setContent {
       Mp3suitTheme {
-          ui.Screen2()
+        ui.Screen3()
+//        ui.PressableTextExample()
+//        ui.TestButton()
+//        ui.Input()
+//        ui.InputUserExample()
+//        ui.CheckboxExample()
+
       }
     }
   }

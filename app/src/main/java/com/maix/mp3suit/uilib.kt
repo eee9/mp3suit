@@ -3,11 +3,13 @@ package com.maix.mp3suit
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,19 +23,21 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Build
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -50,6 +54,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.DeviceFontFamilyName
 import androidx.compose.ui.text.font.Font
@@ -60,8 +65,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.provider.FontsContractCompat
+import com.maix.mp3suit.ui.theme.Cyan
 import com.maix.mp3suit.ui.theme.Mp3suitTheme
 import com.maix.mp3suit.ui.theme.Purple40
+import org.intellij.lang.annotations.JdkConstants
 
 class uilib {
 
@@ -90,8 +97,215 @@ class uilib {
   }
 
   @Composable
-  fun Screen2() {
+  fun Screen3() {
+    Column(modifier = Modifier
+      .fillMaxSize()
+//      .background(Color.Yellow)
+      .background(Cyan)
+      .padding(3.dp)
+    ) {
+      Text(
+        text = "mp3suit  (ver. 0.0.1, Q1B)",
+        textAlign = TextAlign.Center,
+        modifier = Modifier
+          .fillMaxWidth(),
+//          .background(Color.LightGray),
+//          .padding(vertical = 4.dp, horizontal = 16.dp),
+        fontFamily = FontFamily(
+          Font(
+            DeviceFontFamilyName("sans-serif-smallcaps"),
+            weight = FontWeight.Light
+          )
+        ),
+        fontSize = 24.sp
+      )
+      var largeText by remember { mutableStateOf("...") }
+      OutlinedTextField(
+        value = largeText,
+        onValueChange = { largeText = it },
+        label = { Text("Logging", color = Color.Black) },
+        modifier = Modifier
+//          .background(Color.LightGray)
+          .fillMaxWidth()
+          .padding(1.dp)
+          .weight(1f),
+        maxLines = Int.MAX_VALUE, // Allows the field itself to scroll internally
+        colors = OutlinedTextFieldDefaults.colors(
+          focusedBorderColor = Color.Blue,   // Color when the field is focused
+          unfocusedBorderColor = Color.Black, // Color when the field is not focused
+          // You can also customize other colors here:
+          // focusedLabelColor = Color.Green,
+          // unfocusedLabelColor = Color.Red,
+          // errorBorderColor = Color.Magenta
+        )
+      )
+      Footer()
+    }
+  }
 
+  @Composable
+  fun Footer() {
+    Column(
+      modifier = Modifier
+//        .fillMaxSize() // Fills the maximum available space
+        .padding(2.dp),
+      verticalArrangement = Arrangement.Bottom, // Pushes children to the bottom
+      horizontalAlignment = Alignment.CenterHorizontally // Centers the child horizontally
+    ) {
+      Row(
+        modifier = Modifier
+          .fillMaxWidth()
+//          .background(Color.LightGray)
+          .padding(16.dp),
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalAlignment = Alignment.CenterVertically
+      ) {
+        ButtonMx(onClick = { /* Click 1 */ }) {
+          Text("Test...")
+        }
+        Button(onClick = { /* Click 1 */ }) {
+          Text("Settings...")
+        }
+        Button(onClick = { /* closeApp() */}) {
+          Text("Exit")
+        }
+      }
+    }
+  }
+
+  @Composable
+  fun ButtonMx(onClick: () -> Unit, content: @Composable RowScope.() -> Unit) {
+    Button(
+      onClick = onClick,
+      colors = ButtonDefaults.buttonColors(
+        containerColor = Color.Red, // Sets the background color
+        contentColor = Color.White // Sets the text/content color
+      ),
+      content = content
+    )
+  }
+
+  @Composable
+  fun PressableTextExample() {
+    var isPressed by remember { mutableStateOf(false) }
+
+    Box(
+      modifier = Modifier
+        .pointerInput(Unit) {
+          detectTapGestures(
+            onPress = {
+              isPressed = true
+              try { awaitRelease() } finally { isPressed = false }
+            }
+            // onLongPress, onTap, onDoubleTap can also be used here
+          )
+        }
+        .background(
+          color = if (isPressed) Color.DarkGray else Color.LightGray,
+          shape = MaterialTheme.shapes.small
+        )
+        .padding(16.dp),
+      contentAlignment = Alignment.Center
+    ) {
+      Text(
+        text = if (isPressed) "Pressed!" else "Press me",
+        color = Color.White
+      )
+    }
+  }
+
+  // Source - https://stackoverflow.com/a/69156877
+// Posted by nglauber
+// Retrieved 2026-01-11, License - CC BY-SA 4.0
+
+  @Composable
+  fun TestButton() {
+    var isPressed by remember {
+      mutableStateOf(false)
+    }
+    Column {
+      Box(
+        Modifier
+          .pointerInput(Unit) {
+            detectTapGestures(
+              onPress = {
+                try {
+                  isPressed = true
+                  // Start recording here
+                  awaitRelease()
+                } finally {
+                  isPressed = false
+                  // Stop recording here
+                }
+              },
+            )
+          }
+          .background(
+            MaterialTheme.colorScheme.primary.copy(alpha = if (isPressed) .88f else 1f),
+            MaterialTheme.shapes.small
+          )
+          .padding(vertical = 8.dp, horizontal = 16.dp)
+      ) {
+        Text(
+          text = "Press me!",
+          Modifier.align(Alignment.Center),
+          color = MaterialTheme.colorScheme.onPrimary
+        )
+      }
+      Text(text = if (isPressed) "Pressed" else "Unpressed")
+    }
+  }
+
+  @Composable
+  fun Input() {
+    var text by remember { mutableStateOf("") }
+
+    TextField(
+      value = text,
+      onValueChange = { text = it },
+      label = { Text("Enter Name") }
+    )
+  }
+
+  @Composable
+  fun InputPress() {
+    var text by remember { mutableStateOf("") }
+
+    TextField(
+      value = text,
+      onValueChange = { text = it },
+      label = { Text("Enter Name") }
+    )
+  }
+  @Composable
+  fun InputUserExample() {
+    val text = remember { mutableStateOf("") }
+
+    Column {
+      TextField(
+        value = text.value,
+        onValueChange = { newText -> text.value = newText },
+        label = { Text("Enter your name") }
+      )
+      Text("Hello, ${text.value}!")
+    }
+  }
+
+  @Composable
+  fun CheckboxExample() {
+    val checked = remember { mutableStateOf(false) }
+
+    Row {
+      Checkbox(
+        checked = checked.value,
+        onCheckedChange = { newChecked -> checked.value = newChecked }
+      )
+      Text("I accept the terms and conditions")
+    }
+  }
+
+  @Composable
+  fun Screen2() {
     Column(modifier = Modifier
       .fillMaxSize()
       .background(Color.Yellow)
@@ -680,33 +894,6 @@ class uilib {
 //      color = Color.Cyan
       )
       ThreeDotsMenuExample()
-    }
-  }
-
-  @Composable
-  fun Footer() {
-    Column(
-      modifier = Modifier
-//        .fillMaxSize() // Fills the maximum available space
-        .padding(2.dp),
-      verticalArrangement = Arrangement.Bottom, // Pushes children to the bottom
-      horizontalAlignment = Alignment.CenterHorizontally // Centers the child horizontally
-    ) {
-      Row(
-        modifier = Modifier
-          .fillMaxWidth()
-//          .background(Color.LightGray)
-          .padding(16.dp),
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        verticalAlignment = Alignment.CenterVertically
-      ) {
-        Button(onClick = { /* Click 1 */ }) {
-          Text("Test...")
-        }
-      Button(onClick = { /* closeApp() */}) {
-        Text("Exit")
-      }
-      }
     }
   }
 
