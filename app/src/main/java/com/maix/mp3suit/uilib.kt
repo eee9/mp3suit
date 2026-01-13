@@ -35,8 +35,10 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -61,14 +63,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import com.maix.mp3suit.ui.theme.Cyan
 import com.maix.mp3suit.ui.theme.Mp3suitTheme
 
 
-open class uilib {
+class uilib {
 
   // Local Toast. !!! initContext must be run from MainActivity
-  protected var context: Context? = null
+  var context: Context? = null
   fun initContext(context: Context) {
     this.context = context.applicationContext
   }
@@ -76,6 +79,47 @@ open class uilib {
     if (context != null)
       Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
   }
+
+  @Composable
+  fun SetupWindowExample() {
+    var showSetupDialog by remember { mutableStateOf(false) }
+
+    Button(onClick = { showSetupDialog = true }) {
+      Text("Open Setup")
+    }
+
+    if (showSetupDialog) {
+      Dialog(onDismissRequest = { showSetupDialog = false }) {
+        // Content of your setup window goes here
+        Surface(
+          shape = MaterialTheme.shapes.medium,
+          color = MaterialTheme.colorScheme.surface,
+          contentColor = contentColorFor(MaterialTheme.colorScheme.surface)
+        ) {
+          Column(modifier = Modifier.padding(16.dp)) {
+            Text("Setup Configuration", style = MaterialTheme.typography.titleLarge)
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Add your settings UI elements (e.g., Checkbox, TextField)
+            var setting1Enabled by remember { mutableStateOf(true) }
+            Row(verticalAlignment = Alignment.CenterVertically) {
+              Checkbox(checked = setting1Enabled, onCheckedChange = { setting1Enabled = it })
+              Text("Enable Feature X")
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(onClick = {
+              // Handle saving settings
+              showSetupDialog = false
+            }) {
+              Text("Save and Close")
+            }
+          }
+        }
+      }
+    }
+  }
+
 
   @Composable
   fun ScrollableTextFieldExample() {
@@ -264,17 +308,6 @@ open class uilib {
 
   @Composable
   fun Input() {
-    var text by remember { mutableStateOf("") }
-
-    TextField(
-      value = text,
-      onValueChange = { text = it },
-      label = { Text("Enter Name") }
-    )
-  }
-
-  @Composable
-  fun InputPress() {
     var text by remember { mutableStateOf("") }
 
     TextField(
@@ -564,7 +597,7 @@ open class uilib {
   }
 
   @Composable
-  fun BoxVS() {
+  fun BoxVScroll() {
     val scrollState = rememberScrollState()
     val gradient =
       Brush.verticalGradient(
