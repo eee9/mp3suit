@@ -1,5 +1,7 @@
 package com.maix.mp3suit
 
+import android.content.Context
+import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -7,11 +9,9 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -19,11 +19,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -64,14 +61,21 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.provider.FontsContractCompat
 import com.maix.mp3suit.ui.theme.Cyan
 import com.maix.mp3suit.ui.theme.Mp3suitTheme
-import com.maix.mp3suit.ui.theme.Purple40
-import org.intellij.lang.annotations.JdkConstants
 
-class uilib {
 
+open class uilib {
+
+  // Local Toast. !!! initContext must be run from MainActivity
+  protected var context: Context? = null
+  fun initContext(context: Context) {
+    this.context = context.applicationContext
+  }
+  fun Toast(msg: String) {
+    if (context != null)
+      Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
+  }
 
   @Composable
   fun ScrollableTextFieldExample() {
@@ -83,7 +87,9 @@ class uilib {
     }
 
     // A container with a fixed height to make the internal content scrollable
-    Column(modifier = Modifier.height(200.dp).padding(16.dp)) {
+    Column(modifier = Modifier
+      .height(200.dp)
+      .padding(16.dp)) {
       TextField(
         value = text,
         onValueChange = { text = it },
@@ -195,7 +201,11 @@ class uilib {
           detectTapGestures(
             onPress = {
               isPressed = true
-              try { awaitRelease() } finally { isPressed = false }
+              try {
+                awaitRelease()
+              } finally {
+                isPressed = false
+              }
             }
             // onLongPress, onTap, onDoubleTap can also be used here
           )
@@ -214,10 +224,6 @@ class uilib {
     }
   }
 
-  // Source - https://stackoverflow.com/a/69156877
-// Posted by nglauber
-// Retrieved 2026-01-11, License - CC BY-SA 4.0
-
   @Composable
   fun TestButton() {
     var isPressed by remember {
@@ -231,11 +237,11 @@ class uilib {
               onPress = {
                 try {
                   isPressed = true
-                  // Start recording here
+
                   awaitRelease()
                 } finally {
                   isPressed = false
-                  // Stop recording here
+                  Toast("PRESSED 8 !!!")
                 }
               },
             )
@@ -277,6 +283,7 @@ class uilib {
       label = { Text("Enter Name") }
     )
   }
+
   @Composable
   fun InputUserExample() {
     val text = remember { mutableStateOf("") }
@@ -493,7 +500,9 @@ class uilib {
         .padding(30.dp)
 //        .height(50.dp) // Give the Row a fixed height for demonstration
     ) {
-      Icon(Icons.Filled.Add, contentDescription = null, modifier = Modifier.size(60.dp).background(Color.Magenta))
+      Icon(Icons.Filled.Add, contentDescription = null, modifier = Modifier
+        .size(60.dp)
+        .background(Color.Magenta))
 
       // This Text fills all the horizontal space left between the Icons
       Text(
@@ -526,7 +535,6 @@ class uilib {
       Icon(Icons.Filled.Add, contentDescription = null, modifier = Modifier.size(40.dp))
     }
   }
-
 
   @Composable
   fun FillRemainingSpaceExample() {
@@ -566,7 +574,8 @@ class uilib {
         TileMode.Repeated,
       )
     Box(
-      Modifier.verticalScroll(scrollState)
+      Modifier
+        .verticalScroll(scrollState)
         .fillMaxWidth()
         .requiredHeight(10000.dp)
         .background(brush = gradient)
@@ -616,7 +625,6 @@ class uilib {
     @DrawableRes val iconId: Int,
     val iconId2: ImageVector
   )
-
 
   @Preview(widthDp = 700, heightDp = 1400)
   @Composable
@@ -1027,7 +1035,9 @@ class uilib {
       contentAlignment = Alignment.Center // Center content within the box
     ) {
       // A background element
-      Box(modifier = Modifier.matchParentSize().background(Color.Cyan)) {
+      Box(modifier = Modifier
+        .matchParentSize()
+        .background(Color.Cyan)) {
         // This will be displayed first
       }
       // A text element on top of the background
