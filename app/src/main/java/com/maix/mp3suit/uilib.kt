@@ -120,7 +120,6 @@ class uilib {
     }
   }
 
-
   @Composable
   fun ScrollableTextFieldExample() {
     var text by remember { mutableStateOf("Initial long text that will eventually scroll vertically...") }
@@ -659,7 +658,6 @@ class uilib {
     val iconId2: ImageVector
   )
 
-  @Preview(widthDp = 700, heightDp = 1400)
   @Composable
   fun HomeScreen() {
     // this is the most outer box having all the views inside it
@@ -998,7 +996,6 @@ class uilib {
     }
   }
 
-  @Preview(showBackground = true)
   @Composable
   fun ThreeDotsMenuExample() {
     // State to track if the dropdown menu is expanded
