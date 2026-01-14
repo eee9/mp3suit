@@ -1,19 +1,17 @@
 package com.maix.mp3suit
 
-import android.app.Activity
 import android.content.Context
-import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
-import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,6 +19,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
@@ -36,6 +35,7 @@ import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -46,11 +46,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import androidx.core.content.edit
 import androidx.core.net.toUri
+import com.maix.lib.Maix
 import com.maix.mp3suit.ui.theme.Mp3suitTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 
 class MainActivity : ComponentActivity() {
@@ -65,9 +67,12 @@ class MainActivity : ComponentActivity() {
   lateinit var context: Context
   fun Toast(msg: String) {
     val toast = Toast.makeText(context, msg, Toast.LENGTH_LONG)
-    toast.setGravity(Gravity.BOTTOM or Gravity.END, 0, 0)
+//    toast.setGravity(Gravity.BOTTOM or Gravity.END, 0, 0)
+    toast.setGravity(Gravity.CENTER, 0, 0)
     toast.show()
   }
+
+  val libMaix = Maix()
 
   var _countFlow = MutableStateFlow(0)
 
@@ -76,6 +81,26 @@ class MainActivity : ComponentActivity() {
   fun increment() {
     _countFlow.value += 1
     countFlow = _countFlow
+  }
+
+  data class MainUiState(
+    val name: String = "",
+    val isLoading: Boolean = false,
+    val errorMessage: String? = null,
+    val count: Int = 22,
+    val showDialog: Boolean = false,
+  )
+
+  private val _uiState = MutableStateFlow(MainUiState())
+  val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
+
+  fun updateName(newName: String) {
+    _uiState.update { it.copy(name = newName) }
+  }
+
+  fun _inc() {
+    _uiState.update { it.copy(count = 3) }
+
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,39 +114,180 @@ class MainActivity : ComponentActivity() {
     context = this.applicationContext
     ui.initContext(context)  // for Toast
 
+    val view1 = CounterViewModel()
+
 //    context = MainActivity().applicationContext
     setContent {
       Mp3suitTheme {
+        var count4: Int by remember { mutableIntStateOf(0) }
+        fun inc4() { count4++ }
+        var showSetupDialog2: Boolean by remember { mutableStateOf(true) }
+        fun showSetupOff() { showSetupDialog2 = false }
         //        Click()
 //        ui.MainScreen()
 //        ui.Footer()
 //        PressableTextExample()
 //        ui.Input()
 //        ui.ThreeDotsMenuExample()
-        SetupWindowExample()
+//        SetupWindowExample()
+//        SetupDialog(showSetupDialog2, count4, ::inc4, ::showSetupOff)
 //        FlowScreen()
+//        MainScreen(view1)
+        ShowDialog2(view1)
+//        CounterApp(view1)
       }
     }
   }
 
   @Composable
-  fun FlowScreen(view: MainActivity, count: Int) {
-    Button(onClick = { view.increment() }) {
-      Text("Count 1: $count")
+  fun CounterApp(viewModel: CounterViewModel) {
+    // Access the state from the ViewModel
+    val count by viewModel.count
+
+    Column(
+      horizontalAlignment = Alignment.CenterHorizontally,
+      verticalArrangement = Arrangement.Center
+    ) {
+      Text(text = "Count: $count")
+      Button(onClick = { viewModel.incrementCount() }) {
+        Text("Increment")
+      }
     }
   }
 
   @Composable
-  fun FlowScreen2(count: Int, onClick : ()->Unit) {
-    Button(onClick = onClick) {
-      Text("Count 2: $count")
+  fun ShowDialog2(viewModel: CounterViewModel) {
+    Row() {
+      Button(onClick = { viewModel.showOn() }) {
+        Text("Open Setup")
+      }
+      Spacer(modifier = Modifier.width(16.dp))
+      Button(onClick = {
+        val count = viewModel.count.value
+        Toast("Counter is: [$count]")
+      }) {
+        Text("Show counter")
+      }
+      Spacer(modifier = Modifier.width(16.dp))
+      Button(onClick = {
+        val text = viewModel.name.value
+        Toast("Text is: '$text'")
+      }) {
+        Text("Show text")
+      }
+      Spacer(modifier = Modifier.width(16.dp))
+      Button(onClick = { libMaix.closeApp(MainActivity()) }) {
+        Text("Exit")
+      }
+      if (viewModel.showDialog.value) {
+        MainScreen(viewModel)
+      }
     }
   }
 
+  @Composable
+  fun MainScreen(viewModel: CounterViewModel) {
+    // Collect the single state from the ViewModel
+    val name by viewModel.name
+    val count by viewModel.count
+
+    Column(
+      horizontalAlignment = Alignment.CenterHorizontally,
+      verticalArrangement = Arrangement.Center
+    ) {
+      Text(text = "Count: $count")
+      Button(onClick = { viewModel.incrementCount() }) {
+        Text("Increment")
+      }
+      // Pass the state values and event callbacks to the stateless component
+      NameEditor(
+        name = name,
+        onNameChange = { it ->
+          viewModel.updateName(it)
+        }
+      )
+      Button(onClick = { viewModel.showOff() }) {
+        Text("Close Setup")
+      }
+    }
+  }
+
+  @Composable
+  fun StatefulCounter() {
+    val viewModel: MainActivity = MainActivity()
+    val state by viewModel.uiState.collectAsState()
+    val count = state.count
+    Button(onClick = { viewModel._inc() }) {
+      Text("Clicked $count times")
+    }
+  }
+
+  @Composable
+  fun NameEditor(
+    name: String,
+    onNameChange: (String) -> Unit
+  ) {
+    TextField(
+      value = name,
+      onValueChange = onNameChange, // Event callback
+      label = { Text("Enter your name") }
+    )
+  }
+
+  @Composable
+  fun StatelessCounter(count: Int, onClick : ()->Unit){
+    Button(onClick = onClick) {
+      Text("3: Clicked $count times")
+    }
+  }
+
+  @Composable
+  fun SetupDialog(toShow: Boolean, count: Int, onClick: ()->Unit, toOff:  ()->Unit) {
+    if (toShow) {
+      Dialog(onDismissRequest = toOff) {
+        // Content of your setup window goes here
+        Surface(
+          shape = MaterialTheme.shapes.medium,
+          color = MaterialTheme.colorScheme.surface,
+          contentColor = contentColorFor(MaterialTheme.colorScheme.surface)
+        ) {
+          Column(modifier = Modifier.padding(16.dp)) {
+            Text("Setup Configuration", style = MaterialTheme.typography.titleLarge)
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Add your settings UI elements (e.g., Checkbox, TextField)
+            var setting1Enabled by remember { mutableStateOf(true) }
+            Row(verticalAlignment = Alignment.CenterVertically) {
+              Checkbox(checked = setting1Enabled, onCheckedChange = { setting1Enabled = it })
+              Text("Enable Feature X")
+            }
+            StatelessCounter(count, onClick)
+            Spacer(modifier = Modifier.height(36.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+              Button(onClick = toOff) {
+                Text("Save and Close")
+              }
+              Spacer(modifier = Modifier.width(16.dp))
+              Button(onClick = {
+                libMaix.closeApp(MainActivity())
+              }) {
+                Text("Exit")
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  @Composable
+  fun MainScreen0(toShow: Boolean, count: Int, onClick: ()->Unit, toOff:  ()->Unit) {
+
+  }
   @Composable
   fun SetupWindowExample() {
-    var showSetupDialog by remember { mutableStateOf(false) }
-    var showSetupDialog2 by rememberSaveable { mutableStateOf(false) }
+//    var showSetupDialog by remember { mutableStateOf(false) }
+    var showSetupDialog by rememberSaveable { mutableStateOf(true) }
 
 
     var _countFlow2 = MutableStateFlow(0)
@@ -140,7 +306,7 @@ class MainActivity : ComponentActivity() {
       Text("Open Setup")
     }
 
-    var count3 by remember { mutableStateOf(0) }
+    var count3 by rememberSaveable { mutableStateOf(0) }
     fun inc3() { count3++ }
     if (showSetupDialog) {
       Dialog(onDismissRequest = { showSetupDialog = false }) {
@@ -160,10 +326,8 @@ class MainActivity : ComponentActivity() {
               Checkbox(checked = setting1Enabled, onCheckedChange = { setting1Enabled = it })
               Text("Enable Feature X")
             }
-            FlowScreen(view, count)
-            FlowScreen2(_countFlow2.value, ::increment2)
             StatefulCounter()
-            StatelessCounter(count3, ::inc3)
+//            StatelessCounter(count3, ::inc3)
             Spacer(modifier = Modifier.height(36.dp))
             Button(onClick = {
               // Handle saving settings
@@ -177,27 +341,10 @@ class MainActivity : ComponentActivity() {
     }
   }
 
-  @Composable
-  fun StatefulCounter() {
-    var count by remember { mutableStateOf(0) }
-    Button(onClick = { count++ }) {
-      Text("Clicked $count times")
-    }
-  }
-
-  @Composable
-  fun StatelessCounter(count: Int, onClick : ()->Unit){
-    Button(onClick = onClick) {
-      Text("3 Clicked $count times")
-    }
-  }
-
-
   private fun openDirectory() {
     val initialUri: Uri = "".toUri()
     openDocumentTreeLauncher.launch(initialUri)
   }
-
   val openDocumentTreeLauncher = registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri: Uri? ->
     if (uri != null) {
       val path: String = uri.path  ?: "NO PATH"
