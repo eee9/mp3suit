@@ -28,7 +28,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,7 +47,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-class Test {
+class uitests2 {
 
   // Local Toast. !!! initContext must be run from MainActivity
   var context: Context? = null
@@ -60,7 +59,25 @@ class Test {
       Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
   }
   val libMaix = Maix()
+  val mainActivity = MainActivity()
 
+  private fun openDirectory() {
+    val initialUri: Uri = "".toUri()
+    openDocumentTreeLauncher.launch(initialUri)
+  }
+//  val openDocumentTreeLauncher = mainActivity.registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri: Uri? ->
+  val openDocumentTreeLauncher = MainActivity().registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri: Uri? ->
+    if (uri != null) {
+      val path: String = uri.path  ?: "NO PATH"
+      Logd("URI  : '$uri'")
+      val decode: String = Uri.decode(uri.path)
+      Logd("### Dec. : '$decode'")
+      val lastPath = uri.lastPathSegment
+      Logd("URI lastPath : '$lastPath'")
+      Logd("Path  :  '$path'")
+      Logd("... saving done.")
+    }
+  }
 
   var _countFlow = MutableStateFlow(0)
 
@@ -164,15 +181,15 @@ class Test {
     }
   }
 
-//  @Composable
-//  fun StatefulCounter() {
+  @Composable
+  fun StatefulCounter() {
 //    val viewModel: MainActivity = MainActivity()
 //    val state by viewModel.uiState.collectAsState()
 //    val count = state.count
 //    Button(onClick = { viewModel._inc() }) {
 //      Text("Clicked $count times")
 //    }
-//  }
+  }
 
   @Composable
   fun SetupDialog(toShow: Boolean, count: Int, onClick: ()->Unit, toOff:  ()->Unit) {

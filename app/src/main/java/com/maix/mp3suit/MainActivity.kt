@@ -35,32 +35,15 @@ class MainActivity : ComponentActivity() {
 //    enableEdgeToEdge() // use all device screen
     context = this.applicationContext
     Toast("MainActivity onCreate")
-    val ui = uilib()
-//    val ui = Screen()
+//    val ui = uilib()
+    val ui = Screen()
 
     ui.initContext(context)  // for Toast
 
     setContent {
       Mp3suitTheme {
-        ui.Footer()
+        ui.MainScreen()
       }
-    }
-  }
-
-  private fun openDirectory() {
-    val initialUri: Uri = "".toUri()
-    openDocumentTreeLauncher.launch(initialUri)
-  }
-  val openDocumentTreeLauncher = registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri: Uri? ->
-    if (uri != null) {
-      val path: String = uri.path  ?: "NO PATH"
-      Logd("URI  : '$uri'")
-      val decode: String = Uri.decode(uri.path)
-      Logd("### Dec. : '$decode'")
-      val lastPath = uri.lastPathSegment
-      Logd("URI lastPath : '$lastPath'")
-      Logd("Path  :  '$path'")
-      Logd("... saving done.")
     }
   }
 

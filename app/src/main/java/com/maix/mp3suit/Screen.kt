@@ -103,11 +103,6 @@ class Screen {
   }
 
   @Composable
-  fun Body() {
-
-  }
-
-  @Composable
   fun Footer() {
     Column(
       modifier = Modifier

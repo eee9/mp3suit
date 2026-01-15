@@ -1,13 +1,10 @@
 package com.maix.mp3suit
 
-import android.content.Context
-import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -60,26 +57,13 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.maix.mp3suit.ui.theme.Cyan
 import com.maix.mp3suit.ui.theme.Mp3suitTheme
 
-
-class uilib {
-
-  // Local Toast. !!! initContext must be run from MainActivity
-  var context: Context? = null
-  fun initContext(context: Context) {
-    this.context = context.applicationContext
-  }
-  fun Toast(msg: String) {
-    if (context != null)
-      Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
-  }
-
+class uitests1 {
   @Composable
   fun SetupWindowExample() {
     var showSetupDialog by remember { mutableStateOf(false) }
@@ -238,7 +222,7 @@ class uilib {
   fun PressableTextExample() {
     var isPressed by remember { mutableStateOf(false) }
 
-    Box(
+    androidx.compose.foundation.layout.Box(
       modifier = Modifier
         .pointerInput(Unit) {
           detectTapGestures(
@@ -273,7 +257,7 @@ class uilib {
       mutableStateOf(false)
     }
     Column {
-      Box(
+      androidx.compose.foundation.layout.Box(
         Modifier
           .pointerInput(Unit) {
             detectTapGestures(
@@ -284,7 +268,7 @@ class uilib {
                   awaitRelease()
                 } finally {
                   isPressed = false
-                  Toast("PRESSED 8 !!!")
+//                  Toast("PRESSED 8 !!!")
                 }
               },
             )
@@ -588,7 +572,7 @@ class uilib {
 
   @Composable
   fun Box() {
-    Box(
+    androidx.compose.foundation.layout.Box(
       modifier = Modifier
         .background(Color.Yellow)
         .fillMaxSize()
@@ -605,7 +589,7 @@ class uilib {
         10000.0f,
         TileMode.Repeated,
       )
-    Box(
+    androidx.compose.foundation.layout.Box(
       Modifier
         .verticalScroll(scrollState)
         .fillMaxWidth()
@@ -631,7 +615,7 @@ class uilib {
         text = "Line last",
 //        Modifier.verticalScroll(true)
       )
-      Box(
+      androidx.compose.foundation.layout.Box(
         modifier = Modifier
 //          .fillMaxSize() // Fills the maximum available space
           .background(Color.Magenta)
@@ -640,7 +624,7 @@ class uilib {
       ) {
         Text("In a box 2")
       }
-      Box(
+      androidx.compose.foundation.layout.Box(
         modifier = Modifier
           .fillMaxSize() // Fills the maximum available space
           .background(Color.Green)
@@ -661,13 +645,13 @@ class uilib {
   @Composable
   fun HomeScreen() {
     // this is the most outer box having all the views inside it
-    Box(
+    androidx.compose.foundation.layout.Box(
       modifier = Modifier
         .background(Color.Blue)
         .fillMaxSize()
     ) {
       Column {
-        for(i in 1.. 30) TextMx("some text N $i")
+        for (i in 1..30) TextMx("some text N $i")
         TextMx("text 001")
         TextMx("text 002")
         TextMx("text 003")
@@ -676,12 +660,14 @@ class uilib {
         TextMx("text 006")
 
       }
-      BottomMenu(items = listOf(
-        BottomMenuContent("Home1", R.drawable.ic_launcher_background, Icons.Default.Settings),
-        BottomMenuContent("Home2", R.drawable.ic_launcher_background, Icons.Default.Settings),
-        BottomMenuContent("Home3", R.drawable.ic_launcher_background, Icons.Default.Settings),
-        BottomMenuContent("Home4", R.drawable.ic_launcher_background, Icons.Default.Settings),
-      ), modifier = Modifier.align(Alignment.BottomCenter))
+      BottomMenu(
+        items = listOf(
+          BottomMenuContent("Home1", R.drawable.ic_launcher_background, Icons.Default.Settings),
+          BottomMenuContent("Home2", R.drawable.ic_launcher_background, Icons.Default.Settings),
+          BottomMenuContent("Home3", R.drawable.ic_launcher_background, Icons.Default.Settings),
+          BottomMenuContent("Home4", R.drawable.ic_launcher_background, Icons.Default.Settings),
+        ), modifier = Modifier.align(Alignment.BottomCenter)
+      )
     }
   }
 
@@ -757,7 +743,7 @@ class uilib {
         onItemClick()
       }
     ) {
-      Box(
+      androidx.compose.foundation.layout.Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
           .clip(RoundedCornerShape(10.dp))
@@ -850,7 +836,6 @@ class uilib {
     )
   }
 
-  @Preview(showBackground = true)
   @Composable
   fun GreetingPreview() {
     Mp3suitTheme {
@@ -910,7 +895,6 @@ class uilib {
     )
   }
 
-  @Preview(showBackground = true)
   @Composable
   fun Header() {
     Row(
@@ -1002,7 +986,7 @@ class uilib {
     var expanded by remember { mutableStateOf(false) }
 
     // Box to anchor the dropdown menu relative to the button
-    Box(
+    androidx.compose.foundation.layout.Box(
       modifier = Modifier
 //      .fillMaxSize()
         .wrapContentSize(Alignment.TopEnd) // Aligns the button to the top end (top right)
@@ -1060,16 +1044,18 @@ class uilib {
 
   @Composable
   fun BoxExample() {
-    Box(
+    androidx.compose.foundation.layout.Box(
       modifier = Modifier.size(100.dp), // Set a fixed size for the box
       contentAlignment = Alignment.Center // Center content within the box
     ) {
       // A background element
-      Box(modifier = Modifier
-        .matchParentSize()
-        .background(Color.Cyan)) {
-        // This will be displayed first
-      }
+//      Box(
+//        modifier = Modifier
+//          .matchParentSize()
+//          .background(Color.Cyan)
+//      ) {
+//        // This will be displayed first
+//      }
       // A text element on top of the background
       Text(text = "Hello", color = Color.Black)
     }
@@ -1124,15 +1110,14 @@ class uilib {
         TextMx("Item B in Row")
       }
       Spacer(modifier = Modifier.height(16.dp))
-      Box(
-        modifier = Modifier
-          .background(Color.Cyan)
-          .size(100.dp),
-        contentAlignment = Alignment.Center // Centers child within the Box
-      ) {
-        Text("Box Content")
-      }
+//      Box(
+//        modifier = Modifier
+//          .background(Color.Cyan)
+//          .size(100.dp),
+//        contentAlignment = Alignment.Center // Centers child within the Box
+//      ) {
+//        Text("Box Content")
+//      }
     }
   }
-
 }
