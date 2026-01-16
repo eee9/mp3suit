@@ -126,13 +126,13 @@ class uitests2 {
   @Composable
   fun ShowDialog2(viewModel: CounterViewModel) {
 
-    Row() {
+    Column() {
       Button(onClick = { viewModel.showOn() }) {
         Text("Open Setup")
       }
       Spacer(modifier = Modifier.width(16.dp))
       Button(onClick = {
-        val count = viewModel.count.value
+        val count = viewModel.count.intValue
         Toast("Counter is: [$count]")
       }) {
         Text("Show counter")

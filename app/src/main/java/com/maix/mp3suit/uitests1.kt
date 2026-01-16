@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -222,7 +223,7 @@ class uitests1 {
   fun PressableTextExample() {
     var isPressed by remember { mutableStateOf(false) }
 
-    androidx.compose.foundation.layout.Box(
+    Box(
       modifier = Modifier
         .pointerInput(Unit) {
           detectTapGestures(
@@ -608,9 +609,9 @@ class uitests1 {
 //      verticalArrangement = Arrangement.Top, // Pushes children to the bottom
 //      horizontalAlignment = Alignment.Start // Centers the child horizontally
     ) {
-      TextMx("Line 1")
-      TextMx("Line 2")
-      TextMx("Line 3")
+      Text("Line 1")
+      Text("Line 2")
+      Text("Line 3")
       Text(
         text = "Line last",
 //        Modifier.verticalScroll(true)
@@ -651,13 +652,13 @@ class uitests1 {
         .fillMaxSize()
     ) {
       Column {
-        for (i in 1..30) TextMx("some text N $i")
-        TextMx("text 001")
-        TextMx("text 002")
-        TextMx("text 003")
-        TextMx("text 004")
-        TextMx("text 005")
-        TextMx("text 006")
+        for (i in 1..30) Text("some text N $i")
+        Text("text 001")
+        Text("text 002")
+        Text("text 003")
+        Text("text 004")
+        Text("text 005")
+        Text("text 006")
 
       }
       BottomMenu(
@@ -1030,94 +1031,4 @@ class uitests1 {
     }
   }
 
-  @Composable
-  fun ColumnExample() {
-    Column(
-      modifier = Modifier.padding(26.dp), // Add padding around the column
-      verticalArrangement = Arrangement.spacedBy(18.dp) // Add space between items
-    ) {
-      Text(text = "Item 1")
-      Text(text = "Item 2")
-      Text(text = "Item 3")
-    }
-  }
-
-  @Composable
-  fun BoxExample() {
-    androidx.compose.foundation.layout.Box(
-      modifier = Modifier.size(100.dp), // Set a fixed size for the box
-      contentAlignment = Alignment.Center // Center content within the box
-    ) {
-      // A background element
-//      Box(
-//        modifier = Modifier
-//          .matchParentSize()
-//          .background(Color.Cyan)
-//      ) {
-//        // This will be displayed first
-//      }
-      // A text element on top of the background
-      Text(text = "Hello", color = Color.Black)
-    }
-  }
-
-  @Composable
-  fun TextMx(text: String) {
-    Text(
-      modifier = Modifier
-        .height(50.dp)
-        .background(Color.LightGray),
-      text = " [ $text ] "
-    )
-  }
-
-  @Composable
-  fun RowExample() {
-    Row(
-      modifier = Modifier
-        .fillMaxWidth()
-        .padding(16.dp), // Fill width and add padding
-      horizontalArrangement = Arrangement.SpaceAround // Evenly distribute space horizontally
-    ) {
-      TextMx(text = "Left")
-      TextMx(text = "Center")
-      TextMx(text = "Right")
-    }
-  }
-
-  @Composable
-  fun BasicLayoutExample() {
-    Column(
-      modifier = Modifier
-        .fillMaxSize()
-        .background(Color.Green)
-        .padding(16.dp),
-      verticalArrangement = Arrangement.Center, // Centers children vertically
-      horizontalAlignment = Alignment.CenterHorizontally // Centers children horizontally
-    ) {
-      Text("Item 1 in Column /Q16")
-      Spacer(modifier = Modifier
-        .height(16.dp)
-        .background(Color.Red)
-      )
-      Row(
-        modifier = Modifier
-          .background(Color.Yellow)
-          .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceAround // Distributes children evenly with space
-      ) {
-        TextMx("Item A in Row")
-        TextMx("Item B in Row")
-      }
-      Spacer(modifier = Modifier.height(16.dp))
-//      Box(
-//        modifier = Modifier
-//          .background(Color.Cyan)
-//          .size(100.dp),
-//        contentAlignment = Alignment.Center // Centers child within the Box
-//      ) {
-//        Text("Box Content")
-//      }
-    }
-  }
 }
