@@ -61,7 +61,7 @@ class uitests2 {
   val libMaix = Maix()
   val mainActivity = MainActivity()
 
-  private fun openDirectory() {
+  fun openDirectory() {
     val initialUri: Uri = "".toUri()
     openDocumentTreeLauncher.launch(initialUri)
   }

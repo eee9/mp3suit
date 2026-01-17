@@ -1,8 +1,11 @@
 package com.maix.mp3suit
 
 import android.content.Context
+import android.net.Uri
 import android.os.Process
+import android.util.Log
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -32,12 +35,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 import com.maix.mp3suit.ui.theme.Cyan
 
 import com.maix.lib.Maix
 import kotlin.system.exitProcess
 
 class Screen {
+
+  companion object {
+    const val TAG = "xMx3"
+    fun Logd(msg: String) {
+      Log.d(TAG, msg)
+    }
+  }
 
   // Local Toast. !!! initContext must be run from MainActivity
   var context: Context? = null
@@ -48,6 +59,25 @@ class Screen {
     if (context != null)
       Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
   }
+
+  fun openDirectory() {
+    val initialUri: Uri = "".toUri()
+    openDocumentTreeLauncher.launch(initialUri)
+  }
+  //  val openDocumentTreeLauncher = mainActivity.registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri: Uri? ->
+  val openDocumentTreeLauncher = MainActivity().registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri: Uri? ->
+    if (uri != null) {
+      val path: String = uri.path  ?: "NO PATH"
+      Logd("URI  : '$uri'")
+      val decode: String = Uri.decode(uri.path)
+      Logd("### Dec. : '$decode'")
+      val lastPath = uri.lastPathSegment
+      Logd("URI lastPath : '$lastPath'")
+      Logd("Path  :  '$path'")
+      Logd("... saving done.")
+    }
+  }
+
 
   val libMaix = Maix()
   @Composable
@@ -122,6 +152,7 @@ class Screen {
       ) {
         ButtonMx(onClick = { /* Test... */
           Toast("Test pressed")
+          openDirectory()
         }) {
           Text("Test...")
         }
