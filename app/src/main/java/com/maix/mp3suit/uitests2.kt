@@ -1,9 +1,7 @@
 package com.maix.mp3suit
 
 import android.content.Context
-import android.net.Uri
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -52,9 +50,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import androidx.core.net.toUri
 import com.maix.lib.Maix
-import com.maix.mp3suit.MainActivity.Companion.Logd
 import com.maix.mp3suit.ui.theme.Cyan
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -271,7 +267,7 @@ class uitests2 {
   }
 
   @Composable
-  fun CounterApp(viewModel: CounterViewModel) {
+  fun CounterApp(viewModel: TestViewModel) {
     // Access the state from the ViewModel
     val count by viewModel.count
 
@@ -287,7 +283,7 @@ class uitests2 {
   }
 
   @Composable
-  fun ShowDialog2(viewModel: CounterViewModel) {
+  fun ShowDialog2(viewModel: TestViewModel) {
 
     Column() {
       Button(onClick = { viewModel.showOn() }) {
@@ -318,7 +314,7 @@ class uitests2 {
   }
 
   @Composable
-  fun MainScreen(viewModel: CounterViewModel) {
+  fun MainScreen(viewModel: TestViewModel) {
     // Collect the single state from the ViewModel
     val name by viewModel.name
     val count by viewModel.count

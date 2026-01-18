@@ -32,7 +32,7 @@ import com.maix.lib.Maix
 import com.maix.mp3suit.ui.theme.Cyan
 import com.maix.mp3suit.ui.theme.Mp3suitTheme
 
-class MainActivity : ComponentActivity() {
+class MainActivity: ComponentActivity() {
 
   companion object {
     const val TAG = "xMx3"
@@ -43,8 +43,8 @@ class MainActivity : ComponentActivity() {
 
   val libMaix = Maix()
   lateinit var context: Context
-  lateinit var dataView: CounterViewModel
-  lateinit var setupConf: SetupConf
+  lateinit var dataView: TestViewModel
+//  lateinit var setupConf: SetupConf
 
   fun Toast(msg: String) {
     val toast = Toast.makeText(context, msg, Toast.LENGTH_LONG)
@@ -58,15 +58,13 @@ class MainActivity : ComponentActivity() {
     super.onCreate(savedInstanceState)
 //    enableEdgeToEdge() // use all device screen
     context = this.applicationContext
-//    Toast("MainActivity onCreate")
+    Toast("MainActivity onCreate")
 
-    dataView = CounterViewModel()
-//    val ui = Screen()
+    dataView = TestViewModel()
+//    val ui = MainScreen()
 //    ui.initContext(context)  // for Toast
-//    val t = uitests1()
-//    t.initContext(context)  // for Toast
-    setupConf = SetupConf()
 
+    val setupConf = SetupConf()
 
     setContent {
       Mp3suitTheme {
@@ -76,9 +74,14 @@ class MainActivity : ComponentActivity() {
   }
 
   @Composable
+  fun CloseButton() {
+    Button(onClick = { libMaix.closeApp(MainActivity()) }) {
+      Text("Exit 32")
+    }
+  }
+
+  @Composable
   fun SetupDialog(setupConf: SetupConf) {
-    val u = uitests2()
-    u.initContext(context)  // for Toast
     Column() {
       var _mp3path by remember { mutableStateOf(setupConf.pathMp3) }
       var _logpath by remember { mutableStateOf(setupConf.pathLog) }
@@ -87,14 +90,6 @@ class MainActivity : ComponentActivity() {
       CloseButton()
     }
   }
-
-  @Composable
-  fun CloseButton() {
-    Button(onClick = { libMaix.closeApp(MainActivity()) }) {
-      Text("Exit 80")
-    }
-  }
-
   @Composable
   fun ChoosePath(label: String, _text: MutableState<String>) {
     Button(
@@ -126,7 +121,7 @@ class MainActivity : ComponentActivity() {
   }
   val openDocumentTreeLauncher = registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri: Uri? ->
     if (uri != null) {
-      val path: String = uri.path  ?: "NO PATH"
+      val path: String = uri.path ?: "NO PATH"
       Logd("URI  : '$uri'")
       val decode: String = Uri.decode(uri.path)
       Logd("### Dec. : '$decode'")

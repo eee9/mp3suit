@@ -4,7 +4,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 
-class CounterViewModel : ViewModel() {
+class TestViewModel : ViewModel() {
   // Mutable state inside ViewModel
   val count = mutableIntStateOf(0)
   val name = mutableStateOf("")
