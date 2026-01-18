@@ -1,6 +1,7 @@
 package com.maix.mp3suit
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -27,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.core.content.edit
 import androidx.core.net.toUri
 import com.maix.lib.Maix
 import com.maix.mp3suit.ui.theme.Cyan
@@ -44,7 +46,6 @@ class MainActivity: ComponentActivity() {
   val libMaix = Maix()
   lateinit var context: Context
   lateinit var dataView: TestViewModel
-//  lateinit var setupConf: SetupConf
 
   fun Toast(msg: String) {
     val toast = Toast.makeText(context, msg, Toast.LENGTH_LONG)
@@ -53,6 +54,12 @@ class MainActivity: ComponentActivity() {
     toast.show()
   }
 
+  val MXPREF  = "MXPREF2"
+  val KEYMP3  = "mp3path"
+  val KEYLOG  = "logpath"
+  val KEYTEXT = "textpath"
+  val KEYLRC  = "lyricpath"
+
   override fun onCreate(savedInstanceState: Bundle?) {
 
     super.onCreate(savedInstanceState)
@@ -60,11 +67,15 @@ class MainActivity: ComponentActivity() {
     context = this.applicationContext
     Toast("MainActivity onCreate")
 
-    dataView = TestViewModel()
+//    dataView = TestViewModel()
 //    val ui = MainScreen()
 //    ui.initContext(context)  // for Toast
 
     val setupConf = SetupConf()
+
+
+
+
 
     setContent {
       Mp3suitTheme {
@@ -76,26 +87,33 @@ class MainActivity: ComponentActivity() {
   @Composable
   fun CloseButton() {
     Button(onClick = { libMaix.closeApp(MainActivity()) }) {
-      Text("Exit 32")
+      Text("Exit 33 /Q1I")
     }
   }
 
   @Composable
   fun SetupDialog(setupConf: SetupConf) {
+    val sharedPreferences: SharedPreferences = getSharedPreferences(MXPREF, MODE_PRIVATE)
+//    val pathMp3 = sharedPreferences.getString(KEYMP3, null) ?: "No MP3 path found."
+//    val pathText = sharedPreferences.getString(KEYTEXT, null) ?: "No path for TEXT found."
+//    val pathLyric = sharedPreferences.getString(KEYLRC, null) ?: "No path for LYRIC found."
+//    val pathLog = sharedPreferences.getString(KEYLOG, null) ?: "No LOG path found."
+    var _mp3path by remember { mutableStateOf(setupConf.pathMp3) }
+    var _logpath by remember { mutableStateOf(setupConf.pathLog) }
+    _mp3path.value = sharedPreferences.getString(KEYMP3, null) ?: "No MP3 path found."
+    _logpath.value = sharedPreferences.getString(KEYLOG, null) ?: "No LOG path found."
     Column() {
-      var _mp3path by remember { mutableStateOf(setupConf.pathMp3) }
-      var _logpath by remember { mutableStateOf(setupConf.pathLog) }
-      ChoosePath("MP3:", _mp3path)
-      ChoosePath("LOG:", _logpath)
+      ChoosePath("MP3:", KEYMP3, _mp3path)
+      ChoosePath("LOG:", KEYLOG, _logpath)
       CloseButton()
     }
   }
   @Composable
-  fun ChoosePath(label: String, _text: MutableState<String>) {
+  fun ChoosePath(label: String, _key: String, _text: MutableState<String>) {
     Button(
       onClick = {
         _text.value = "Choosing..."
-        openDirectory(_text)
+        openDirectory(_key, _text)
       },
       shape = RoundedCornerShape(8.dp),
       modifier = Modifier
@@ -113,11 +131,13 @@ class MainActivity: ComponentActivity() {
     }
   }
 
-  lateinit var proxy: MutableState<String>
-  fun openDirectory(_text:  MutableState<String>) {
+  lateinit var proxyState: MutableState<String>
+  var proxyKey: String = ""
+  fun openDirectory(_key: String, _text:  MutableState<String>) {
     val initialUri: Uri = "".toUri()
     openDocumentTreeLauncher.launch(initialUri)
-    proxy = _text
+    proxyState = _text
+    proxyKey = _key
   }
   val openDocumentTreeLauncher = registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri: Uri? ->
     if (uri != null) {
@@ -129,7 +149,13 @@ class MainActivity: ComponentActivity() {
       Logd("URI lastPath : '$lastPath'")
       Logd("Path  :  '$path'")
       Logd("... saving done.")
-      proxy.value = path
+      if (path.isNotEmpty()) {
+        proxyState.value = path
+        if (proxyKey.isNotEmpty()) {
+          val sharedPreferences: SharedPreferences = getSharedPreferences(MXPREF, MODE_PRIVATE)
+          sharedPreferences.edit { putString(proxyKey, path) }
+        }
+      }
     }
   }
 
