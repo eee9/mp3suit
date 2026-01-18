@@ -8,6 +8,10 @@ class CounterViewModel : ViewModel() {
   // Mutable state inside ViewModel
   val count = mutableIntStateOf(0)
   val name = mutableStateOf("")
+  val pathMp3 = mutableStateOf("Choose mp3 path...")
+  val pathLrc = mutableStateOf("")
+  val pathTxt = mutableStateOf("")
+  val pathLog = mutableStateOf("")
   val showDialog = mutableStateOf(false)
 
   fun incrementCount() {
@@ -17,6 +21,8 @@ class CounterViewModel : ViewModel() {
   fun updateName(newName: String) {
     name.value = newName
   }
+
+  fun newMp3(it: String) { name.value = it }
 
   fun showToggle() {
     showDialog.value != showDialog.value

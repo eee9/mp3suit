@@ -59,25 +59,6 @@ class uitests2 {
       Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
   }
   val libMaix = Maix()
-  val mainActivity = MainActivity()
-
-  fun openDirectory() {
-    val initialUri: Uri = "".toUri()
-    openDocumentTreeLauncher.launch(initialUri)
-  }
-//  val openDocumentTreeLauncher = mainActivity.registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri: Uri? ->
-  val openDocumentTreeLauncher = MainActivity().registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri: Uri? ->
-    if (uri != null) {
-      val path: String = uri.path  ?: "NO PATH"
-      Logd("URI  : '$uri'")
-      val decode: String = Uri.decode(uri.path)
-      Logd("### Dec. : '$decode'")
-      val lastPath = uri.lastPathSegment
-      Logd("URI lastPath : '$lastPath'")
-      Logd("Path  :  '$path'")
-      Logd("... saving done.")
-    }
-  }
 
   var _countFlow = MutableStateFlow(0)
 

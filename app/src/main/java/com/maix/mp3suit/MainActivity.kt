@@ -37,6 +37,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -67,6 +68,7 @@ class MainActivity : ComponentActivity() {
   }
 
   lateinit var context: Context
+  lateinit var dataView: CounterViewModel
   fun Toast(msg: String) {
     val toast = Toast.makeText(context, msg, Toast.LENGTH_LONG)
 //    toast.setGravity(Gravity.BOTTOM or Gravity.END, 0, 0)
@@ -81,31 +83,92 @@ class MainActivity : ComponentActivity() {
     context = this.applicationContext
 //    Toast("MainActivity onCreate")
 
-    val dataView = CounterViewModel()
-    val ui = Screen()
-    val t = uitests1()
-    val u = uitests2()
-
-    ui.initContext(context)  // for Toast
+    dataView = CounterViewModel()
+//    val ui = Screen()
+//    ui.initContext(context)  // for Toast
+//    val t = uitests1()
 //    t.initContext(context)  // for Toast
-    u.initContext(context)  // for Toast
 
     setContent {
       Mp3suitTheme {
-//        ui.MainScreen()
+        Tests()
+      }
+    }
+  }
+
+  @Composable
+  fun Tests() {
+    val u = uitests2()
+    u.initContext(context)  // for Toast
+    Column() {
+      ChoosePath("MP3:", dataView)
+      //        ui.MainScreen()
 //        t.ThreeDotsMenuExample()
 //        t.ScrollableTextFieldScreen()
 //        Input()
 //        PressableText()
-//        u.ShowDialog2(dataView)
+      u.ShowDialog2(dataView)
 //        IconButton()
 //        InputIcon()
 //        ToggleIconButtonExample()
-        ButtonWithIconAndText() {
-          Toast("!!! pressed 77.")
-          openDirectory()
-        }
-      }
+//        ButtonWithIconAndText() {
+//          Toast("!!! pressed 77.")
+//          openDirectory()
+//        }
+
+    }
+  }
+
+  @Composable
+  fun ChoosePath(label: String, _dataView: CounterViewModel) {
+    var _text by remember { mutableStateOf(dataView.pathMp3) }
+//    val text by _dataView.pathMp3
+    Button(
+      onClick = {
+//        _dataView.newMp3("New text value")
+        _text.value = "LLLLL2"
+        openDirectory(_text)
+      },
+      shape = RoundedCornerShape(8.dp),
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(8.dp)
+    ) {
+      // Place the Text composable
+
+      Text(text = label)
+      Spacer(modifier = Modifier.padding(horizontal = 14.dp))
+//      Input()
+      Text(_text.value, color = Cyan, modifier = Modifier.weight(1f),)
+      // Add a Spacer for space between the icon and the text
+      Spacer(modifier = Modifier.padding(horizontal = 14.dp))
+      // Place the Icon composable
+      Icon(
+        imageVector = Icons.Default.LocationOn,
+        contentDescription = "Edit"
+      )
+    }
+  }
+
+  lateinit var proxy: MutableState<String>
+  fun openDirectory(_text:  MutableState<String>) {
+    val initialUri: Uri = "".toUri()
+    openDocumentTreeLauncher.launch(initialUri)
+    _text.value = "LLLLL 77"
+    proxy = _text
+  }
+  val openDocumentTreeLauncher = registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri: Uri? ->
+
+    if (uri != null) {
+      val path: String = uri.path  ?: "NO PATH"
+      Logd("URI  : '$uri'")
+      val decode: String = Uri.decode(uri.path)
+      Logd("### Dec. : '$decode'")
+      val lastPath = uri.lastPathSegment
+      Logd("URI lastPath : '$lastPath'")
+      Logd("Path  :  '$path'")
+      Logd("... saving done.")
+      proxy.value = path
     }
   }
 
@@ -131,24 +194,6 @@ class MainActivity : ComponentActivity() {
         imageVector = Icons.Default.LocationOn,
         contentDescription = "Edit"
       )
-    }
-  }
-
-  fun openDirectory() {
-    val initialUri: Uri = "".toUri()
-    openDocumentTreeLauncher.launch(initialUri)
-  }
-  val openDocumentTreeLauncher = registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri: Uri? ->
-
-    if (uri != null) {
-      val path: String = uri.path  ?: "NO PATH"
-      Screen.Companion.Logd("URI  : '$uri'")
-      val decode: String = Uri.decode(uri.path)
-      Screen.Companion.Logd("### Dec. : '$decode'")
-      val lastPath = uri.lastPathSegment
-      Screen.Companion.Logd("URI lastPath : '$lastPath'")
-      Screen.Companion.Logd("Path  :  '$path'")
-      Screen.Companion.Logd("... saving done.")
     }
   }
 
