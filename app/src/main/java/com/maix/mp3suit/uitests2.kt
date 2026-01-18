@@ -4,8 +4,11 @@ import android.content.Context
 import android.net.Uri
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,15 +17,22 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -36,12 +46,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.core.net.toUri
 import com.maix.lib.Maix
 import com.maix.mp3suit.MainActivity.Companion.Logd
+import com.maix.mp3suit.ui.theme.Cyan
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -86,6 +100,174 @@ class uitests2 {
 
   fun _inc_() {
     _uiState.update { it.copy(count = 3) }
+  }
+
+  @Composable
+  fun ButtonWithIconAndText(onClick: () -> Unit) {
+    Button(
+      onClick = onClick,
+      shape = RoundedCornerShape(8.dp),
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(8.dp)
+    ) {
+      // Place the Text composable
+
+      Text(text = "LOG:")
+      Spacer(modifier = Modifier.padding(horizontal = 14.dp))
+//      Input()
+      Text("some path is here", color = Cyan, modifier = Modifier.weight(1f),)
+      // Add a Spacer for space between the icon and the text
+      Spacer(modifier = Modifier.padding(horizontal = 14.dp))
+      // Place the Icon composable
+      Icon(
+        imageVector = Icons.Default.LocationOn,
+        contentDescription = "Edit"
+      )
+    }
+  }
+
+  @Composable
+  fun Input() {
+    var text by remember { mutableStateOf("") }
+    OutlinedTextField(
+      value = text,
+      onValueChange = { text = it },
+      label = { Text("Input field") },
+//      modifier = Modifier.fillMaxWidth()
+    )
+  }
+
+  @Composable
+  fun ToggleIconButtonExample() {
+    IconButton(onClick = {  }) {
+      Icon(
+        imageVector = Icons.Default.Settings, // .MoreVert,
+        contentDescription = "More options"
+      )
+    }
+  }
+  @Composable
+  fun InputIcon() {
+    var showPassword by remember { mutableStateOf(false) }
+    OutlinedTextField(
+      value = "jlkjllkjl",
+      onValueChange = {
+//        onValueChange(it)
+        Toast("InputIcon pressed.")
+      },
+      visualTransformation = if (showPassword) {
+        VisualTransformation.None
+      } else {
+        PasswordVisualTransformation()
+      }, trailingIcon = {
+        IconButton(onClick = {}) {VectorIcon(imageVector = Icons.Filled.Refresh)}
+//        if (showPassword) {
+//          IconButton(onClick = { showPassword = false }) {
+//            VectorIcon(imageVector = Icons.Filled.Visibility)
+//          }
+//        } else {
+//          IconButton(onClick = { showPassword = true }) {
+//            VectorIcon(imageVector = Icons.Filled.VisibilityOff)
+//          }
+//        }
+      }
+    )
+  }
+
+  @Composable
+  fun VectorIcon(imageVector: ImageVector) {
+    TODO("Not yet implemented")
+  }
+
+  @Composable
+  fun IconButton() {
+    PressIconButton(
+      onClick = {},
+      icon = { Icon(Icons.Filled.ShoppingCart, contentDescription = null) },
+      text = { Text("Add to cart") }
+    )
+  }
+
+  @Composable
+  fun PressIconButton(
+    onClick: () -> Unit,
+    icon: @Composable () -> Unit,
+    text: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
+    interactionSource: MutableInteractionSource? = null
+  ) {
+    val isPressed = interactionSource?.collectIsPressedAsState()?.value ?: false
+
+    Button(
+      onClick = onClick,
+      modifier = modifier,
+      interactionSource = interactionSource
+    ) {
+      AnimatedVisibility(visible = isPressed) {
+        if (isPressed) {
+          Row {
+            icon()
+            Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+          }
+        }
+      }
+      text()
+    }
+  }
+
+  @Composable
+  fun PressableText() {
+    var isPressed by remember { mutableStateOf(false) }
+    var text by remember { mutableStateOf("") }
+    Box(
+      modifier = Modifier
+        .fillMaxWidth()
+        .pointerInput(Unit) {
+          detectTapGestures(
+            onPress = {
+              isPressed = true
+              try {
+                awaitRelease()
+              } finally {
+                isPressed = false
+                Toast("Text pressed.")
+              }
+            }
+            // onLongPress, onTap, onDoubleTap can also be used here
+          )
+        }
+        .background(
+          color = if (isPressed) Color.Red else Color.Green,
+          shape = MaterialTheme.shapes.small
+        )
+        .padding(16.dp),
+      contentAlignment = Alignment.Center
+    ) {
+      Column() {
+        Text(
+          text = if (isPressed) "Pressed!" else "Press me",
+          color = Color.White
+        )
+        OutlinedTextField(
+          value = text,
+//          enabled = false,
+          onValueChange = { Toast("Input pressed 2.") },
+
+          label = { Text("Input field") },
+          modifier = Modifier
+            .fillMaxWidth()
+            .pointerInput(Unit) {
+              detectTapGestures(
+                onPress = {
+                  Toast("Input pressed 1.")
+                }
+                // onLongPress, onTap, onDoubleTap can also be used here
+              )
+            }
+        )
+      }
+    }
   }
 
   @Composable
@@ -211,10 +393,6 @@ class uitests2 {
     }
   }
 
-  @Composable
-  fun MainScreen0(toShow: Boolean, count: Int, onClick: ()->Unit, toOff:  ()->Unit) {
-
-  }
   @Composable
   fun SetupWindowExample() {
 //    var showSetupDialog by remember { mutableStateOf(false) }

@@ -2,7 +2,6 @@ package com.maix.mp3suit
 
 import android.content.Context
 import android.net.Uri
-import android.os.Process
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -39,9 +38,8 @@ import androidx.core.net.toUri
 import com.maix.mp3suit.ui.theme.Cyan
 
 import com.maix.lib.Maix
-import kotlin.system.exitProcess
 
-class Screen {
+class MainScreen {
 
   companion object {
     const val TAG = "xMx3"
