@@ -52,6 +52,7 @@ dependencies {
   implementation(libs.androidx.constraintlayout.compose)
   implementation(libs.androidx.appcompat)
   implementation(libs.androidx.compose.foundation.layout)
+  implementation(libs.androidx.documentfile)
   testImplementation(libs.junit)
   androidTestImplementation(libs.androidx.junit)
   androidTestImplementation(libs.androidx.espresso.core)

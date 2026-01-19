@@ -32,6 +32,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.core.content.edit
 import androidx.core.net.toUri
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.Observer
 import com.maix.lib.Maix
 import com.maix.mp3suit.ui.theme.Cyan
 import com.maix.mp3suit.ui.theme.Mp3suitTheme
@@ -56,6 +59,10 @@ class MainActivity: ComponentActivity() {
     toast.show()
   }
 
+  // !!! Turn OFF the service here for debug
+  private val runSERVICE = true
+  //  private val runSERVICE = false
+
   val MXPREF  = "MXPREF2"
   val SUFFIX = "_URI"
   val KEYMP3  = "mp3path"
@@ -70,6 +77,11 @@ class MainActivity: ComponentActivity() {
     context = this.applicationContext
     Toast("MainActivity onCreate")
 
+    if (runSERVICE) {
+      libMaix.bindService(this)
+      Logd("after bindService")
+    }
+
 //    dataView = TestViewModel()
     val mainScreen = MainScreen()
     mainScreen.initContext(context)  // for Toast
@@ -82,6 +94,13 @@ class MainActivity: ComponentActivity() {
         SetupDialog(setupConf)
       }
     }
+  }
+
+  // for listen service
+  override fun onDestroy() {
+    super.onDestroy()
+    Logd("Main OnDestroy")
+    if (runSERVICE) libMaix.doUnbindService(this)
   }
 
   @Composable
