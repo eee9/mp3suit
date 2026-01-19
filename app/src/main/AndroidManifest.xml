@@ -15,6 +15,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Mp3suit">
+        <service android:name="com.maix.services.PlayedTrackReceiverService" />
         <service android:name=".MxService" />
         <activity
             android:name=".MainActivity"

@@ -113,7 +113,7 @@ class MainActivity: ComponentActivity() {
       onClick = { libMaix.closeApp(MainActivity()) }
 
     ) {
-      Text("Exit /Q1J.02")
+      Text("Exit /Q1J.r03")
     }
   }
 
