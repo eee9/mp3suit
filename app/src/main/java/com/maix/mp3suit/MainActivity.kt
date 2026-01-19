@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
@@ -26,6 +27,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.core.content.edit
@@ -55,6 +57,7 @@ class MainActivity: ComponentActivity() {
   }
 
   val MXPREF  = "MXPREF2"
+  val SUFFIX = "_URI"
   val KEYMP3  = "mp3path"
   val KEYLOG  = "logpath"
   val KEYTEXT = "textpath"
@@ -68,17 +71,14 @@ class MainActivity: ComponentActivity() {
     Toast("MainActivity onCreate")
 
 //    dataView = TestViewModel()
-//    val ui = MainScreen()
-//    ui.initContext(context)  // for Toast
+    val mainScreen = MainScreen()
+    mainScreen.initContext(context)  // for Toast
 
     val setupConf = SetupConf()
 
-
-
-
-
     setContent {
       Mp3suitTheme {
+//        mainScreen.ShowMainScreen()
         SetupDialog(setupConf)
       }
     }
@@ -86,8 +86,15 @@ class MainActivity: ComponentActivity() {
 
   @Composable
   fun CloseButton() {
-    Button(onClick = { libMaix.closeApp(MainActivity()) }) {
-      Text("Exit 33 /Q1I")
+    Button(
+      modifier = Modifier
+        .fillMaxWidth()
+        .wrapContentWidth(Alignment.CenterHorizontally)
+        .padding(20.dp),
+      onClick = { libMaix.closeApp(MainActivity()) }
+
+    ) {
+      Text("Exit /Q1J.02")
     }
   }
 
@@ -99,11 +106,14 @@ class MainActivity: ComponentActivity() {
 //    val pathLyric = sharedPreferences.getString(KEYLRC, null) ?: "No path for LYRIC found."
 //    val pathLog = sharedPreferences.getString(KEYLOG, null) ?: "No LOG path found."
     var _mp3path by remember { mutableStateOf(setupConf.pathMp3) }
+    var _lrcpath by remember { mutableStateOf(setupConf.pathLrc) }
     var _logpath by remember { mutableStateOf(setupConf.pathLog) }
     _mp3path.value = sharedPreferences.getString(KEYMP3, null) ?: "No MP3 path found."
+    _lrcpath.value = sharedPreferences.getString(KEYLRC, null) ?: "No LRC path found."
     _logpath.value = sharedPreferences.getString(KEYLOG, null) ?: "No LOG path found."
-    Column() {
+    Column(modifier = Modifier.padding(10.dp)) {
       ChoosePath("MP3:", KEYMP3, _mp3path)
+      ChoosePath("LRC:", KEYLRC, _lrcpath)
       ChoosePath("LOG:", KEYLOG, _logpath)
       CloseButton()
     }
@@ -118,7 +128,7 @@ class MainActivity: ComponentActivity() {
       shape = RoundedCornerShape(8.dp),
       modifier = Modifier
         .fillMaxWidth()
-        .padding(8.dp)
+        .padding(horizontal = 10.dp)
     ) {
       Text(text = label)
       Spacer(modifier = Modifier.padding(horizontal = 14.dp))

@@ -79,7 +79,7 @@ class MainScreen {
 
   val libMaix = Maix()
   @Composable
-  fun MainScreen() {
+  fun ShowMainScreen() {
     Column(modifier = Modifier
       .fillMaxSize()
 //      .background(Color.Yellow)
