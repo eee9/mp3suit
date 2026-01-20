@@ -61,7 +61,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import com.maix.mp3suit.ui.theme.Cyan
+import com.maix.mp3suit.ui.theme.MxCyan
 import com.maix.mp3suit.ui.theme.Mp3suitTheme
 
 class uitests1 {
@@ -135,7 +135,7 @@ class uitests1 {
     Column(modifier = Modifier
       .fillMaxSize()
 //      .background(Color.Yellow)
-      .background(Cyan)
+      .background(MxCyan)
       .padding(3.dp)
     ) {
       Text(

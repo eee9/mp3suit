@@ -1,10 +1,8 @@
 package com.maix.mp3suit
 
 import android.content.Context
-import android.net.Uri
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -34,8 +32,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.net.toUri
-import com.maix.mp3suit.ui.theme.Cyan
+import com.maix.mp3suit.ui.theme.MxCyan
 
 import com.maix.lib.Maix
 
@@ -50,32 +47,13 @@ class MainScreen {
 
   // Local Toast. !!! initContext must be run from MainActivity
   var context: Context? = null
-  fun initContext(context: Context) {
-    this.context = context.applicationContext
+  fun initContext(context: Context?) {
+    this.context = context?.applicationContext
   }
   fun Toast(msg: String) {
     if (context != null)
       Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
   }
-
-  fun openDirectory() {
-    val initialUri: Uri = "".toUri()
-    openDocumentTreeLauncher.launch(initialUri)
-  }
-  //  val openDocumentTreeLauncher = mainActivity.registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri: Uri? ->
-  val openDocumentTreeLauncher = MainActivity().registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri: Uri? ->
-    if (uri != null) {
-      val path: String = uri.path  ?: "NO PATH"
-      Logd("URI  : '$uri'")
-      val decode: String = Uri.decode(uri.path)
-      Logd("### Dec. : '$decode'")
-      val lastPath = uri.lastPathSegment
-      Logd("URI lastPath : '$lastPath'")
-      Logd("Path  :  '$path'")
-      Logd("... saving done.")
-    }
-  }
-
 
   val libMaix = Maix()
   @Composable
@@ -83,7 +61,7 @@ class MainScreen {
     Column(modifier = Modifier
       .fillMaxSize()
 //      .background(Color.Yellow)
-      .background(Cyan)
+      .background(MxCyan)
       .padding(3.dp)
     ) {
       Header()
@@ -150,7 +128,7 @@ class MainScreen {
       ) {
         ButtonMx(onClick = { /* Test... */
           Toast("Test pressed")
-          openDirectory()
+//          openDirectory()
         }) {
           Text("Test...")
         }

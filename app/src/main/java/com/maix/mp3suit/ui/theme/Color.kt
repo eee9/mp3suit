@@ -11,4 +11,5 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 // Maix
-val Cyan = Color(0xFF18FFFF)
+val MxCyan = Color(0xFF18FFFF)
+val MxGreen = Color(0xFF89E589)

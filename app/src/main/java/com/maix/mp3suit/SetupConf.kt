@@ -7,8 +7,14 @@ class SetupConf: ViewModel() {
   val showDialog = mutableStateOf(false)
   val pathMp3 = mutableStateOf("Choose MP3 path...")
   val pathLrc = mutableStateOf("Choose LRC path...")
-  val pathTxt = mutableStateOf("Choose TXT path...")
   val pathLog = mutableStateOf("Choose LOG path...")
+  val pathTxt = mutableStateOf("Choose TXT path...")
+  val uriMp3 = mutableStateOf("Choose MP3 uri...")
+  val uriLrc = mutableStateOf("Choose LRC uri...")
+  val uriLog = mutableStateOf("Choose LOG uri...")
+  val uriTxt = mutableStateOf("Choose TXT uri...")
+  val msgSetup = mutableStateOf("")
+  val msgMain = mutableStateOf("LOG:\n")
   fun showOff() {
     showDialog.value = false
   }

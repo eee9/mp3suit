@@ -51,7 +51,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.maix.lib.Maix
-import com.maix.mp3suit.ui.theme.Cyan
+import com.maix.mp3suit.ui.theme.MxCyan
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -112,7 +112,7 @@ class uitests2 {
       Text(text = "LOG:")
       Spacer(modifier = Modifier.padding(horizontal = 14.dp))
 //      Input()
-      Text("some path is here", color = Cyan, modifier = Modifier.weight(1f),)
+      Text("some path is here", color = MxCyan, modifier = Modifier.weight(1f),)
       // Add a Spacer for space between the icon and the text
       Spacer(modifier = Modifier.padding(horizontal = 14.dp))
       // Place the Icon composable
