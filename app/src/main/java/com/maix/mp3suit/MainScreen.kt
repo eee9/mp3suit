@@ -133,7 +133,7 @@ class MainScreen {
           Text("Test...")
         }
         Button(onClick = { /* Setting... */ }) {
-          Text("Settings...")
+          Text("Setup")
         }
         Button(onClick = { /* Exit */
 //          MainActivity().moveTaskToBack(true)
