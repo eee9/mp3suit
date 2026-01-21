@@ -13,8 +13,8 @@ class SetupConf: ViewModel() {
   val uriLrc = mutableStateOf("Choose LRC uri...")
   val uriLog = mutableStateOf("Choose LOG uri...")
   val uriTxt = mutableStateOf("Choose TXT uri...")
-  val msgSetup = mutableStateOf("")
-  val msgMain = mutableStateOf("LOG:\n")
+//  val msgSetup = mutableStateOf("")
+//  val msgMain = mutableStateOf("LOG:\n")
   fun showOff() {
     showDialog.value = false
   }

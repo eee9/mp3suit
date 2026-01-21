@@ -62,9 +62,9 @@ class MainActivity: ComponentActivity() {
       Log.d(TAG, msg)
     }
     var objSetupConf: SetupConf? = null
-    fun addMessage2(msg: String) {
-      objSetupConf?.msgSetup?.value += msg + "\n"
-    }
+//    fun addMessage2(msg: String) {
+//      objSetupConf?.msgSetup?.value += msg + "\n"
+//    }
   }
 
   val libMaix = Maix()
@@ -132,9 +132,9 @@ class MainActivity: ComponentActivity() {
   @Composable
   fun SetupDialog() {
     objSetupConf?.let { setupConf ->
-      var logMessage by remember { mutableStateOf(setupConf.msgSetup) }
+//      var logMessage by remember { mutableStateOf(setupConf.msgSetup) }
       fun addMessage(msg: String) {
-        logMessage.value += msg + EOL
+//        logMessage.value += msg + EOL
       }
 
       val sharedPreferences: SharedPreferences = getSharedPreferences(MXPREF, MODE_PRIVATE)
@@ -152,24 +152,24 @@ class MainActivity: ComponentActivity() {
       var _loguri by remember { mutableStateOf(setupConf.uriLog) }
       var _txturi by remember { mutableStateOf(setupConf.uriTxt) }
       _mp3uri.value = sharedPreferences.getString(KEYMP3 + SUFFIX, null) ?: "No MP3 uri found."
-      _loguri.value = sharedPreferences.getString(KEYLRC + SUFFIX, null) ?: "No LRC uri found."
-      _lrcuri.value = sharedPreferences.getString(KEYLOG + SUFFIX, null) ?: "No LOG uri found."
+      _lrcuri.value = sharedPreferences.getString(KEYLRC + SUFFIX, null) ?: "No LRC uri found."
+      _loguri.value = sharedPreferences.getString(KEYLOG + SUFFIX, null) ?: "No LOG uri found."
       _txturi.value = sharedPreferences.getString(KEYTXT + SUFFIX, null) ?: "No TXT uri found."
 
       val accessMp3: String = libFileIO.msgPathRights(_mp3path.value)
-      val accessText: String = libFileIO.msgPathRights(_txtpath.value)
-      val accessLyric: String = libFileIO.msgPathRights(_lrcpath.value)
+      val accessLrc: String = libFileIO.msgPathRights(_lrcpath.value)
       val accessLog: String = libFileIO.msgPathRights(_logpath.value)
+      val accessTxt: String = libFileIO.msgPathRights(_txtpath.value)
 
       val isService = if (runSERVICE) "ON" else "OFF"
       addMessage("The service is $isService.")
       addMessage("MP3    : $_mp3path [$accessMp3]")
       addMessage("MP3 uri: $_mp3uri")
-      addMessage("LRC    : $_lrcpath [$accessLyric]")
+      addMessage("LRC    : $_lrcpath [$accessLrc]")
       addMessage("LRC uri: $_lrcuri")
       addMessage("LOG    : $_logpath [$accessLog]")
       addMessage("LOG uri: $_loguri")
-      addMessage("TXT    : $_txtpath [$accessText]")
+      addMessage("TXT    : $_txtpath [$accessTxt]")
       addMessage("TXT uri: $_txturi")
 
       Column(
@@ -182,7 +182,7 @@ class MainActivity: ComponentActivity() {
         ChoosePath("LOG:", KEYLOG, _logpath, _loguri)
         ChoosePath("TXT:", KEYTXT, _txtpath, _txturi)
         OutlinedTextField(
-          value = logMessage.value,
+          value = _mp3path.value,
 //        enabled = false,
           onValueChange = { },
           textStyle = TextStyle(fontSize = 14.sp),
@@ -231,10 +231,11 @@ class MainActivity: ComponentActivity() {
     if (text.value.isNotEmpty()) {
       proxyState = text
       proxyKey = key
-      val sharedPreferences: SharedPreferences = getSharedPreferences(MXPREF, MODE_PRIVATE)
-      val uriSaved: String = sharedPreferences.getString(key + SUFFIX, null) ?: uri
+//      val sharedPreferences: SharedPreferences = getSharedPreferences(MXPREF, MODE_PRIVATE)
+//      val uriSaved: String = sharedPreferences.getString(key + SUFFIX, null) ?: uri
       // WIERD !!! 777
-      val initialUri: Uri = uriSaved.replace("/tree/", "/document/").toUri()
+//      val initialUri: Uri = uriSaved.replace("/tree/", "/document/").toUri()
+      val initialUri: Uri = "".toUri()
       Logd("Input URI: '$uri'")
       Logd("Init. URI: '$initialUri'")
       openDocumentTreeLauncher.launch(initialUri)
@@ -251,21 +252,21 @@ class MainActivity: ComponentActivity() {
 //      val lastPath = uri.lastPathSegment
 //      Logd("URI lastPath : '$lastPath'")
 //      Logd("Path  :  '$path'")
-      val absolutePath = libFileURI.takeAbsolutePathFromUri(uri)
-      val access = libFileIO.msgPathRights(absolutePath)
-      Logd("Abs.  :  '$absolutePath' [$access]")
+//      val absolutePath = libFileURI.takeAbsolutePathFromUri(uri)
+//      val access = libFileIO.msgPathRights(absolutePath)
+//      Logd("Abs.  :  '$absolutePath' [$access]")
 
 //      editTextProxy.setText(absolutePath)
 //      proxyState?.value = path
 
       // save AbsolutePath and URI
-      Logd("sharedPreferences saving...")
-      val sharedPreferences: SharedPreferences = getSharedPreferences(MXPREF, MODE_PRIVATE)
-      sharedPreferences.edit { putString(proxyKey, absolutePath) }
-      sharedPreferences.edit { putString(proxyKey + SUFFIX, uri.toString()) }
+//      Logd("sharedPreferences saving...")
+//      val sharedPreferences: SharedPreferences = getSharedPreferences(MXPREF, MODE_PRIVATE)
+//      sharedPreferences.edit { putString(proxyKey, absolutePath) }
+//      sharedPreferences.edit { putString(proxyKey + SUFFIX, uri.toString()) }
 //      addMessage2("New $proxyKey: '$absolutePath' [$access]")
 //      addMessage2("New $proxyKey${SUFFIX}: '$uri'")
-      Logd("... saving done.")
+//      Logd("... saving done.")
 
 
 //      val path: String = uri.path ?: "NO PATH"
@@ -276,13 +277,13 @@ class MainActivity: ComponentActivity() {
 //      Logd("URI lastPath : '$lastPath'")
 //      Logd("Path  :  '$path'")
 //      Logd("... saving done.")
-//      if (path.isNotEmpty()) {
-//        proxyState.value = path
-//        if (proxyKey.isNotEmpty()) {
-//          val sharedPreferences: SharedPreferences = getSharedPreferences(MXPREF, MODE_PRIVATE)
-//          sharedPreferences.edit { putString(proxyKey, path) }
-//        }
-//      }
+      if (path.isNotEmpty()) {
+        proxyState?.value = path
+        if (proxyKey.isNotEmpty()) {
+          val sharedPreferences: SharedPreferences = getSharedPreferences(MXPREF, MODE_PRIVATE)
+          sharedPreferences.edit { putString(proxyKey, path) }
+        }
+      }
     }
   }
 
@@ -295,8 +296,12 @@ class MainActivity: ComponentActivity() {
       horizontalArrangement = Arrangement.SpaceEvenly,
       verticalAlignment = Alignment.CenterVertically
     ) {
-      Button( onClick = { objSetupConf?.msgSetup?.value = "" } ) {
+      Button(
+        enabled = false,
+        onClick = {  }
+      ) {
         Text("Clear LOG")
+
       }
       Button( onClick = { libMaix.closeApp(MainActivity()) } ) {
         Text(setupCloseText)
