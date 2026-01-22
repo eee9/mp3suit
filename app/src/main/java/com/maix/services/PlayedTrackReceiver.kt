@@ -15,7 +15,7 @@ import androidx.annotation.RequiresApi
 import com.maix.lib.FileIO
 import com.maix.lib.FileURI
 import com.maix.lib.Maix
-//import com.maix.mp3text.MainActivity.Companion.Logdev
+import com.maix.mp3suit.MainActivity.Companion.Logdev
 
 class PlayedTrackReceiver() : BroadcastReceiver() {
   companion object {
@@ -96,54 +96,40 @@ class PlayedTrackReceiver() : BroadcastReceiver() {
 
       val searchFor = "$artist - $track"
       val msg = "A: '$artist', T: '$track', AL: '$album', ID: $idMsg\n ==> [$pathSp]"
-//      Logdev(msg)
-//      if (runJustOne && track.trim().isNotEmpty() && artist.trim().isNotEmpty()) {
+      Logdev(msg)
+      if (runJustOne && track.trim().isNotEmpty() && artist.trim().isNotEmpty()) {
 ////        runJustOne = false
-//        var doLRC = true
-//        var pathLRC = ""
-//        PlayedTrackReceiverService.sharedPreferences?.let { localSharedPreferences ->
-//          if (pathSp.isEmpty()) {
-//            pathSp = libMaix.findMP3file(
-//              context,
-//              localSharedPreferences,
-//              artist.trim(),
-//              track.trim(),
-//              album.trim()
-//            )
-//          }
-//          if (pathSp.isNotEmpty()) {
-//            pathLRC = pathSp.replace(".mp3", ".lrc")
-//            doLRC = !FileIO().isPathExist(pathLRC)
-//          }
-//          if (doLRC) { // do if no LRC file already
-//
-//            val lrcLine = libMaix.findLRCfile(
-//              context,
-//              localSharedPreferences,
-//              searchFor,
-//              pathLRC
-//            )
-//            Logd("SERV. Before LRC copy:")
-//            Logd("      lrc: '$lrcLine'")
-//            Logd("      mp3: '$pathSp'")
-//            if (lrcLine.isNotEmpty()) {
-//              if (FileIO().isPathExist(pathSp)) {
-//                libMaix.copyLRCfile(
-//                  context,
-//                  localSharedPreferences,
-//                  lrcLine,
-//                  pathLRC
-//                )
-//              }
-//            } else {
-//              Logd("SERV. No LRC copy.")
-//            }
-//          } else {
-////          Logdev("Service. LRC exists '$pathLRC'.")
-//            ToastS(context, "== SERV LRC EXISTS ==")
-//          }
-//        }  //PlayedTrackReceiverService.sharedPreferences?.let
-//      }
+        var doLRC = true
+        var pathLRC = ""
+//        var localSharedPreferences = PlayedTrackReceiverService.sharedPreferences
+        PlayedTrackReceiverService.sharedPreferences?.let { localSharedPreferences ->
+          if (pathSp.isEmpty()) {
+            pathSp = libMaix.findMP3file(context, localSharedPreferences, artist.trim(), track.trim(), album.trim())
+          }
+          if (pathSp.isNotEmpty()) {
+            pathLRC = pathSp.replace(".mp3", ".lrc")
+            doLRC = !FileIO().isPathExist(pathLRC)
+          }
+          if (doLRC) { // do if no LRC file already
+
+            val lrcLine = libMaix.findLRCfile(context, localSharedPreferences, searchFor, pathLRC)
+            Logd("SERV. Before LRC copy:")
+            Logd("      lrc: '$lrcLine'")
+            Logd("      mp3: '$pathSp'")
+            if (lrcLine.isNotEmpty()) {
+              if (FileIO().isPathExist(pathSp)) {
+                libMaix.copyLRCfile(context, localSharedPreferences, lrcLine, pathLRC
+                )
+              }
+            } else {
+              Logd("SERV. No LRC copy.")
+            }
+          } else {
+//          Logdev("Service. LRC exists '$pathLRC'.")
+            ToastS(context, "== SERV LRC EXISTS ==")
+          }
+        }  //PlayedTrackReceiverService.sharedPreferences?.let
+      }
 
     } catch (e: Exception) {
       Loge("xMx onReceive ERR: $e")

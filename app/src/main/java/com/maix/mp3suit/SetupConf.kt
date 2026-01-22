@@ -4,6 +4,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 
 class SetupConf: ViewModel() {
+  val EOL = "\n"
+
   val showDialog = mutableStateOf(false)
   val pathMp3 = mutableStateOf("Choose MP3 path...")
   val pathLrc = mutableStateOf("Choose LRC path...")
@@ -13,7 +15,8 @@ class SetupConf: ViewModel() {
   val uriLrc = mutableStateOf("Choose LRC uri...")
   val uriLog = mutableStateOf("Choose LOG uri...")
   val uriTxt = mutableStateOf("Choose TXT uri...")
-//  val msgSetup = mutableStateOf("")
+  var msgSetup = ""
+  fun addSetup(t: String) { msgSetup += EOL + t}
 //  val msgMain = mutableStateOf("LOG:\n")
   fun showOff() {
     showDialog.value = false

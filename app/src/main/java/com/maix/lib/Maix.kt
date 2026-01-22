@@ -13,13 +13,13 @@ import android.os.Process
 import android.os.RemoteException
 import android.util.Log
 import android.widget.Toast
-//import com.maix.mp3text.MainActivity.Companion.EOL
-//import com.maix.mp3text.MainActivity.Companion.KEYLOG
-//import com.maix.mp3text.MainActivity.Companion.KEYLRC
-//import com.maix.mp3text.MainActivity.Companion.KEYMP3
-//import com.maix.mp3text.MainActivity.Companion.LogNFlrc
-//import com.maix.mp3text.MainActivity.Companion.LogNFmp3
-//import com.maix.mp3text.MainActivity.Companion.Logdev
+import com.maix.mp3suit.MainActivity.Companion.EOL
+import com.maix.mp3suit.MainActivity.Companion.KEYLOG
+import com.maix.mp3suit.MainActivity.Companion.KEYLRC
+import com.maix.mp3suit.MainActivity.Companion.KEYMP3
+import com.maix.mp3suit.MainActivity.Companion.LogNFlrc
+import com.maix.mp3suit.MainActivity.Companion.LogNFmp3
+import com.maix.mp3suit.MainActivity.Companion.Logdev
 import com.maix.services.PlayedTrackReceiverConnection
 import com.maix.services.PlayedTrackReceiverService
 import java.text.DateFormat
@@ -40,28 +40,11 @@ class Maix {
     Log.e(TAG, "ERROR: $msg")
   }
 
-  // !!! TEMP
-  fun Logdev(s: String) { Logd(s) }
-  val TAB = "\t"
   val SLASH = "/"
   val EOL = "\n"
 
-
-  // !!! TEMP
-  val MXPREF  = "MXPREF2"
-  val SUFFIX = "_URI"
-  val KEYMP3  = "mp3path"
-  val KEYLOG  = "logpath"
-  val KEYTEXT = "textpath"
-  val KEYLRC  = "lyricpath"
-
-
-
-
-
   private val libFileIO = FileIO()
   private val libZip = Zip()
-//  private val mainLib = MainActivity
 
   fun ToastSh(msg: String, context: Context) {
     Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()

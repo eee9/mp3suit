@@ -159,14 +159,14 @@ class FileIO {
 //    Logd(EOL + "Info for '${file.absolutePath}':")
 //    var msg = msgExist(file)
     if (file.exists()) {
-      res += "E"
+      res += "+"
       res += if (file.isDirectory) "D" else "d"
       res += if (file.isFile) "F" else "f"
       res += if (file.canRead()) "R" else "r"
       res += if (file.canWrite()) "W" else "w"
 //      Logd("File attr: [$msg]")
     } else {
-      res = "X"
+      res = "-"
     }
 //    Logd(msg)
     return res
