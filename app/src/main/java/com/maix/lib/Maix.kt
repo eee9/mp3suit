@@ -13,12 +13,10 @@ import android.os.Process
 import android.os.RemoteException
 import android.util.Log
 import android.widget.Toast
-import com.maix.mp3suit.MainActivity.Companion.EOL
+import com.maix.mp3suit.MainActivity
 import com.maix.mp3suit.MainActivity.Companion.KEYLOG
 import com.maix.mp3suit.MainActivity.Companion.KEYLRC
 import com.maix.mp3suit.MainActivity.Companion.KEYMP3
-import com.maix.mp3suit.MainActivity.Companion.LogNFlrc
-import com.maix.mp3suit.MainActivity.Companion.LogNFmp3
 import com.maix.mp3suit.MainActivity.Companion.Logdev
 import com.maix.services.PlayedTrackReceiverConnection
 import com.maix.services.PlayedTrackReceiverService
@@ -36,9 +34,6 @@ class Maix {
   fun Logd(msg: String) {
     Log.d(TAG, msg)
   }
-  private fun Loge(msg: String) {
-    Log.e(TAG, "ERROR: $msg")
-  }
 
   val SLASH = "/"
   val EOL = "\n"
@@ -46,8 +41,11 @@ class Maix {
   private val libFileIO = FileIO()
   private val libZip = Zip()
 
-  fun ToastSh(msg: String, context: Context) {
-    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+  fun ToastShort(context: Context, msg: String) {
+    Toast.makeText(context, "*$msg", Toast.LENGTH_SHORT).show()
+  }
+  fun ToastLong(context: Context, msg: String) {
+    Toast.makeText(context, "*$msg", Toast.LENGTH_LONG).show()
   }
 
   fun closeApp(activity: Activity) {
@@ -213,7 +211,7 @@ class Maix {
             Logdev("$i.  ==> '$it'")
             i++
           }
-          Toast.makeText(context, "# MANY [${items.size}] .MP3 for => '$searchFor'", Toast.LENGTH_LONG).show()
+          ToastLong(context, "# MANY [${items.size}] .MP3 for => '$searchFor'")
 
         } else { // size == 0
           msgToast = "-- NO .MP3 for [$searchFor]"
@@ -226,7 +224,7 @@ class Maix {
       }
       if (msgToast.isNotEmpty()) {
         Logdev(msgToast)
-        Toast.makeText(context, msgToast, Toast.LENGTH_SHORT).show()
+        ToastShort(context, msgToast)
       }
       Logdev("Search of MP3 over. res => '$res'")
     } // if (artist.isNotEmpty() && track.isNotEmpty()) {
@@ -276,9 +274,9 @@ class Maix {
   }
 
   //..............................................................................................
-  fun rescanMP3(pathMp3: String, pathLog: String, context: Context) {
-    var msgToast = "MP3 rescan starts..."
-    ToastSh(msgToast, context)
+  fun rescanMP3(pathMp3: String, pathLog: String) {
+    val mainActivity = MainActivity()
+    mainActivity.Toast("MP3 rescan starts...")
     val dirList = libFileIO.readFolderAsAL(pathMp3, false).sorted()
     if (dirList.isNotEmpty()) {
       val mp3ListPath = pathLog + SLASH + MP3_PATHS
@@ -290,8 +288,7 @@ class Maix {
       val dirContent = dirListFiltered.joinToString(EOL)
       libFileIO.writeString2File(mp3ListPath, dirContent, false)
     }
-    msgToast = "MP3 rescan done."
-    ToastSh(msgToast, context)
+    mainActivity.Toast("MP3 rescan done.")
   }
 
   //==============================================================================================
@@ -330,7 +327,7 @@ class Maix {
       msgToast = "!!! LRC list READ ERROR [$indexFile]"
     }
     Logdev(msgToast)
-    Toast.makeText(context, msgToast, Toast.LENGTH_LONG).show()
+    ToastLong(context, msgToast)
     Logdev("Search of LRC over")
     return res
   }
@@ -357,7 +354,7 @@ class Maix {
     if (FileIO().isPathExist(newLRCpath)) {
       msgToast = "== LRC EXISTS =="
       Logdev(msgToast)
-      Toast.makeText(context, msgToast, Toast.LENGTH_LONG).show()
+      ToastLong(context, msgToast)
       return
     }
     // To do. Check if lrc file can be written
@@ -378,6 +375,6 @@ class Maix {
       }
     }
     Logdev(msgToast)
-    Toast.makeText(context, msgToast, Toast.LENGTH_LONG).show()
+    ToastLong(context, msgToast)
   }
 }

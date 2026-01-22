@@ -6,7 +6,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
-import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -22,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -36,10 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.DeviceFontFamilyName
-import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.edit
@@ -53,8 +50,8 @@ import com.maix.mp3suit.ui.theme.MxGreen
 
 class MainActivity: ComponentActivity() {
 
-  val version = " (ver 0.4.1, Q1K)"
-  val setupCloseText = "Exit /Q1M.r05"
+  val version = "mp3suit (ver 0.4.1, Q1M)"
+  val setupCloseText = "Exit"
   val LOGFILENAME = "mp3suit_log.txt"
   val NOTFOUNDMP3FILE = "_notfound2_mp3.txt"
   val NOTFOUNDLRCFILE = "_notfound2_lrc.txt"
@@ -272,9 +269,15 @@ class MainActivity: ComponentActivity() {
     ) {
       Button(
         enabled = false,
+        colors = ButtonDefaults.buttonColors(
+//          containerColor = Color.Red, // Change the background color
+//          contentColor = Color.White, // Change the text/icon color
+          disabledContainerColor = Color.Gray, // Color when disabled
+          disabledContentColor = Color.DarkGray // Content color when disabled
+        ),
         onClick = {  }
       ) {
-        Text("Clear LOG")
+        Text(version)
 
       }
       Button( onClick = { libMaix.closeApp(MainActivity()) } ) {

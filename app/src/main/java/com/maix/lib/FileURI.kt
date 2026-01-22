@@ -14,8 +14,6 @@ import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.documentfile.provider.DocumentFile
-//import androidx.documentfile.provider.DocumentFile
-//import com.maix.mp3text.MainActivity
 import java.io.File
 import java.io.IOException
 import kotlin.collections.component1

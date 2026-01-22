@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
@@ -98,7 +97,7 @@ class PlayedTrackReceiver() : BroadcastReceiver() {
       val msg = "A: '$artist', T: '$track', AL: '$album', ID: $idMsg\n ==> [$pathSp]"
       Logdev(msg)
       if (runJustOne && track.trim().isNotEmpty() && artist.trim().isNotEmpty()) {
-////        runJustOne = false
+//        runJustOne = false
         var doLRC = true
         var pathLRC = ""
 //        var localSharedPreferences = PlayedTrackReceiverService.sharedPreferences
@@ -126,7 +125,7 @@ class PlayedTrackReceiver() : BroadcastReceiver() {
             }
           } else {
 //          Logdev("Service. LRC exists '$pathLRC'.")
-            ToastS(context, "== SERV LRC EXISTS ==")
+            ToastS(context, "== SERV2 LRC EXISTS ==")
           }
         }  //PlayedTrackReceiverService.sharedPreferences?.let
       }
