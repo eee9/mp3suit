@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -36,6 +37,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -58,6 +60,55 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 class uitests2 {
+
+  lateinit var text: MutableState<String>
+  @Composable
+  fun SimpleTextFieldExample() {
+    // 1. Define and remember the state of the text field
+    text = remember { mutableStateOf("") } // The initial value is an empty string
+
+    Column(modifier = Modifier.padding(16.dp)) {
+      // 3. Display the current input in another Text composable
+      Text(text = "You typed: ${text.value}", modifier = Modifier.padding(top = 16.dp))
+      // 2. The TextField composable
+      TextField(
+        modifier = Modifier
+          .fillMaxWidth()
+          .padding(16.dp),
+        // By default, singleLine is false, making it multi-line
+        singleLine = false,
+        // Optional: set a maximum number of lines
+        maxLines = 5,
+        value = text.value, // The current text to display
+        onValueChange = { newText ->
+          text.value = newText // Update the state whenever the user types
+        },
+        label = { Text("Enter your name") } // Optional placeholder label
+      )
+      OutlinedTextField(
+        value = text.value,
+        onValueChange = { text.value = it },
+        label = { Text ("Label") },
+        minLines = 3,
+        maxLines = 3,
+        modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(16.dp)
+      )
+      Footer5()
+    }
+  }
+
+  @Composable
+  fun Footer5() {
+    Button( onClick = { text.value = "(7171)" } ) {
+      Text("Check...")
+    }
+    Button( onClick = { text.value += " +3939 " } ) {
+      Text("Add...")
+    }
+    Button( onClick = { Toast(text.value) } ) {
+      Text("Show...")
+    }
+  }
 
   // Local Toast. !!! initContext must be run from MainActivity
   var context: Context? = null
