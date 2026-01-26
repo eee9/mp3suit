@@ -24,6 +24,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -34,7 +35,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.content.edit
 import androidx.core.net.toUri
 import com.maix.lib.FileIO
@@ -46,15 +50,15 @@ import com.maix.mp3suit.ui.theme.MxGreen
 
 class MainActivity: ComponentActivity() {
 
-  val version = "mp3suit (ver 0.4.2, Q1M)"
+  val version = "mp3suit (ver 0.4.4, Q1Q)"
   val setupCloseText = "Exit"
   val LOGFILENAME = "mp3suit_log.txt"
   val NOTFOUNDMP3FILE = "_notfound2_mp3.txt"
   val NOTFOUNDLRCFILE = "_notfound2_lrc.txt"
 
   // !!! Turn OFF the service here for debug
-//  private val runSERVICE = true
-    private val runSERVICE = false
+  private val runSERVICE = true
+//    private val runSERVICE = false
 
   companion object {
     const val TAG = "xMx3"
@@ -72,9 +76,6 @@ class MainActivity: ComponentActivity() {
       Log.d(TAG, msg)
     }
     var objSetupConf: SetupConf? = null
-//    fun addMessage2(msg: String) {
-//      objSetupConf?.msgSetup?.value += msg + "\n"
-//    }
 
     fun Logfull(msg: String, logfullpath: String) {
       if (msg.isNotEmpty()) {
@@ -98,7 +99,6 @@ class MainActivity: ComponentActivity() {
   val libFileURI = FileURI()
   var context: Context? = null
 
-
   fun Toast(msg: String) {
     if (context != null) {
       val toast = Toast.makeText(context, msg, Toast.LENGTH_LONG)
@@ -108,14 +108,30 @@ class MainActivity: ComponentActivity() {
     }
   }
 
-  var callClear: (String) -> Unit = {}
   lateinit var msgSetupLog: MutableState<String>
+  fun addMessage(msg: String) {
+    Logd(msg)
+    msgSetupLog.value += msg + EOL
+  }
+  lateinit var mp3path: MutableState<String>
+  lateinit var mp3uri: MutableState<String>
+  lateinit var lrcpath: MutableState<String>
+  lateinit var lrcuri: MutableState<String>
+  lateinit var logpath: MutableState<String>
+  lateinit var loguri: MutableState<String>
+  lateinit var txturi: MutableState<String>
+  lateinit var txtpath: MutableState<String>
+
+  // for listen service
+  override fun onDestroy() {
+    super.onDestroy()
+    Logd("Main OnDestroy")
+    if (runSERVICE) libMaix.doUnbindService(this)
+  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
-
     super.onCreate(savedInstanceState)
 //    enableEdgeToEdge() // use all device screen
-
     Toast("MainActivity onCreate")
 
     if (runSERVICE) {
@@ -133,75 +149,90 @@ class MainActivity: ComponentActivity() {
       libFileURI.initMapExt(it)
     }
 
+    val sharedPreferences: SharedPreferences = getSharedPreferences(MXPREF, MODE_PRIVATE)
+    val _mp3path = sharedPreferences.getString(KEYMP3, null) ?: "No MP3 path found."
+    val _mp3uri = sharedPreferences.getString(KEYMP3 + SUFFIX, null) ?: "No MP3 uri found."
+    val _lrcpath = sharedPreferences.getString(KEYLRC, null) ?: "No LRC path found."
+    val _lrcuri = sharedPreferences.getString(KEYLRC + SUFFIX, null) ?: "No LRC uri found."
+    val _logpath = sharedPreferences.getString(KEYLOG, null) ?: "No LOG path found."
+    val _loguri = sharedPreferences.getString(KEYLOG + SUFFIX, null) ?: "No LOG uri found."
+    val _txtpath = sharedPreferences.getString(KEYTXT, null) ?: "No TXT path found."
+    val _txturi = sharedPreferences.getString(KEYTXT + SUFFIX, null) ?: "No TXT uri found."
+    val isService = if (runSERVICE) "ON" else "OFF"
+    val accessMp3: String = libFileIO.msgPathRights(_mp3path)
+    val accessLrc: String = libFileIO.msgPathRights(_lrcpath)
+    val accessLog: String = libFileIO.msgPathRights(_logpath)
+    val accessTxt: String = libFileIO.msgPathRights(_txtpath)
+    var _msgSetupLog = "The service is $isService.$EOL"
+    _msgSetupLog += "MP3    : '$_mp3path' [$accessMp3]$EOL"
+    _msgSetupLog += "MP3 uri: '$_mp3uri'$EOL"
+    _msgSetupLog += "LRC    : '$_lrcpath' [$accessLrc]$EOL"
+    _msgSetupLog += "LRC uri: '$_lrcuri'$EOL"
+    _msgSetupLog += "LOG    : '$_logpath' [$accessLog]$EOL"
+    _msgSetupLog += "LOG uri: '$_loguri'$EOL"
+    _msgSetupLog += "TXT    : '$_txtpath' [$accessTxt]$EOL"
+    _msgSetupLog += "TXT uri: '$_txturi'$EOL"
+
     objSetupConf = SetupConf()
     setContent {
+      msgSetupLog = remember { mutableStateOf(_msgSetupLog) }
+      mp3path = remember { mutableStateOf(_mp3path) }
+      mp3uri  = remember { mutableStateOf(_mp3uri) }
+      lrcpath = remember { mutableStateOf(_lrcpath) }
+      lrcuri  = remember { mutableStateOf(_lrcuri) }
+      logpath = remember { mutableStateOf(_logpath) }
+      loguri  = remember { mutableStateOf(_loguri) }
+      txtpath = remember { mutableStateOf(_txtpath) }
+      txturi  = remember { mutableStateOf(_txturi) }
       Mp3suitTheme {
-//        u2.SimpleTextFieldExample()
-//        mainScreen.ShowMainScreen()
-        val mp3path: MutableState<String> = remember { mutableStateOf("") }
-        val mp3uri: MutableState<String> = remember { mutableStateOf("") }
-        SetupDialog(mp3uri)
+        Column(
+          modifier = Modifier
+            .background(MxGreen)
+            .padding(8.dp)
+        ) {
+          SetupDialog()
+        }
       }
     }
   }
 
-  // for listen service
-  override fun onDestroy() {
-    super.onDestroy()
-    Logd("Main OnDestroy")
-    if (runSERVICE) libMaix.doUnbindService(this)
-  }
-
-  lateinit var textSetupLog: MutableState<String>
-  fun addMessage(msg: String) {
-    textSetupLog.value += EOL + msg
-  }
-  fun addMessage2(m:  MutableState<String>, msg: String) {
-    m.value += EOL + msg
-  }
-
   @Composable
-  fun SetupDialog(mp3uri: MutableState<String>) {
-    val isService = if (runSERVICE) "ON" else "OFF"
-    textSetupLog = remember { mutableStateOf("The service is $isService.") } // The initial value is an empty string
-    val sharedPreferences: SharedPreferences = getSharedPreferences(MXPREF, MODE_PRIVATE)
-    val _mp3path: String = sharedPreferences.getString(KEYMP3, null) ?: "No MP3 path found."
-    mp3uri.value = sharedPreferences.getString(KEYMP3 + SUFFIX, null) ?: "No MP3 uri found."
-
-
-//    var textSetupLog2 by remember { mutableStateOf("") }
-//    val accessMp3: String = libFileIO.msgPathRights(mp3path.value)
-//
-//    addMessage("MP3    : '${mp3path.value}' [$accessMp3]")
-//    addMessage("MP3 uri: '${mp3uri.value}'")
-    val textSetupLog2 = "MP3 uri: '${mp3uri.value}'"
+  fun SetupDialog() {
     Column(
       modifier = Modifier
         .background(MxGreen)
         .padding(8.dp)
     ) {
 
-//      ChoosePath("MP3:",KEYMP3, mp3path, mp3uri)
+      ChoosePath("MP3:", KEYMP3, mp3path, mp3uri)
+      ChoosePath("LRC:", KEYLRC, lrcpath, lrcuri)
+      ChoosePath("LOG:", KEYLOG, logpath, loguri)
+      ChoosePath("TXT:", KEYTXT, txtpath, txturi)
       OutlinedTextField(
-        value = textSetupLog2,
-//        onValueChange = { textSetupLog2 = it },
-        onValueChange = {  },
+        value = msgSetupLog.value,
+        onValueChange = {},
         label = { Text (" Setup LOG: ") },
         maxLines = Int.MAX_VALUE, // Allows the field itself to scroll internally
+        colors = OutlinedTextFieldDefaults.colors(
+          disabledTextColor = Color.Blue,
+          disabledBorderColor = Color.Black,
+        ),
+        textStyle = TextStyle(
+          fontSize = 14.sp,
+          fontFamily = FontFamily.Monospace,
+//          fontFamily = FontFamily.Serif,
+        ),
         modifier = Modifier
           .fillMaxWidth()
           .padding(1.dp)
           .weight(1f)
       )
-      Button( onClick = { mp3uri.value = "" } ) {
-        Text("Check...")
-      }
-//      Footer(mp3path)
+      Footer()
     }
   }
 
   @Composable
-  fun Footer(t: MutableState<String>) {
+  fun Footer() {
     Row(
       modifier = Modifier
         .fillMaxWidth()
@@ -219,13 +250,13 @@ class MainActivity: ComponentActivity() {
       ) {
         Text(version)
       }
-      Button( onClick = { textSetupLog.value += EOL + "Check clicked." } ) {
-        Text("Check...")
+      Button( onClick = { addMessage("Check clicked.") } ) {
+        Text("Add to log")
       }
-      Button( onClick = { textSetupLog.value = "" } ) {
+      Button( onClick = { msgSetupLog.value = "" } ) {
         Text("Clear log")
       }
-      Button( onClick = { Toast(t.value) } ) {
+      Button( onClick = { Toast(msgSetupLog.value) } ) {
         Text("Show...")
       }
       Button( onClick = { libMaix.closeApp(MainActivity()) } ) {
@@ -317,7 +348,7 @@ class MainActivity: ComponentActivity() {
 //            disabledBorderColor = Color.Black,
 //          )
 //        ) // OutlinedTextField(
-//        Footer()
+//        Footer(msgSetupLog)
 //      }
 //    }
 //  }
@@ -349,7 +380,7 @@ class MainActivity: ComponentActivity() {
   fun ChoosePath(label: String, key: String, path: MutableState<String>, uri: MutableState<String>) {
     Button(
       onClick = {
-        path.value = "Choosing..."
+        addMessage("Choosing...")
         openDirectory(key, path, uri.value)
       },
       shape = RoundedCornerShape(8.dp),
@@ -408,8 +439,10 @@ class MainActivity: ComponentActivity() {
       val sharedPreferences: SharedPreferences = getSharedPreferences(MXPREF, MODE_PRIVATE)
       sharedPreferences.edit { putString(proxyKey, absolutePath) }
       sharedPreferences.edit { putString(proxyKey + SUFFIX, uri.toString()) }
-      Logd("New $proxyKey: '$absolutePath' [$access]")
-      Logd("New $proxyKey${SUFFIX}: '$uri'")
+//      Logd("New $proxyKey: '$absolutePath' [$access]")
+      addMessage("New $proxyKey: '$absolutePath' [$access]")
+//      Logd("New $proxyKey${SUFFIX}: '$uri'")
+      addMessage("New $proxyKey${SUFFIX}: '$uri'")
       Logd("... saving done.")
     }
   }
