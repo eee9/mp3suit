@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.sp
 import com.maix.mp3suit.ui.theme.MxCyan
 
 import com.maix.lib.Maix
+import com.maix.mp3suit.MainActivity
 
 class MainScreen {
 
@@ -56,6 +57,13 @@ class MainScreen {
   }
 
   val libMaix = Maix()
+  val mainActivity = MainActivity()
+
+  @Composable
+  fun ShowMainScreen2() {
+    MainActivity().SetupDialog()
+  }
+
   @Composable
   fun ShowMainScreen() {
     Column(modifier = Modifier
@@ -132,8 +140,9 @@ class MainScreen {
         }) {
           Text("Test...")
         }
-        Button(onClick = { /* Setting... */ }) {
+        Button(onClick = { }) {
           Text("Setup")
+//          mainActivity.SetupDialog()
         }
         Button(onClick = { /* Exit */
 //          MainActivity().moveTaskToBack(true)

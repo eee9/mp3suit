@@ -440,10 +440,76 @@ class uitests2 {
     }
   }
 
+
+  var showSetupDialog: MutableState<Boolean>
   @Composable
   fun SetupWindowExample() {
+    showSetupDialog = rememberSaveable { mutableStateOf(false) }
+
+    Button(onClick = { showSetupDialog.value = true }) {
+      Text("Open Setup 4")
+    }
+    if (showSetupDialog.value) {
+      MainActivity().Dialog5(showSetupDialog)
+//      Dialog(onDismissRequest = { showSetupDialog.value = false }) {
+//        Surface(
+//          shape = MaterialTheme.shapes.medium,
+//          color = MaterialTheme.colorScheme.surface,
+//          contentColor = contentColorFor(MaterialTheme.colorScheme.surface)
+//        ) {
+//          Column(modifier = Modifier.padding(16.dp)) {
+//            Text("Setup Configuration 4", style = MaterialTheme.typography.titleLarge)
+//            Spacer(modifier = Modifier.height(16.dp))
+//
+//            var setting1Enabled by remember { mutableStateOf(true) }
+//            Row(verticalAlignment = Alignment.CenterVertically) {
+//              Checkbox(checked = setting1Enabled, onCheckedChange = { setting1Enabled = it })
+//              Text("Enable Feature 4")
+//            }
+//            Spacer(modifier = Modifier.height(36.dp))
+//            Button(onClick = {
+//              showSetupDialog.value = false
+//            }) {
+//              Text("Save and Close 4")
+//            }
+//          }
+//        }
+//      }
+    }
+  }
+
+  @Composable
+  fun Dialog4() {
+    Dialog(onDismissRequest = { showSetupDialog.value = false }) {
+      Surface(
+        shape = MaterialTheme.shapes.medium,
+        color = MaterialTheme.colorScheme.surface,
+        contentColor = contentColorFor(MaterialTheme.colorScheme.surface)
+      ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+          Text("Setup Configuration 4+", style = MaterialTheme.typography.titleLarge)
+          Spacer(modifier = Modifier.height(16.dp))
+
+          var setting1Enabled by remember { mutableStateOf(true) }
+          Row(verticalAlignment = Alignment.CenterVertically) {
+            Checkbox(checked = setting1Enabled, onCheckedChange = { setting1Enabled = it })
+            Text("Enable Feature 4")
+          }
+          Spacer(modifier = Modifier.height(36.dp))
+          Button(onClick = {
+            showSetupDialog.value = false
+          }) {
+            Text("Save and Close 4")
+          }
+        }
+      }
+    }
+  }
+
+  @Composable
+  fun SetupWindowExample0() {
 //    var showSetupDialog by remember { mutableStateOf(false) }
-    var showSetupDialog by rememberSaveable { mutableStateOf(true) }
+    var showSetupDialog by rememberSaveable { mutableStateOf(false) }
 
 
     var _countFlow2 = MutableStateFlow(0)
