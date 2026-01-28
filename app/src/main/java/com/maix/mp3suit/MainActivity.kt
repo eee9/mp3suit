@@ -9,6 +9,7 @@ import android.view.Gravity
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -143,10 +144,16 @@ class MainActivity: ComponentActivity() {
     if (runSERVICE) libMaix.doUnbindService(this)
   }
 
+  //==============================================================================================
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 //    enableEdgeToEdge() // use all device screen
     Toast("MainActivity onCreate")
+
+    val activityLauncher = registerForActivityResult(MySecondActivityContract()) { result ->
+      Logd("02 SecondActivity result: [$result]")
+      // используем result
+    }
 
     if (runSERVICE) {
       libMaix.bindService(this)
@@ -188,6 +195,7 @@ class MainActivity: ComponentActivity() {
     _msgSetupLog += "TXT uri: '$_txturi'$EOL"
 
     objSetupConf = SetupConf()
+    val setup77 = SetupScreen()
     setContent {
       msgSetupLog = remember { mutableStateOf(_msgSetupLog) }
       mp3path = remember { mutableStateOf(_mp3path) }
@@ -204,13 +212,23 @@ class MainActivity: ComponentActivity() {
             .background(MxGreen)
             .padding(8.dp)
         ) {
+//          showSetupDialog = rememberSaveable { mutableStateOf(false) }
 //          SetupDialog()
 
-          showSetupDialog = rememberSaveable { mutableStateOf(false) }
 //          u2.SetupWindowExample()
 //          SetupWindowExample()
 //          Dialog5(showSetupDialog)
-          ShowMainScreen()
+//          ShowMainScreen()
+          SetupScreen().Setup77()
+          Button( onClick = {
+            Logd("Start 2nd...")
+            SetupScreen().openDirectory()
+//            activityLauncher.launch("What is the answer?")
+
+          } ) {
+
+            Text("2nd activity")
+          }
         }
       }
     }
@@ -284,7 +302,6 @@ class MainActivity: ComponentActivity() {
       }
     }
   }
-
 
   @Composable
   fun SetupWindowExample() {
@@ -605,8 +622,9 @@ class MainActivity: ComponentActivity() {
     }
   }
 
-  val openDocumentTreeLauncher = registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri: Uri? ->
+  val openDocumentTreeLauncher: ActivityResultLauncher<Uri?> = registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri: Uri? ->
     if (uri != null) {
+      Logd("01 Main Activity registerForActivityResult")
       val path: String = uri.path  ?: "NO PATH"
       Logd("URI  : '$uri'")
       val decode: String = Uri.decode(uri.path)
