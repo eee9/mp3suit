@@ -450,7 +450,7 @@ class uitests2 {
       Text("Open Setup 4")
     }
     if (showSetupDialog.value) {
-      MainActivity().Dialog5(showSetupDialog)
+//      Dialog5(showSetupDialog)
 //      Dialog(onDismissRequest = { showSetupDialog.value = false }) {
 //        Surface(
 //          shape = MaterialTheme.shapes.medium,

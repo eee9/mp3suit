@@ -22,7 +22,7 @@ class SetupScreen: ComponentActivity() {
   }
 
   @Composable
-  fun Setup77() {
+  fun Setup77(main: MainActivity) {
     Column(
       modifier = Modifier
         .background(MxGreen)
@@ -30,7 +30,7 @@ class SetupScreen: ComponentActivity() {
     ) {
       Button( onClick = {
         Logd("@@ opening 2...")
-        openDirectory()
+        openDirectory(main)
       } ) {
         Text("@@ Open...")
       }
@@ -39,21 +39,11 @@ class SetupScreen: ComponentActivity() {
 
   //==============================================================================================
   // Initialize the ActivityResultLauncher
-  fun openDirectory() {
+  fun openDirectory(main: MainActivity) {
     val initialUri = "".toUri()
-    openDocumentTreeLauncher.launch(initialUri)
+    main.openDocumentTreeLauncher.launch(initialUri)
   }
 
-  val openDocumentTreeLauncher = registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri: Uri? ->
-    if (uri != null) {
-      val path: String = uri.path  ?: "NO PATH"
-      Logd("URI  : '$uri'")
-      val decode: String = Uri.decode(uri.path)
-      Logd("### Dec. : '$decode'")
-      val lastPath = uri.lastPathSegment
-      Logd("URI lastPath : '$lastPath'")
-      Logd("Path  :  '$path'")
-    }
-  }
+
 
 }
