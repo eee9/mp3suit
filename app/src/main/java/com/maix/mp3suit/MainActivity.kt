@@ -30,8 +30,7 @@ import com.maix.mp3suit.ui.theme.MxGreen
 
 class MainActivity: ComponentActivity() {
 
-  val version = "mp3suit (ver 0.4.5, Q1T)"
-  val setupCloseText = "Exit"
+  val version = "mp3suit (ver 0.4.6, Q1T)"
   val LOGFILENAME = "mp3suit_log.txt"
   val NOTFOUNDMP3FILE = "_notfound2_mp3.txt"
   val NOTFOUNDLRCFILE = "_notfound2_lrc.txt"
@@ -88,11 +87,6 @@ class MainActivity: ComponentActivity() {
     }
   }
 
-  lateinit var msgSetupLog: MutableState<String>
-  fun addMessage(msg: String) {
-    Logd(msg)
-    msgSetupLog.value += msg + EOL
-  }
   lateinit var mp3path: MutableState<String>
   lateinit var mp3uri: MutableState<String>
   lateinit var lrcpath: MutableState<String>
@@ -102,6 +96,11 @@ class MainActivity: ComponentActivity() {
   lateinit var txturi: MutableState<String>
   lateinit var txtpath: MutableState<String>
   lateinit var showSetupDialog: MutableState<Boolean>
+  lateinit var msgSetupLog: MutableState<String>
+  fun addMessage(msg: String) {
+    Logd(msg)
+    msgSetupLog.value += msg + EOL
+  }
 
   // for listen service
   override fun onDestroy() {
@@ -117,22 +116,13 @@ class MainActivity: ComponentActivity() {
     Toast("MainActivity onCreate")
     val mainActivity = this
 
-    val activityLauncher = registerForActivityResult(MySecondActivityContract()) { result ->
-      Logd("02 SecondActivity result: [$result]")
-      // используем result
-    }
-
     if (runSERVICE) {
       libMaix.bindService(this)
       Logd("after bindService")
     }
 
-//    dataView = TestViewModel()
     context = this.applicationContext
-//    val u2 = uitests2()
     context?.let {
-//      mainScreen.initContext(it)  // for Toast
-//      u2.initContext(it)  // for Toast
       libFileURI.initMapExt(it)
     }
 
@@ -178,22 +168,7 @@ class MainActivity: ComponentActivity() {
             .padding(8.dp)
         ) {
           showSetupDialog = rememberSaveable { mutableStateOf(false) }
-//          SetupDialog()
-
-//          u2.SetupWindowExample()
-//          SetupWindowExample()
-//          Dialog5(showSetupDialog)
           MainScreen().ShowMainScreen(mainActivity)
-//          SetupScreen().Setup77(mainActivity)
-//          Button( onClick = {
-//            Logd("Start 2nd...")
-//            SetupScreen().openDirectory()
-////            activityLauncher.launch("What is the answer?")
-//
-//          } ) {
-//
-//            Text("2nd activity")
-//          }
         }
       }
     }
@@ -203,7 +178,7 @@ class MainActivity: ComponentActivity() {
   // Initialize the ActivityResultLauncher
   var proxyState: MutableState<String>? = null
   var proxyKey: String = ""
-  fun openDirectory(key: String, text: MutableState<String>, uri: String) {
+  fun openDirectory0(key: String, text: MutableState<String>, uri: String) {
     if (text.value.isNotEmpty()) {
       proxyState = text
       proxyKey = key
