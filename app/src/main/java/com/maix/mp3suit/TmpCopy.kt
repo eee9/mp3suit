@@ -41,10 +41,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.maix.lib.Maix
-import com.maix.mp3suit.MainActivity.Companion.KEYLOG
-import com.maix.mp3suit.MainActivity.Companion.KEYLRC
-import com.maix.mp3suit.MainActivity.Companion.KEYMP3
-import com.maix.mp3suit.MainActivity.Companion.KEYTXT
 import com.maix.mp3suit.ui.theme.MxCyan
 import com.maix.mp3suit.ui.theme.MxGreen
 

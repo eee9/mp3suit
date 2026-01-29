@@ -14,7 +14,7 @@ import androidx.annotation.RequiresApi
 import com.maix.lib.FileIO
 import com.maix.lib.FileURI
 import com.maix.lib.Maix
-import com.maix.mp3suit.MainActivity.Companion.Logdev
+//import com.maix.mp3suit.MainActivity.Companion.Logdev
 
 class PlayedTrackReceiver() : BroadcastReceiver() {
   companion object {
@@ -95,7 +95,7 @@ class PlayedTrackReceiver() : BroadcastReceiver() {
 
       val searchFor = "$artist - $track"
       val msg = "A: '$artist', T: '$track', AL: '$album', ID: $idMsg\n ==> [$pathSp]"
-      Logdev(msg)
+//      Logdev(msg)
       if (runJustOne && track.trim().isNotEmpty() && artist.trim().isNotEmpty()) {
 //        runJustOne = false
         var doLRC = true

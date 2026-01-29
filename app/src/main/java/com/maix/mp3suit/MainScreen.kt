@@ -30,10 +30,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.maix.mp3suit.ui.theme.MxCyan
 
+
 class MainScreen {
 
   @Composable
-  fun ShowMainScreen(main: MainActivity) {
+  fun ShowMainScreen(main: MainActivity, setupScreen: SetupScreen) {
     Column(modifier = Modifier
       .fillMaxSize()
       .background(MxCyan)
@@ -57,7 +58,7 @@ class MainScreen {
           unfocusedBorderColor = Color.Black, // Color when the field is not focused
         )
       ) // Body
-      Footer(main)
+      Footer(main, setupScreen)
     }
   }
 
@@ -81,7 +82,8 @@ class MainScreen {
   }
 
   @Composable
-  fun Footer(main: MainActivity) {
+  fun Footer(main: MainActivity, setupScreen: SetupScreen) {
+//    val setup = SetupScreen()
     Column(
       modifier = Modifier
 //        .fillMaxSize() // Fills the maximum available space
@@ -106,11 +108,11 @@ class MainScreen {
           Text("Setup")
 //          mainActivity.SetupDialog()
         }
-        Button(onClick = { main.showSetupDialog.value = true }) {
+        Button(onClick = { setupScreen.showSetupDialog.value = true }) {
           Text("Setup 5")
         }
-        if (main.showSetupDialog.value) {
-          SetupScreen().SetupDialog(main, main.showSetupDialog)
+        if (setupScreen.showSetupDialog.value) {
+          setupScreen.SetupDialog(main, setupScreen.showSetupDialog)
         }
         Button(onClick = { /* Exit */
           main.libMaix.closeApp(MainActivity())

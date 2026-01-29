@@ -14,10 +14,10 @@ import android.os.RemoteException
 import android.util.Log
 import android.widget.Toast
 import com.maix.mp3suit.MainActivity
-import com.maix.mp3suit.MainActivity.Companion.KEYLOG
-import com.maix.mp3suit.MainActivity.Companion.KEYLRC
-import com.maix.mp3suit.MainActivity.Companion.KEYMP3
-import com.maix.mp3suit.MainActivity.Companion.Logdev
+import com.maix.mp3suit.SetupScreen.Companion.KEYLOG
+import com.maix.mp3suit.SetupScreen.Companion.KEYLRC
+import com.maix.mp3suit.SetupScreen.Companion.KEYMP3
+//import com.maix.mp3suit.MainActivity.Companion.Logdev
 import com.maix.services.PlayedTrackReceiverConnection
 import com.maix.services.PlayedTrackReceiverService
 import java.text.DateFormat
@@ -34,6 +34,7 @@ class Maix {
   fun Logd(msg: String) {
     Log.d(TAG, msg)
   }
+  fun Logdev(msg: String) { Logd(msg) }
 
   val SLASH = "/"
   val EOL = "\n"
