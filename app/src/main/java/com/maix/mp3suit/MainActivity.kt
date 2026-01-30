@@ -1,5 +1,6 @@
 package com.maix.mp3suit
 
+import android.app.Dialog
 import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
@@ -11,16 +12,27 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.edit
 import androidx.core.net.toUri
 import com.maix.lib.FileIO
@@ -111,6 +123,7 @@ class MainActivity: ComponentActivity() {
     setupScreen.Initializate(mainActivity)
 
     setContent {
+//      PreviewSurfaceExample()
       Mp3suitTheme {
         Column(
           modifier = Modifier
@@ -125,6 +138,41 @@ class MainActivity: ComponentActivity() {
         }
       }
     }
+  }
+
+
+  @Composable
+  fun SurfaceExample() {
+    Dialog(
+      properties = DialogProperties(
+        usePlatformDefaultWidth = false, // Crucial for full width
+        decorFitsSystemWindows = false // Optional: allows drawing under system bars
+      ),
+      onDismissRequest = { }
+    ) {
+      Surface(
+        modifier = Modifier
+          .fillMaxWidth(0.99f)
+          .fillMaxHeight(0.99f)
+          .padding(1.dp), // Apply padding around the surface
+//      shape = Shape., // Make the surface circular
+        color = MaterialTheme.colorScheme.primary, // Use the primary theme color for background
+        border = BorderStroke(1.dp, Color.Red), // Add a red border
+        shadowElevation = 8.dp // Add a shadow (elevation)
+
+      ) {
+        Text(
+          text = "Hello Surface!",
+          modifier = Modifier.padding(16.dp), // Padding for the text inside the surface
+          color = MaterialTheme.colorScheme.onPrimary // Text color that contrasts with the background
+        )
+      }
+    }
+  }
+
+  @Composable
+  fun PreviewSurfaceExample() {
+    SurfaceExample()
   }
 
   //==============================================================================================

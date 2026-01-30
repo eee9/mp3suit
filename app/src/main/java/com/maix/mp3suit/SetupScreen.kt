@@ -1,11 +1,15 @@
 package com.maix.mp3suit
 
 import android.content.SharedPreferences
+import android.graphics.Color
 import android.util.Log
 import androidx.activity.ComponentActivity
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -29,8 +33,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.maix.mp3suit.MainActivity.Companion.EOL
 import com.maix.mp3suit.ui.theme.MxCyan
+import com.maix.mp3suit.ui.theme.MxGreen
 
 class SetupScreen: ComponentActivity() {
   val TAG = "xMx5"
@@ -103,6 +109,18 @@ class SetupScreen: ComponentActivity() {
   }
 
   @Composable
+  fun SetupDialog1(main: MainActivity, showSetupDialog: MutableState<Boolean>) {
+    Column(modifier = Modifier
+      .fillMaxWidth()
+      .fillMaxHeight()
+      .background(MxGreen)
+    ) {
+      Text("In a box")
+    }
+
+  }
+
+  @Composable
   fun SetupDialog(main: MainActivity, showSetupDialog: MutableState<Boolean>) {
     msgSetupLog = remember { mutableStateOf(_msgSetupLog) }
     mp3path = remember { mutableStateOf(_mp3path) }
@@ -114,14 +132,24 @@ class SetupScreen: ComponentActivity() {
 //    txtpath = remember { mutableStateOf(_txtpath) }
 //    txturi  = remember { mutableStateOf(_txturi) }
 
-    Dialog(onDismissRequest = { showSetupDialog.value = false }) {
+    Dialog(
+      onDismissRequest = { showSetupDialog.value = false },
+      properties = DialogProperties(
+        usePlatformDefaultWidth = false, // Crucial for full width
+        decorFitsSystemWindows = false // Optional: allows drawing under system bars
+      ),
+    ) {
       Surface(
-        shape = MaterialTheme.shapes.medium,
+        modifier = Modifier.fillMaxWidth(0.9f),
+        shape = MaterialTheme.shapes.large,
         color = MaterialTheme.colorScheme.surface,
         contentColor = contentColorFor(MaterialTheme.colorScheme.surface)
       ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-          Text("Setup Configuration 5", style = MaterialTheme.typography.titleLarge)
+        Column(modifier = Modifier
+          .fillMaxHeight(fraction = 0.8f)
+          .padding(16.dp)
+        ) {
+          Text("Setup Configuration", style = MaterialTheme.typography.titleLarge)
           ChoosePath(main,"MP3:", KEYMP3, mp3path, mp3uri)
           Spacer(modifier = Modifier.height(16.dp))
 
@@ -134,7 +162,7 @@ class SetupScreen: ComponentActivity() {
           Button(onClick = {
             showSetupDialog.value = false
           }) {
-            Text("Save and Close 4")
+            Text("Close")
           }
         }
       }
