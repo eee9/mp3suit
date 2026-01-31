@@ -29,6 +29,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.maix.mp3suit.ui.theme.MxCyan
+import com.maix.mp3suit.ui.theme.MxGreen
 
 
 class MainScreen {
@@ -88,6 +89,7 @@ class MainScreen {
       modifier = Modifier
 //        .fillMaxSize() // Fills the maximum available space
         .padding(2.dp),
+
       verticalArrangement = Arrangement.Bottom, // Pushes children to the bottom
       horizontalAlignment = Alignment.CenterHorizontally // Centers the child horizontally
     ) {

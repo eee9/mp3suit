@@ -3,12 +3,14 @@ package com.maix.mp3suit
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -19,8 +21,10 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -40,6 +44,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.maix.lib.Maix
 import com.maix.mp3suit.ui.theme.MxCyan
 import com.maix.mp3suit.ui.theme.MxGreen
@@ -68,6 +74,41 @@ class TmpCopy {
   @Composable
   fun ShowMainScreen2() {
 //    MainActivity().SetupDialog()
+  }
+
+
+  @Composable
+  fun SurfaceExample() {
+    Dialog(
+      properties = DialogProperties(
+        usePlatformDefaultWidth = false, // Crucial for full width
+        decorFitsSystemWindows = false // Optional: allows drawing under system bars
+      ),
+      onDismissRequest = { }
+    ) {
+      Surface(
+        modifier = Modifier
+          .fillMaxWidth(0.99f)
+          .fillMaxHeight(0.99f)
+          .padding(1.dp), // Apply padding around the surface
+//      shape = Shape., // Make the surface circular
+        color = MaterialTheme.colorScheme.primary, // Use the primary theme color for background
+        border = BorderStroke(1.dp, Color.Red), // Add a red border
+        shadowElevation = 8.dp // Add a shadow (elevation)
+
+      ) {
+        Text(
+          text = "Hello Surface!",
+          modifier = Modifier.padding(16.dp), // Padding for the text inside the surface
+          color = MaterialTheme.colorScheme.onPrimary // Text color that contrasts with the background
+        )
+      }
+    }
+  }
+
+  @Composable
+  fun PreviewSurfaceExample() {
+    SurfaceExample()
   }
 
   @Composable
