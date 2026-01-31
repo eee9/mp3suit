@@ -29,7 +29,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.maix.mp3suit.ui.theme.MxCyan
-import com.maix.mp3suit.ui.theme.MxGreen
 
 
 class MainScreen {
@@ -106,15 +105,15 @@ class MainScreen {
         }) {
           Text("Test...")
         }
-        Button(onClick = { }) {
-          Text("Setup")
-//          mainActivity.SetupDialog()
+//        Button(onClick = { }) {
+//          Text("Setup")
+////          mainActivity.SetupDialog()
+//        }
+        Button(onClick = { main.showSetupDialog.value = true }) {
+          Text("Setup...")
         }
-        Button(onClick = { setupScreen.showSetupDialog.value = true }) {
-          Text("Setup 5")
-        }
-        if (setupScreen.showSetupDialog.value) {
-          setupScreen.SetupDialog(main, setupScreen.showSetupDialog)
+        if (main.showSetupDialog.value) {
+          setupScreen.SetupDialog(main, main.showSetupDialog)
         }
         Button(onClick = { /* Exit */
           main.libMaix.closeApp(MainActivity())

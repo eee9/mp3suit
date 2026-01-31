@@ -26,14 +26,14 @@ import com.maix.mp3suit.SetupScreen.Companion.SUFFIX
 
 class MainActivity: ComponentActivity() {
 
-  val version = "mp3suit (ver 0.4.7, Q1T)"
+  val version = "mp3suit (ver 0.4.9, Q1V)"
   val LOGFILENAME = "mp3suit_log.txt"
   val NOTFOUNDMP3FILE = "_notfound2_mp3.txt"
   val NOTFOUNDLRCFILE = "_notfound2_lrc.txt"
 
   // !!! Turn OFF the service here for debug
-//  val runSERVICE = true
-    val runSERVICE = false
+  val runSERVICE = true
+//    val runSERVICE = false
 
   companion object {
     const val TAG = "xMx3"
@@ -66,6 +66,18 @@ class MainActivity: ComponentActivity() {
   val libFileURI = FileURI()
   val setupScreen = SetupScreen()
   var context: Context? = null
+
+  lateinit var showSetupDialog: MutableState<Boolean>
+  lateinit var msgSetupLog: MutableState<String>
+  lateinit var msgMainLog: MutableState<String>
+  fun addMessage(msg: String) {
+    Logd(msg)
+    msgSetupLog.value += msg + EOL
+  }
+  fun add2Log(msg: String) {
+    Logd(msg)
+    msgMainLog.value += msg + EOL
+  }
 
   fun Toast(msg: String) {
     if (context != null) {
@@ -100,12 +112,12 @@ class MainActivity: ComponentActivity() {
       libFileURI.initMapExt(it)
     }
 
-    setupScreen.Initializate(mainActivity)
+//    setupScreen.Initializate(mainActivity)
 
     setContent {
       Mp3suitTheme {
         Column {
-          setupScreen.showSetupDialog = rememberSaveable { mutableStateOf(false) }
+          showSetupDialog = rememberSaveable { mutableStateOf(false) }
           MainScreen().ShowMainScreen(mainActivity, setupScreen)
         }
       }
@@ -154,9 +166,9 @@ class MainActivity: ComponentActivity() {
       sharedPreferences.edit { putString(proxyKey, absolutePath) }
       sharedPreferences.edit { putString(proxyKey + SUFFIX, uri.toString()) }
       Logd("New $proxyKey: '$absolutePath' [$access]")
-      setupScreen.addMessage("New $proxyKey: '$absolutePath' [$access]")
+      addMessage("New $proxyKey: '$absolutePath' [$access]")
       Logd("New $proxyKey${SUFFIX}: '$uri'")
-      setupScreen.addMessage("New $proxyKey${SUFFIX}: '$uri'")
+      addMessage("New $proxyKey${SUFFIX}: '$uri'")
       Logd("... saving done.")
     }
   }

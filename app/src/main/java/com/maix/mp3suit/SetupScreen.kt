@@ -1,12 +1,10 @@
 package com.maix.mp3suit
 
 import android.content.SharedPreferences
-import android.graphics.Color
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,20 +16,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
@@ -67,83 +61,47 @@ class SetupScreen: ComponentActivity() {
   lateinit var loguri: MutableState<String>
   lateinit var txturi: MutableState<String>
   lateinit var txtpath: MutableState<String>
-  lateinit var showSetupDialog: MutableState<Boolean>
-  lateinit var msgSetupLog: MutableState<String>
-
-  fun addMessage(msg: String) {
-    Logd(msg)
-    msgSetupLog.value += msg + EOL
-  }
-
-  fun Initializate(main: MainActivity) {
-    Logd("Init starts.")
-//    val libFileIO = main.libFileIO
-//    val sharedPreferences: SharedPreferences = main.getSharedPreferences(MXPREF, MODE_PRIVATE)
-//    _mp3path = sharedPreferences.getString(KEYMP3, null) ?: "No MP3 path found."
-//    _mp3uri = sharedPreferences.getString(KEYMP3 + SUFFIX, null) ?: "No MP3 uri found."
-//    _lrcpath = sharedPreferences.getString(KEYLRC, null) ?: "No LRC path found."
-//    _lrcuri = sharedPreferences.getString(KEYLRC + SUFFIX, null) ?: "No LRC uri found."
-//    _logpath = sharedPreferences.getString(KEYLOG, null) ?: "No LOG path found."
-//    _loguri = sharedPreferences.getString(KEYLOG + SUFFIX, null) ?: "No LOG uri found."
-//    _txtpath = sharedPreferences.getString(KEYTXT, null) ?: "No TXT path found."
-//    _txturi = sharedPreferences.getString(KEYTXT + SUFFIX, null) ?: "No TXT uri found."
-//    val isService = if (main.runSERVICE) "ON" else "OFF"
-//    val accessMp3: String = libFileIO.msgPathRights(_mp3path)
-//    val accessLrc: String = libFileIO.msgPathRights(_lrcpath)
-//    val accessLog: String = libFileIO.msgPathRights(_logpath)
-//    val accessTxt: String = libFileIO.msgPathRights(_txtpath)
-//    _msgSetupLog = "The service is $isService.$EOL"
-//    _msgSetupLog += "MP3    : '$_mp3path' [$accessMp3]$EOL"
-//    _msgSetupLog += "MP3 uri: '$_mp3uri'$EOL"
-//    _msgSetupLog += "LRC    : '$_lrcpath' [$accessLrc]$EOL"
-//    _msgSetupLog += "LRC uri: '$_lrcuri'$EOL"
-//    _msgSetupLog += "LOG    : '$_logpath' [$accessLog]$EOL"
-//    _msgSetupLog += "LOG uri: '$_loguri'$EOL"
-//    _msgSetupLog += "TXT    : '$_txtpath' [$accessTxt]$EOL"
-//    _msgSetupLog += "TXT uri: '$_txturi'$EOL"
-    Logd("Init starts.")
-  }
-
-  @Composable
-  fun SetupDialog1(main: MainActivity, showSetupDialog: MutableState<Boolean>) {
-    Column(modifier = Modifier
-      .fillMaxWidth()
-      .fillMaxHeight()
-      .background(MxGreen)
-    ) {
-      Text("In a box")
-    }
-  }
 
   @Composable
   fun SetupDialog(main: MainActivity, showSetupDialog: MutableState<Boolean>) {
-//    var _mp3path = "" // sharedPreferences.getString(KEYMP3, null) ?: "No MP3 path found."
-//    var _mp3uri  = "" // sharedPreferences.getString(KEYMP3 + SUFFIX, null) ?: "No MP3 uri found."
-    var _lrcpath = "" // sharedPreferences.getString(KEYLRC, null) ?: "No LRC path found."
-    var _lrcuri  = "" // sharedPreferences.getString(KEYLRC + SUFFIX, null) ?: "No LRC uri found."
-    var _logpath = "" // sharedPreferences.getString(KEYLOG, null) ?: "No LOG path found."
-    var _loguri  = "" // sharedPreferences.getString(KEYLOG + SUFFIX, null) ?: "No LOG uri found."
-    var _txtpath = "" // sharedPreferences.getString(KEYTXT, null) ?: "No TXT path found."
-    var _txturi  = "" // sharedPreferences.getString(KEYTXT + SUFFIX, null) ?: "No TXT uri found."
+
     val sharedPreferences: SharedPreferences = main.getSharedPreferences(MXPREF, MODE_PRIVATE)
     val _mp3path = sharedPreferences.getString(KEYMP3, null) ?: "No MP3 path found."
     val _mp3uri = sharedPreferences.getString(KEYMP3 + SUFFIX, null) ?: "No MP3 uri found."
-    var _msgSetupLog = "" // msgSetupLog.value + EOL
-    val isService = if (main.runSERVICE) "ON" else "OFF"
-    _msgSetupLog = "The service is $isService.$EOL"
+    val _lrcpath = sharedPreferences.getString(KEYLRC, null) ?: "No LRC path found."
+    val _lrcuri  = sharedPreferences.getString(KEYLRC + SUFFIX, null) ?: "No LRC uri found."
+    val _logpath = sharedPreferences.getString(KEYLOG, null) ?: "No LOG path found."
+    val _loguri  = sharedPreferences.getString(KEYLOG + SUFFIX, null) ?: "No LOG uri found."
+    val _txtpath = sharedPreferences.getString(KEYTXT, null) ?: "No TXT path found."
+    val _txturi  = sharedPreferences.getString(KEYTXT + SUFFIX, null) ?: "No TXT uri found."
 
     mp3path = remember { mutableStateOf(_mp3path) }
     mp3uri  = remember { mutableStateOf(_mp3uri) }
+    lrcpath = remember { mutableStateOf(_lrcpath) }
+    lrcuri  = remember { mutableStateOf(_lrcuri) }
+    logpath = remember { mutableStateOf(_logpath) }
+    loguri  = remember { mutableStateOf(_loguri) }
+    txtpath = remember { mutableStateOf(_txtpath) }
+    txturi  = remember { mutableStateOf(_txturi) }
+
     val accessMp3: String = main.libFileIO.msgPathRights(_mp3path)
+    val accessLrc: String = main.libFileIO.msgPathRights(_lrcpath)
+    val accessLog: String = main.libFileIO.msgPathRights(_logpath)
+    val accessTxt: String = main.libFileIO.msgPathRights(_txtpath)
+
+    var _msgSetupLog = "" // msgSetupLog.value + EOL
+    val isService = if (main.runSERVICE) "ON" else "OFF"
+    _msgSetupLog = "The service is $isService.$EOL"
     _msgSetupLog += "MP3    : '$_mp3path' [$accessMp3]$EOL"
     _msgSetupLog += "MP3 uri: '$_mp3uri'$EOL"
-//    lrcpath = remember { mutableStateOf(_lrcpath) }
-//    lrcuri  = remember { mutableStateOf(_lrcuri) }
-//    logpath = remember { mutableStateOf(_logpath) }
-//    loguri  = remember { mutableStateOf(_loguri) }
-//    txtpath = remember { mutableStateOf(_txtpath) }
-//    txturi  = remember { mutableStateOf(_txturi) }
-    msgSetupLog = remember { mutableStateOf(_msgSetupLog) }
+    _msgSetupLog += "LRC    : '$_lrcpath' [$accessLrc]$EOL"
+    _msgSetupLog += "LRC uri: '$_lrcuri'$EOL"
+    _msgSetupLog += "LOG    : '$_logpath' [$accessLog]$EOL"
+    _msgSetupLog += "LOG uri: '$_loguri'$EOL"
+    _msgSetupLog += "TXT    : '$_txtpath' [$accessTxt]$EOL"
+    _msgSetupLog += "TXT uri: '$_txturi'$EOL"
+
+    main.msgSetupLog = remember { mutableStateOf(_msgSetupLog) }
 
     Dialog(
       onDismissRequest = { showSetupDialog.value = false },
@@ -166,7 +124,10 @@ class SetupScreen: ComponentActivity() {
         ) {
           Text("Setup Configuration", style = MaterialTheme.typography.titleLarge)
           ChoosePath(main,"MP3:", KEYMP3, mp3path, mp3uri)
-          OutlinedSetupLog(modifier = Modifier
+          ChoosePath(main,"LRC:", KEYLRC, lrcpath, lrcuri)
+          ChoosePath(main,"LOG:", KEYLOG, logpath, loguri)
+          ChoosePath(main,"TXT:", KEYTXT, txtpath, txturi)
+          OutlinedSetupLog(main, modifier = Modifier
             .fillMaxWidth()
             .weight(1f)
             .padding(1.dp))
@@ -178,12 +139,12 @@ class SetupScreen: ComponentActivity() {
   }
 
   @Composable
-  fun OutlinedSetupLog(modifier: Modifier) {
+  fun OutlinedSetupLog(main: MainActivity, modifier: Modifier) {
     OutlinedTextField(
 //          value = logMessage,
-      value = msgSetupLog.value,
+      value = main.msgSetupLog.value,
 //        enabled = false,
-      onValueChange = { addMessage(".") },
+      onValueChange = { main.addMessage(".") },
       textStyle = TextStyle(
         fontSize = 14.sp,
         fontFamily = FontFamily.Monospace,
@@ -223,19 +184,19 @@ class SetupScreen: ComponentActivity() {
 //      ) {
 //        Text(version)
 //      }
-      Button( onClick = { addMessage("Check clicked.") } ) {
+      Button( onClick = { main.addMessage("Check clicked.") } ) {
         Text("Add to log")
       }
-      Button( onClick = { msgSetupLog.value = "" } ) {
+      Button( onClick = { main.msgSetupLog.value = "" } ) {
         Text("Clear log")
       }
-      Button( onClick = { main.Toast(msgSetupLog.value) } ) {
+      Button( onClick = { main.Toast(main.msgSetupLog.value) } ) {
         Text("Show...")
       }
       Button(onClick = {
-        showSetupDialog.value = false
+        main.showSetupDialog.value = false
       }) {
-        Text("Close")
+        Text(" OK ")
       }
 //      Button( onClick = { libMaix.closeApp(MainActivity()) } ) {
 //        Text(setupCloseText)
@@ -247,7 +208,7 @@ class SetupScreen: ComponentActivity() {
   fun ChoosePath(main: MainActivity, label: String, key: String, path: MutableState<String>, uri: MutableState<String>) {
     Button(
       onClick = {
-        addMessage("Change:")
+        main.addMessage("Change:")
         main.openDirectory0(key, path, uri.value)
 //        openDirectory(main, key, path, uri.value)
       },
