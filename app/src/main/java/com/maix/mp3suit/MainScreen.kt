@@ -44,7 +44,7 @@ class MainScreen {
       // Body
       var largeText by remember { mutableStateOf("...") }
       OutlinedTextField(
-        value = largeText,
+        value = main.msgMainLog.value,
         onValueChange = { largeText = it },
         label = { Text("Logging", color = Color.Black) },
         modifier = Modifier

@@ -89,9 +89,9 @@ class SetupScreen: ComponentActivity() {
     val accessLog: String = main.libFileIO.msgPathRights(_logpath)
     val accessTxt: String = main.libFileIO.msgPathRights(_txtpath)
 
-    var _msgSetupLog = "" // msgSetupLog.value + EOL
+//    var _msgSetupLog = "" // msgSetupLog.value + EOL
     val isService = if (main.runSERVICE) "ON" else "OFF"
-    _msgSetupLog = "The service is $isService.$EOL"
+    var _msgSetupLog = "The service is $isService.$EOL"
     _msgSetupLog += "MP3    : '$_mp3path' [$accessMp3]$EOL"
     _msgSetupLog += "MP3 uri: '$_mp3uri'$EOL"
     _msgSetupLog += "LRC    : '$_lrcpath' [$accessLrc]$EOL"

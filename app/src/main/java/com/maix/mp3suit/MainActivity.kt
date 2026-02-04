@@ -14,6 +14,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.core.content.edit
 import androidx.core.net.toUri
@@ -26,14 +27,14 @@ import com.maix.mp3suit.SetupScreen.Companion.SUFFIX
 
 class MainActivity: ComponentActivity() {
 
-  val version = "mp3suit (ver 0.4.9, Q1V)"
+  val version = "mp3suit (ver 0.5.1, Q24)"
   val LOGFILENAME = "mp3suit_log.txt"
   val NOTFOUNDMP3FILE = "_notfound2_mp3.txt"
   val NOTFOUNDLRCFILE = "_notfound2_lrc.txt"
 
   // !!! Turn OFF the service here for debug
-  val runSERVICE = true
-//    val runSERVICE = false
+//  val runSERVICE = true
+    val runSERVICE = false
 
   companion object {
     const val TAG = "xMx3"
@@ -114,10 +115,14 @@ class MainActivity: ComponentActivity() {
 
 //    setupScreen.Initializate(mainActivity)
 
+    val tranlator = Translate(this)
+    tranlator.downloadModel()
+
     setContent {
       Mp3suitTheme {
         Column {
           showSetupDialog = rememberSaveable { mutableStateOf(false) }
+          msgMainLog = remember { mutableStateOf("MAIN LOG:$EOL") }
           MainScreen().ShowMainScreen(mainActivity, setupScreen)
         }
       }
@@ -169,6 +174,7 @@ class MainActivity: ComponentActivity() {
       addMessage("New $proxyKey: '$absolutePath' [$access]")
       Logd("New $proxyKey${SUFFIX}: '$uri'")
       addMessage("New $proxyKey${SUFFIX}: '$uri'")
+      add2Log("New $proxyKey${SUFFIX}: '$uri'")
       Logd("... saving done.")
     }
   }
