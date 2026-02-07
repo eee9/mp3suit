@@ -119,13 +119,19 @@ class MainActivity: ComponentActivity() {
     tranlator.downloadModel()
 
     setContent {
-      Mp3suitTheme {
-        Column {
+//      Mp3suitTheme {
+////              MainScreen().ShowScreen2(mainActivity)
+//        showSetupDialog = rememberSaveable { mutableStateOf(false) }
+//        msgMainLog = remember { mutableStateOf("MAIN LOG:$EOL") }
+//        MainScreen().ShowMainScreen(mainActivity, setupScreen)
+//      }
+//        Column {
           showSetupDialog = rememberSaveable { mutableStateOf(false) }
           msgMainLog = remember { mutableStateOf("MAIN LOG:$EOL") }
           MainScreen().ShowMainScreen(mainActivity, setupScreen)
-        }
-      }
+//        }
+//      }
+
     }
   }
 

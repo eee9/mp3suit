@@ -6,16 +6,20 @@ import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -28,6 +32,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
@@ -112,7 +117,7 @@ class SetupScreen: ComponentActivity() {
     ) {
       Surface(
         modifier = Modifier
-          .fillMaxWidth(0.9f),
+          .fillMaxWidth(0.93f),
         shape = MaterialTheme.shapes.large,
         color = MaterialTheme.colorScheme.surface,
         contentColor = contentColorFor(MaterialTheme.colorScheme.surface)
@@ -120,9 +125,9 @@ class SetupScreen: ComponentActivity() {
         Column(modifier = Modifier
           .fillMaxHeight(fraction = 0.9f)
           .background(MxGreen)
-          .padding(16.dp)
+          .padding(6.dp)
         ) {
-          Text("Setup Configuration", style = MaterialTheme.typography.titleLarge)
+          Text("Setup Configuration", style = MaterialTheme.typography.titleLarge, fontSize = 16.sp)
           ChoosePath(main,"MP3:", KEYMP3, mp3path, mp3uri)
           ChoosePath(main,"LRC:", KEYLRC, lrcpath, lrcuri)
           ChoosePath(main,"LOG:", KEYLOG, logpath, loguri)
@@ -146,7 +151,7 @@ class SetupScreen: ComponentActivity() {
 //        enabled = false,
       onValueChange = { main.addMessage(".") },
       textStyle = TextStyle(
-        fontSize = 14.sp,
+        fontSize = 11.sp,
         fontFamily = FontFamily.Monospace,
 //            fontFamily = FontFamily.Serif,
       ),
@@ -170,7 +175,7 @@ class SetupScreen: ComponentActivity() {
     Row(
       modifier = Modifier
         .fillMaxWidth()
-        .padding(10.dp),
+        .padding(1.dp),
       horizontalArrangement = Arrangement.SpaceEvenly,
       verticalAlignment = Alignment.CenterVertically
     ) {
@@ -184,19 +189,19 @@ class SetupScreen: ComponentActivity() {
 //      ) {
 //        Text(version)
 //      }
-      Button( onClick = { main.addMessage("Check clicked.") } ) {
-        Text("Add to log")
+      Button_( onClick = { main.addMessage("Check clicked.") } ) {
+        Text_("Add to log")
       }
-      Button( onClick = { main.msgSetupLog.value = "" } ) {
-        Text("Clear log")
+      Button_( onClick = { main.msgSetupLog.value = "" } ) {
+        Text_("Clear log")
       }
-      Button( onClick = { main.Toast(main.msgSetupLog.value) } ) {
-        Text("Show...")
+      Button_( onClick = { main.Toast(main.msgSetupLog.value) } ) {
+        Text_("Show...")
       }
-      Button(onClick = {
+      Button_(onClick = {
         main.showSetupDialog.value = false
       }) {
-        Text(" OK ")
+        Text_(" OK ")
       }
 //      Button( onClick = { libMaix.closeApp(MainActivity()) } ) {
 //        Text(setupCloseText)
@@ -205,27 +210,74 @@ class SetupScreen: ComponentActivity() {
   }
 
   @Composable
+  fun Button_(onClick: () -> Unit, content: @Composable RowScope.() -> Unit) {
+    Button(
+      onClick = onClick,
+      shape = RoundedCornerShape(12.dp),
+//      colors = ButtonDefaults.buttonColors(
+//        containerColor = Color.Red, // Sets the background color
+//        contentColor = Color.White // Sets the text/content color
+//      ),
+//      modifier = Modifier.width(60.dp),
+//      modifier = Modifier,
+      contentPadding = PaddingValues(
+        start = 5.dp,
+        top = 1.dp,
+        end = 5.dp,
+        bottom = 1.dp
+      ),
+      content = content
+    )
+  }
+
+  @Composable
   fun ChoosePath(main: MainActivity, label: String, key: String, path: MutableState<String>, uri: MutableState<String>) {
     Button(
       onClick = {
-        main.addMessage("Change:")
+//        main.addMessage("Change:")
         main.openDirectory0(key, path, uri.value)
 //        openDirectory(main, key, path, uri.value)
       },
-      shape = RoundedCornerShape(8.dp),
+      shape = RoundedCornerShape(4.dp),
+      contentPadding = PaddingValues(
+        start = 5.dp,
+        top = 1.dp,
+        end = 5.dp,
+        bottom = 1.dp
+      ),
       modifier = Modifier
         .fillMaxWidth()
+        .height(30.dp)
 //        .padding(horizontal = 10.dp)
+        .padding(all = 1.dp)
     ) {
-      Text(text = label)
-      Spacer(modifier = Modifier.padding(horizontal = 14.dp))
-      Text(path.value, color = MxCyan, modifier = Modifier.weight(1f),)
-      Spacer(modifier = Modifier.padding(horizontal = 14.dp))
-      Icon(
-        imageVector = Icons.Default.Edit, // .LocationOn,
-        contentDescription = "Edit"
-      )
+      Text_(text = label)
+      Spacer(modifier = Modifier.padding(horizontal = 4.dp))
+      Text(
+        path.value,
+        fontSize = 12.sp,
+        color = MxCyan,
+        modifier = Modifier
+          .weight(1f)
+          .padding(all = 1.dp),
+        )
+//      Spacer(modifier = Modifier.padding(horizontal = 4.dp))
+//      Icon(
+//        imageVector = Icons.Default.Edit, // .LocationOn,
+//        contentDescription = "Edit"
+//      )
     }
+  }
+
+  @Composable
+  fun Text_(text: String) {
+    Text(
+      text = text,
+      fontSize = 12.sp,
+      modifier = Modifier
+        .padding(all = 1.dp)
+//        .fillMaxHeight(0.05f)
+    )
   }
 
 }
