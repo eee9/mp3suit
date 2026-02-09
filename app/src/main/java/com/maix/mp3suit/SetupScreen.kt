@@ -14,13 +14,8 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
@@ -32,9 +27,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -106,7 +101,10 @@ class SetupScreen: ComponentActivity() {
     _msgSetupLog += "TXT    : '$_txtpath' [$accessTxt]$EOL"
     _msgSetupLog += "TXT uri: '$_txturi'$EOL"
 
-    main.msgSetupLog = remember { mutableStateOf(_msgSetupLog) }
+//    if (main.msgSetupLog == null) {
+      main.msgSetupLog = remember { mutableStateOf(_msgSetupLog) }
+//    }
+//    main.add2SetupLog(_msgSetupLog)
 
     Dialog(
       onDismissRequest = { showSetupDialog.value = false },
@@ -147,9 +145,9 @@ class SetupScreen: ComponentActivity() {
   fun OutlinedSetupLog(main: MainActivity, modifier: Modifier) {
     OutlinedTextField(
 //          value = logMessage,
-      value = main.msgSetupLog.value,
+      value = main.msgSetupLog?.value ?: "",
 //        enabled = false,
-      onValueChange = { main.addMessage(".") },
+      onValueChange = { main.add2SetupLog(".") },
       textStyle = TextStyle(
         fontSize = 11.sp,
         fontFamily = FontFamily.Monospace,
@@ -189,13 +187,13 @@ class SetupScreen: ComponentActivity() {
 //      ) {
 //        Text(version)
 //      }
-      Button_( onClick = { main.addMessage("Check clicked.") } ) {
+      Button_( onClick = { main.add2SetupLog("Check clicked.") } ) {
         Text_("Add to log")
       }
-      Button_( onClick = { main.msgSetupLog.value = "" } ) {
+      Button_( onClick = { main.msgSetupLog?.value = "" } ) {
         Text_("Clear log")
       }
-      Button_( onClick = { main.Toast(main.msgSetupLog.value) } ) {
+      Button_( onClick = { main.Toast(main.msgSetupLog?.value ?: "???") } ) {
         Text_("Show...")
       }
       Button_(onClick = {
@@ -221,9 +219,9 @@ class SetupScreen: ComponentActivity() {
 //      modifier = Modifier.width(60.dp),
 //      modifier = Modifier,
       contentPadding = PaddingValues(
-        start = 5.dp,
+        start = 15.dp,
         top = 1.dp,
-        end = 5.dp,
+        end = 15.dp,
         bottom = 1.dp
       ),
       content = content
@@ -274,7 +272,9 @@ class SetupScreen: ComponentActivity() {
     Text(
       text = text,
       fontSize = 12.sp,
+      textAlign = TextAlign.Center,
       modifier = Modifier
+//        .fillMaxWidth(0.15f)
         .padding(all = 1.dp)
 //        .fillMaxHeight(0.05f)
     )

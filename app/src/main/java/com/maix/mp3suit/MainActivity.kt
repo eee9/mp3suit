@@ -11,7 +11,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -21,13 +20,12 @@ import androidx.core.net.toUri
 import com.maix.lib.FileIO
 import com.maix.lib.FileURI
 import com.maix.lib.Maix
-import com.maix.mp3suit.ui.theme.Mp3suitTheme
 import com.maix.mp3suit.SetupScreen.Companion.MXPREF
 import com.maix.mp3suit.SetupScreen.Companion.SUFFIX
 
 class MainActivity: ComponentActivity() {
 
-  val version = "mp3suit (ver 0.5.1, Q24)"
+  val version = "mp3suit (ver 0.5.2, Q26)"
   val LOGFILENAME = "mp3suit_log.txt"
   val NOTFOUNDMP3FILE = "_notfound2_mp3.txt"
   val NOTFOUNDLRCFILE = "_notfound2_lrc.txt"
@@ -66,19 +64,8 @@ class MainActivity: ComponentActivity() {
   val libFileIO = FileIO()
   val libFileURI = FileURI()
   val setupScreen = SetupScreen()
+  val toolScreen = ToolScreen()
   var context: Context? = null
-
-  lateinit var showSetupDialog: MutableState<Boolean>
-  lateinit var msgSetupLog: MutableState<String>
-  lateinit var msgMainLog: MutableState<String>
-  fun addMessage(msg: String) {
-    Logd(msg)
-    msgSetupLog.value += msg + EOL
-  }
-  fun add2Log(msg: String) {
-    Logd(msg)
-    msgMainLog.value += msg + EOL
-  }
 
   fun Toast(msg: String) {
     if (context != null) {
@@ -115,8 +102,8 @@ class MainActivity: ComponentActivity() {
 
 //    setupScreen.Initializate(mainActivity)
 
-    val tranlator = Translate(this)
-    tranlator.downloadModel()
+//    val tranlator = Translate(this)
+//    tranlator.downloadModel()
 
     setContent {
 //      Mp3suitTheme {
@@ -126,13 +113,31 @@ class MainActivity: ComponentActivity() {
 //        MainScreen().ShowMainScreen(mainActivity, setupScreen)
 //      }
 //        Column {
-          showSetupDialog = rememberSaveable { mutableStateOf(false) }
-          msgMainLog = remember { mutableStateOf("MAIN LOG:$EOL") }
-          MainScreen().ShowMainScreen(mainActivity, setupScreen)
+      showSetupDialog = rememberSaveable { mutableStateOf(true) }
+      showToolDialog = rememberSaveable { mutableStateOf(true) }
+      msgMainLog = remember { mutableStateOf("MAIN LOG:$EOL") }
+//          msgSetupLog = remember { mutableStateOf("SETUP LOG:$EOL") }
+//      MainScreen().ShowMainScreen(mainActivity, setupScreen)
+//      setupScreen.SetupDialog(mainActivity, showSetupDialog)
+      toolScreen.ToolDialog(mainActivity, showToolDialog)
 //        }
 //      }
 
     }
+  }
+
+  lateinit var showSetupDialog: MutableState<Boolean>
+  lateinit var showToolDialog: MutableState<Boolean>
+  lateinit var msgMainLog: MutableState<String>
+  var msgSetupLog: MutableState<String>? = null
+
+  fun add2SetupLog(msg: String) {
+    Logd(msg)
+    msgSetupLog?.value += msg + EOL
+  }
+  fun add2MainLog(msg: String) {
+    Logd(msg)
+    msgMainLog.value += msg + EOL
   }
 
   //==============================================================================================
@@ -177,10 +182,10 @@ class MainActivity: ComponentActivity() {
       sharedPreferences.edit { putString(proxyKey, absolutePath) }
       sharedPreferences.edit { putString(proxyKey + SUFFIX, uri.toString()) }
       Logd("New $proxyKey: '$absolutePath' [$access]")
-      addMessage("New $proxyKey: '$absolutePath' [$access]")
+      add2SetupLog("New $proxyKey: '$absolutePath' [$access]")
       Logd("New $proxyKey${SUFFIX}: '$uri'")
-      addMessage("New $proxyKey${SUFFIX}: '$uri'")
-      add2Log("New $proxyKey${SUFFIX}: '$uri'")
+      add2SetupLog("New $proxyKey${SUFFIX}: '$uri'")
+      add2MainLog("New $proxyKey${SUFFIX}: '$uri'")
       Logd("... saving done.")
     }
   }

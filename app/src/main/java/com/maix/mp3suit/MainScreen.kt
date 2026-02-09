@@ -34,50 +34,6 @@ import com.maix.mp3suit.ui.theme.MxCyan
 class MainScreen {
 
   @Composable
-  fun ShowScreen2(main: MainActivity) {
-//    var main = MainActivity()
-    Column(
-      modifier = Modifier
-        .fillMaxWidth()
-        .background(Color(0xFF18FFFF))
-        .padding(20.dp),
-      verticalArrangement = Arrangement.Center,
-    ) {
-      Button(
-        modifier = Modifier
-          .fillMaxWidth(),
-        onClick = { main.Toast("2: Checking...")}
-      ) {
-        Text("2: Q1S/r23. Check...")
-      }
-      Button(
-        modifier = Modifier
-          .fillMaxWidth(),
-        onClick = { }
-      ) {
-        Text("2: Run...")
-      }
-      // Body
-      var largeText by remember { mutableStateOf("Some text for test in the field.\n".repeat(11)) }
-      OutlinedTextField(
-        value = largeText,
-        onValueChange = { largeText = it },
-        label = { Text("Logging", color = Color.Black) },
-        modifier = Modifier
-//          .background(Color.LightGray)
-          .fillMaxWidth()
-          .padding(1.dp)
-          .weight(1f),
-        maxLines = Int.MAX_VALUE, // Allows the field itself to scroll internally
-        colors = OutlinedTextFieldDefaults.colors(
-          focusedBorderColor = Color.Blue,   // Color when the field is focused
-          unfocusedBorderColor = Color.Black, // Color when the field is not focused
-        )
-      ) // Body
-    }
-  }
-
-  @Composable
   fun ShowMainScreen(main: MainActivity, setupScreen: SetupScreen) {
     Column(modifier = Modifier
       .fillMaxSize()
