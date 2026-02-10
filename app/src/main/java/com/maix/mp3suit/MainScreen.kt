@@ -1,5 +1,6 @@
 package com.maix.mp3suit
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,10 +29,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.maix.mp3suit.MainActivity.Companion.TAG
 import com.maix.mp3suit.ui.theme.MxCyan
 
 
 class MainScreen {
+
+  fun Logd(msg: String) {
+    Log.d(TAG, msg)
+  }
 
   @Composable
   fun ShowMainScreen(main: MainActivity, setupScreen: SetupScreen) {
@@ -100,21 +106,28 @@ class MainScreen {
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
       ) {
+        val content = main.readFile("/storage/emulated/0/xMx/77/79.txt")
         ButtonMx(onClick = { /* Test... */
           main.Toast("Test pressed")
-//          val sTimeNow = main.libMaix.currTimeExt()
-//          main.add2MainLog("$sTimeNow: Just main log check.")
-          val content = main.readFile("a foo file name here.")
           main.add2MainLog(content)
-//          main.tranlator.translateText("Today is a winter day")
-//          main.showSetupButton.value = !main.showSetupButton.value
         }, enabled = main.showTestButton.value) {
           Text("Test...")
         }
-//        Button(onClick = { }) {
-//          Text("Setup")
-////          mainActivity.SetupDialog()
-//        }
+        if (main.runTRANSLATE) {
+          Button(
+            onClick = {
+              main.Toast("Translate pressed")
+//              val translator = main.translator
+              main.translator.translateText(content)
+//              val langToUpper = translator.langToUpper
+//              val msg = "[$langToUpper]: $translated"
+//              Logd(msg)
+//              main.add2MainLog(msg)
+//              main.showSetupButton.value = !main.showSetupButton.value
+            }, enabled = main.showTranslateButton.value) {
+            Text("Translate")
+          }
+        }
         Button(onClick = { main.showSetupDialog.value = true }) {
           Text("Setup...")
         }

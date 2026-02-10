@@ -34,8 +34,8 @@ class MainActivity: ComponentActivity() {
 //  val runSERVICE = true
     val runSERVICE = false
   // !!! Turn OFF translate for debug
-//  val runTRANSLATE = true
-  val runTRANSLATE = false
+  val runTRANSLATE = true
+//  val runTRANSLATE = false
 
   companion object {
     const val TAG = "xMx3"
@@ -68,7 +68,7 @@ class MainActivity: ComponentActivity() {
   val libFileURI = FileURI()
   val setupScreen = SetupScreen()
   val toolScreen = ToolScreen()
-  val tranlator = Translate(this)
+  val translator = Translate(this)
   var context: Context? = null
 
   fun Toast(msg: String) {
@@ -81,11 +81,9 @@ class MainActivity: ComponentActivity() {
   }
 
   fun readFile(filename: String): String {
-//    val dir = libFileIO.msgPathRights("s")
-    val content = libFileIO.readFile("/storage/emulated/0/xMx/77/78.txt")
-//    val s: String = content.joinToString {  }
-    Logd("Content ->$EOL[$content]$EOL<-")
-    return "<???>" //content
+    return libFileIO.readFile(filename)
+//    Logd("Content ->$EOL[$content]$EOL<-")
+//    return content
   }
 
   // for listen service
@@ -115,7 +113,7 @@ class MainActivity: ComponentActivity() {
 //    setupScreen.Initializate(mainActivity)
 
     if (runTRANSLATE) {
-      tranlator.downloadModel()
+      translator.downloadModel()
     }
 
     setContent {
@@ -129,6 +127,7 @@ class MainActivity: ComponentActivity() {
       showSetupDialog = rememberSaveable { mutableStateOf(false) }
       showSetupButton = rememberSaveable { mutableStateOf(false) }
       showTestButton = rememberSaveable { mutableStateOf(true) }
+      showTranslateButton = rememberSaveable { mutableStateOf(false) }
       showToolDialog = rememberSaveable { mutableStateOf(true) }
       msgMainLog = remember { mutableStateOf("MAIN LOG:$EOL") }
 //          msgSetupLog = remember { mutableStateOf("SETUP LOG:$EOL") }
@@ -143,6 +142,7 @@ class MainActivity: ComponentActivity() {
   lateinit var showSetupDialog: MutableState<Boolean>
   lateinit var showSetupButton: MutableState<Boolean>
   lateinit var showTestButton: MutableState<Boolean>
+  lateinit var showTranslateButton: MutableState<Boolean>
   lateinit var showToolDialog: MutableState<Boolean>
   lateinit var msgMainLog: MutableState<String>
   var msgSetupLog: MutableState<String>? = null

@@ -8,11 +8,11 @@ import com.google.mlkit.nl.translate.TranslatorOptions
 import com.maix.mp3suit.MainActivity.Companion.TAG
 
 
-class Translate(main: MainActivity) {
-  var main: MainActivity = main
+class Translate(val main: MainActivity) {
   fun Logd(msg: String) {
     Log.d(TAG, msg)
   }
+  val EOL = "\n"
 
   fun getLanguage(lang: String): String {
     var res = ""
@@ -28,7 +28,10 @@ class Translate(main: MainActivity) {
     return res
   }
 
-  val langTo = TranslateLanguage.FRENCH
+  val langOf = TranslateLanguage.ENGLISH
+  val langOfUpper = langOf.uppercase()
+  val langTo = TranslateLanguage.UKRAINIAN
+  val langToUpper = langTo.uppercase()
   private var options = TranslatorOptions.Builder()
     .setSourceLanguage(TranslateLanguage.ENGLISH)
     .setTargetLanguage(langTo)
@@ -42,12 +45,13 @@ class Translate(main: MainActivity) {
     translator.downloadModelIfNeeded(conditions)
       .addOnSuccessListener {
         // Model downloaded successfully. You can now start translating.
-        Logd("Model downloaded successfully")
-        main.Toast("Model ready")
-        val engText = "Here is some text for a check"
-        main.Toast(engText)
+        val msg = "Model [\"$langOfUpper\" -> \"$langToUpper\"] downloaded successfully"
+        Logd(msg)
+        main.Toast(msg)
+//        val engText = "Here is some text for a check"
+//        main.Toast(engText)
 //        main.showSetupButton.value = true
-        main.showTestButton.value = true
+        main.showTranslateButton.value = true
 //        translateText(engText)
       }
       .addOnFailureListener { exception ->
@@ -57,25 +61,21 @@ class Translate(main: MainActivity) {
       }
    }
 
-  fun translateText(englishText: String) {
-    Logd("Test begins...")
-    val textExample = "Just some part of the three books."
-    Logd("EN  : '$englishText'")
-    Logd("download...")
-    commonTranslator.translate(englishText)
+  fun translateText(originalText: String) {
+    commonTranslator
+      .translate(originalText)
       .addOnSuccessListener { translatedText ->
-        Logd("LANG2 : '$translatedText'")
-        main.Toast("${langTo.uppercase()}: $translatedText")
+        val msg1 = "$EOL[$langOfUpper]:$EOL$originalText$EOL"
+        val translatedTextUpd = translatedText.replace("[", "$EOL[").trim()
+        val msg2 = "$EOL[$langToUpper]:$EOL$translatedTextUpd$EOL"
+        Logd(msg1)
+        Logd(msg2)
+        main.add2MainLog(msg1)
+        main.add2MainLog(msg2)
       }
       .addOnFailureListener { exception ->
         Logd("ERR : $exception")
       }
-      .addOnCanceledListener {
-        Logd("addOnCanceledListener")
-      }
-      .addOnCompleteListener {
-        Logd("addOnCompleteListener")
-      }
-    Logd("Test done.")
   }
+
 }
