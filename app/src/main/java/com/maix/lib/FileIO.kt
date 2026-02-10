@@ -18,6 +18,7 @@ class FileIO {
   fun Loge(msg: String) {
     Log.e(TAG, "ERROR: $msg")
   }
+  val EOL = "\n"
 
   //==============================================================================================
   fun isPathExist(path: String): Boolean {
@@ -71,6 +72,26 @@ class FileIO {
       Loge(e.toString())
     }
     return res
+  }
+
+  fun readFile(fileName: String): String {
+    val res = arrayListOf<String>()
+    if (!canReadPath(fileName)) return ""
+
+    var line: String
+    var br: BufferedReader? = null
+    try {
+      br = BufferedReader(FileReader(File(fileName)))
+      while ((br.readLine().also { line = it }) != null) {
+        res.add(line)
+      }
+    } catch (e: FileNotFoundException) {
+      Loge(e.toString())
+    } catch (e: IOException) {
+      Loge(e.toString())
+    }
+    return res.joinToString(separator = EOL)
+//    return res.joinToString()
   }
 
   //==============================================================================================

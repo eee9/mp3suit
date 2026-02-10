@@ -46,7 +46,9 @@ class Translate(main: MainActivity) {
         main.Toast("Model ready")
         val engText = "Here is some text for a check"
         main.Toast(engText)
-        translateText(engText)
+//        main.showSetupButton.value = true
+        main.showTestButton.value = true
+//        translateText(engText)
       }
       .addOnFailureListener { exception ->
         // Model couldn’t be downloaded or other internal error.

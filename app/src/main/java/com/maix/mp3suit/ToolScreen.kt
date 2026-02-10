@@ -83,13 +83,17 @@ class ToolScreen {
     Column(Modifier.padding(1.dp)) {
       OutlinedTextField(
         value = mSelectedText,
-        onValueChange = { mSelectedText = it },
+//        enabled = false,
+        onValueChange = {
+          mExpanded = !mExpanded
+//          mSelectedText = it
+                        },
         modifier = Modifier
           .fillMaxWidth()
           .onGloballyPositioned { coordinates ->
             mTextFieldSize = coordinates.size.toSize()
           },
-        label = {Text("Language from")},
+        label = {Text("Language of")},
         trailingIcon = {
           Icon(icon,"contentDescription",
             Modifier.clickable { mExpanded = !mExpanded })

@@ -25,14 +25,17 @@ import com.maix.mp3suit.SetupScreen.Companion.SUFFIX
 
 class MainActivity: ComponentActivity() {
 
-  val version = "mp3suit (ver 0.5.2, Q26)"
+  val version = "mp3suit (ver 0.5.3, Q2A)"
   val LOGFILENAME = "mp3suit_log.txt"
   val NOTFOUNDMP3FILE = "_notfound2_mp3.txt"
   val NOTFOUNDLRCFILE = "_notfound2_lrc.txt"
 
-  // !!! Turn OFF the service here for debug
+  // !!! Turn OFF service for debug
 //  val runSERVICE = true
     val runSERVICE = false
+  // !!! Turn OFF translate for debug
+//  val runTRANSLATE = true
+  val runTRANSLATE = false
 
   companion object {
     const val TAG = "xMx3"
@@ -65,6 +68,7 @@ class MainActivity: ComponentActivity() {
   val libFileURI = FileURI()
   val setupScreen = SetupScreen()
   val toolScreen = ToolScreen()
+  val tranlator = Translate(this)
   var context: Context? = null
 
   fun Toast(msg: String) {
@@ -74,6 +78,14 @@ class MainActivity: ComponentActivity() {
       toast.setGravity(Gravity.CENTER, 0, 0)
       toast.show()
     }
+  }
+
+  fun readFile(filename: String): String {
+//    val dir = libFileIO.msgPathRights("s")
+    val content = libFileIO.readFile("/storage/emulated/0/xMx/77/78.txt")
+//    val s: String = content.joinToString {  }
+    Logd("Content ->$EOL[$content]$EOL<-")
+    return "<???>" //content
   }
 
   // for listen service
@@ -102,8 +114,9 @@ class MainActivity: ComponentActivity() {
 
 //    setupScreen.Initializate(mainActivity)
 
-//    val tranlator = Translate(this)
-//    tranlator.downloadModel()
+    if (runTRANSLATE) {
+      tranlator.downloadModel()
+    }
 
     setContent {
 //      Mp3suitTheme {
@@ -113,20 +126,23 @@ class MainActivity: ComponentActivity() {
 //        MainScreen().ShowMainScreen(mainActivity, setupScreen)
 //      }
 //        Column {
-      showSetupDialog = rememberSaveable { mutableStateOf(true) }
+      showSetupDialog = rememberSaveable { mutableStateOf(false) }
+      showSetupButton = rememberSaveable { mutableStateOf(false) }
+      showTestButton = rememberSaveable { mutableStateOf(true) }
       showToolDialog = rememberSaveable { mutableStateOf(true) }
       msgMainLog = remember { mutableStateOf("MAIN LOG:$EOL") }
 //          msgSetupLog = remember { mutableStateOf("SETUP LOG:$EOL") }
-//      MainScreen().ShowMainScreen(mainActivity, setupScreen)
+      MainScreen().ShowMainScreen(mainActivity, setupScreen)
 //      setupScreen.SetupDialog(mainActivity, showSetupDialog)
-      toolScreen.ToolDialog(mainActivity, showToolDialog)
+//      toolScreen.ToolDialog(mainActivity, showToolDialog)
 //        }
 //      }
-
     }
   }
 
   lateinit var showSetupDialog: MutableState<Boolean>
+  lateinit var showSetupButton: MutableState<Boolean>
+  lateinit var showTestButton: MutableState<Boolean>
   lateinit var showToolDialog: MutableState<Boolean>
   lateinit var msgMainLog: MutableState<String>
   var msgSetupLog: MutableState<String>? = null

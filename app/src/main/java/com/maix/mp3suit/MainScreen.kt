@@ -102,7 +102,13 @@ class MainScreen {
       ) {
         ButtonMx(onClick = { /* Test... */
           main.Toast("Test pressed")
-        }) {
+//          val sTimeNow = main.libMaix.currTimeExt()
+//          main.add2MainLog("$sTimeNow: Just main log check.")
+          val content = main.readFile("a foo file name here.")
+          main.add2MainLog(content)
+//          main.tranlator.translateText("Today is a winter day")
+//          main.showSetupButton.value = !main.showSetupButton.value
+        }, enabled = main.showTestButton.value) {
           Text("Test...")
         }
 //        Button(onClick = { }) {
@@ -125,9 +131,10 @@ class MainScreen {
   }
 
   @Composable
-  fun ButtonMx(onClick: () -> Unit, content: @Composable RowScope.() -> Unit) {
+  fun ButtonMx(onClick: () -> Unit, enabled: Boolean, content: @Composable RowScope.() -> Unit) {
     Button(
       onClick = onClick,
+      enabled = enabled,
       colors = ButtonDefaults.buttonColors(
         containerColor = Color.Red, // Sets the background color
         contentColor = Color.White // Sets the text/content color
