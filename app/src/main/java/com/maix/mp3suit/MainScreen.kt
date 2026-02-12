@@ -40,7 +40,7 @@ class MainScreen {
   }
 
   @Composable
-  fun ShowMainScreen(main: MainActivity, setupScreen: SetupScreen) {
+  fun ShowMainScreen(main: MainActivity) {
     Column(modifier = Modifier
       .fillMaxSize()
       .background(MxCyan)
@@ -64,7 +64,7 @@ class MainScreen {
           unfocusedBorderColor = Color.Black, // Color when the field is not focused
         )
       ) // Body
-      Footer(main, setupScreen)
+      Footer(main)
     }
   }
 
@@ -88,7 +88,7 @@ class MainScreen {
   }
 
   @Composable
-  fun Footer(main: MainActivity, setupScreen: SetupScreen) {
+  fun Footer(main: MainActivity) {
 //    val setup = SetupScreen()
     Column(
       modifier = Modifier
@@ -106,19 +106,32 @@ class MainScreen {
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
       ) {
-        val content = main.readFile("/storage/emulated/0/xMx/77/79.txt")
-        ButtonMx(onClick = { /* Test... */
+        val filename = main.chosenFileName?.value ?: main.fileForChoose
+        val content = main.readFile(filename)
+
+        // Test button
+        ButtonMx(onClick = {
           main.Toast("Test pressed")
-          main.add2MainLog(content)
+          if (content.isNotEmpty()) {
+            main.add2MainLog(content)
+          } else {
+            main.add2MainLog("No data in '$filename'")
+          }
         }, enabled = main.showTestButton.value) {
-          Text("Test...")
+          Text("Test")
         }
+
+        // Translate button
         if (main.runTRANSLATE) {
           Button(
             onClick = {
               main.Toast("Translate pressed")
 //              val translator = main.translator
-              main.translator.translateText(content)
+              if (content.isEmpty()) {
+                main.add2MainLog("Nothing to translate in '$filename'")
+              } else {
+                main.translator.translateText(content)
+              }
 //              val langToUpper = translator.langToUpper
 //              val msg = "[$langToUpper]: $translated"
 //              Logd(msg)
@@ -128,12 +141,29 @@ class MainScreen {
             Text("Translate")
           }
         }
+
+        // Clear button
+        Button(onClick = { main.msgMainLog.value = "" }) {
+          Text("Clear log")
+        }
+
+        // Tools button
+        Button(onClick = { main.showToolDialog.value = true }) {
+          Text("Tools")
+        }
+        if (main.showToolDialog.value) {
+          main.toolScreen.ToolDialog(main)
+        }
+
+        // Setup button
         Button(onClick = { main.showSetupDialog.value = true }) {
-          Text("Setup...")
+          Text("Setup")
         }
         if (main.showSetupDialog.value) {
-          setupScreen.SetupDialog(main, main.showSetupDialog)
+          main.setupScreen.SetupDialog(main, main.showSetupDialog)
         }
+
+        // Exit button
         Button(onClick = { /* Exit */
           main.libMaix.closeApp(MainActivity())
         }) {

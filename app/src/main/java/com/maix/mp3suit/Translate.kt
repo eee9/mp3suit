@@ -30,7 +30,7 @@ class Translate(val main: MainActivity) {
 
   val langOf = TranslateLanguage.ENGLISH
   val langOfUpper = langOf.uppercase()
-  val langTo = TranslateLanguage.UKRAINIAN
+  val langTo = TranslateLanguage.FRENCH //.UKRAINIAN
   val langToUpper = langTo.uppercase()
   private var options = TranslatorOptions.Builder()
     .setSourceLanguage(TranslateLanguage.ENGLISH)
@@ -40,14 +40,17 @@ class Translate(val main: MainActivity) {
   private var commonTranslator = Translation.getClient(options)
 
   fun downloadModel() {
+    val langs = "[\"$langOfUpper\" -> \"$langToUpper\"]"
+    Logd("Downloading model $langs...")
     val translator = Translation.getClient(options)
-    val conditions = DownloadConditions.Builder().requireWifi().build()
+//    val conditions = DownloadConditions.Builder().requireWifi().build()
+    val conditions = DownloadConditions.Builder().build()
     translator.downloadModelIfNeeded(conditions)
       .addOnSuccessListener {
         // Model downloaded successfully. You can now start translating.
-        val msg = "Model [\"$langOfUpper\" -> \"$langToUpper\"] downloaded successfully"
+        val msg = "Model $langs downloaded successfully"
         Logd(msg)
-        main.Toast(msg)
+//        main.Toast(msg)
 //        val engText = "Here is some text for a check"
 //        main.Toast(engText)
 //        main.showSetupButton.value = true

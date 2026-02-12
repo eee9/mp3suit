@@ -25,10 +25,11 @@ import com.maix.mp3suit.SetupScreen.Companion.SUFFIX
 
 class MainActivity: ComponentActivity() {
 
-  val version = "mp3suit (ver 0.5.3, Q2A)"
+  val version = "mp3suit (ver 0.5.4, Q2C)"
   val LOGFILENAME = "mp3suit_log.txt"
   val NOTFOUNDMP3FILE = "_notfound2_mp3.txt"
   val NOTFOUNDLRCFILE = "_notfound2_lrc.txt"
+  var fileForChoose = "/storage/emulated/0/xMx/77/79.txt"
 
   // !!! Turn OFF service for debug
 //  val runSERVICE = true
@@ -81,9 +82,14 @@ class MainActivity: ComponentActivity() {
   }
 
   fun readFile(filename: String): String {
-    return libFileIO.readFile(filename)
-//    Logd("Content ->$EOL[$content]$EOL<-")
-//    return content
+    var res = ""
+//    add2MainLog("Reading file '$filename'...")
+    if (libFileIO.canReadPath(filename)) {
+      res = libFileIO.readFile(filename)
+//    } else {
+//      add2MainLog("Can't read file '$filename'")
+    }
+    return res
   }
 
   // for listen service
@@ -130,8 +136,9 @@ class MainActivity: ComponentActivity() {
       showTranslateButton = rememberSaveable { mutableStateOf(false) }
       showToolDialog = rememberSaveable { mutableStateOf(true) }
       msgMainLog = remember { mutableStateOf("MAIN LOG:$EOL") }
+      chosenFileName  = remember { mutableStateOf(fileForChoose) }
 //          msgSetupLog = remember { mutableStateOf("SETUP LOG:$EOL") }
-      MainScreen().ShowMainScreen(mainActivity, setupScreen)
+      MainScreen().ShowMainScreen(mainActivity)
 //      setupScreen.SetupDialog(mainActivity, showSetupDialog)
 //      toolScreen.ToolDialog(mainActivity, showToolDialog)
 //        }
@@ -146,6 +153,7 @@ class MainActivity: ComponentActivity() {
   lateinit var showToolDialog: MutableState<Boolean>
   lateinit var msgMainLog: MutableState<String>
   var msgSetupLog: MutableState<String>? = null
+  var chosenFileName: MutableState<String>? = null
 
   fun add2SetupLog(msg: String) {
     Logd(msg)
