@@ -101,10 +101,7 @@ class SetupScreen(val main: MainActivity): ComponentActivity() {
     _msgSetupLog += "TXT    : '$_txtpath' [$accessTxt]$EOL"
     _msgSetupLog += "TXT uri: '$_txturi'$EOL"
 
-//    if (main.msgSetupLog == null) {
-      main.msgSetupLog = remember { mutableStateOf(_msgSetupLog) }
-//    }
-//    main.add2SetupLog(_msgSetupLog)
+    main.msgSetupLog = remember { mutableStateOf(_msgSetupLog) }
 
     Dialog(
       onDismissRequest = { main.showSetupDialog.value = false },

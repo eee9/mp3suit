@@ -22,6 +22,7 @@ import com.maix.lib.FileURI
 import com.maix.lib.Maix
 import com.maix.mp3suit.Translate.Keys.LANG_OF
 import com.maix.mp3suit.Translate.Keys.LANG_TO
+import com.maix.mp3suit.Translate.Keys.LAST_FILE
 import com.maix.mp3suit.SetupScreen.Keys.MXPREF
 import com.maix.mp3suit.SetupScreen.Keys.SUFFIX
 
@@ -119,8 +120,6 @@ class MainActivity: ComponentActivity() {
       libFileURI.initMapExt(it)
     }
 
-
-
     setContent {
 //      Mp3suitTheme {
 ////              MainScreen().ShowScreen2(mainActivity)
@@ -133,7 +132,7 @@ class MainActivity: ComponentActivity() {
       showSetupButton = rememberSaveable { mutableStateOf(true) }
       showTestButton = rememberSaveable { mutableStateOf(true) }
       showTranslateButton = rememberSaveable { mutableStateOf(false) }
-      showToolDialog = rememberSaveable { mutableStateOf(true) }
+      showToolDialog = rememberSaveable { mutableStateOf(false) }
       msgMainLog = remember { mutableStateOf("MAIN LOG:$EOL") }
       chosenFileName  = remember { mutableStateOf(fileForChoose) }
 
@@ -141,8 +140,11 @@ class MainActivity: ComponentActivity() {
         val sharedPreferences: SharedPreferences = getSharedPreferences(MXPREF, MODE_PRIVATE)
         val langOf = sharedPreferences.getString(LANG_OF, null) ?: "English"
         val langTo = sharedPreferences.getString(LANG_TO, null) ?: "French"
+        val lastFilePath = sharedPreferences.getString(LAST_FILE, null) ?: fileForChoose
+        chosenFileName.value = lastFilePath
         libTranslate.setupTranslator(langOf, langTo)
       }
+
 
       mainScreen.ShowMainScreen()
 //      setupScreen.SetupDialog()
@@ -159,7 +161,7 @@ class MainActivity: ComponentActivity() {
   lateinit var showToolDialog: MutableState<Boolean>
   lateinit var msgMainLog: MutableState<String>
   var msgSetupLog: MutableState<String>? = null
-  var chosenFileName: MutableState<String>? = null
+  lateinit var chosenFileName: MutableState<String>
 
   fun add2SetupLog(msg: String) {
     Logd(msg)

@@ -105,7 +105,7 @@ class MainScreen(val main: MainActivity) {
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
       ) {
-        val filename = main.chosenFileName?.value ?: main.fileForChoose
+        val filename = main.chosenFileName.value ?: main.fileForChoose
         val content = main.readFile(filename)
 
         if (testMode) {

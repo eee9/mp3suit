@@ -1,7 +1,5 @@
 package com.maix.mp3suit
 
-import android.content.Context.MODE_PRIVATE
-import android.content.SharedPreferences
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -36,15 +34,14 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.maix.mp3suit.ui.theme.Purple80
+import com.maix.mp3suit.Translate.Keys.LAST_FILE
 
 class ToolScreen(val main: MainActivity) {
 
-//  val libTranslate = main.libTranslate
-
   @Composable
   fun ToolDialog() {
-    var selectedLangOf = remember { mutableStateOf(main.libTranslate.langOf) }
-    var selectedLangTo = remember { mutableStateOf(main.libTranslate.langTo) }
+    val selectedLangOf = remember { mutableStateOf(main.libTranslate.langOf) }
+    val selectedLangTo = remember { mutableStateOf(main.libTranslate.langTo) }
     Dialog(
       onDismissRequest = { main.showToolDialog.value = false },
       properties = DialogProperties(
@@ -160,7 +157,8 @@ class ToolScreen(val main: MainActivity) {
       contract = ActivityResultContracts.GetContent(),
       onResult = { uri: Uri? ->
         if (uri != null) {
-          main.chosenFileName?.value = main.libFileURI.takeAbsolutePathFromUri(uri)
+          main.chosenFileName.value = main.libFileURI.takeAbsolutePathFromUri(uri)
+          main.SaveInShared(LAST_FILE, main.chosenFileName.value)
         }
       }
     )

@@ -1,24 +1,20 @@
 package com.maix.mp3suit
 
-import android.content.Context.MODE_PRIVATE
-import android.content.SharedPreferences
 import android.util.Log
-import androidx.core.content.edit
 import com.google.mlkit.common.model.DownloadConditions
 import com.google.mlkit.nl.translate.TranslateLanguage
 import com.google.mlkit.nl.translate.Translation
 import com.google.mlkit.nl.translate.TranslatorOptions
 import com.maix.mp3suit.MainActivity.Const.TAG
-import com.maix.mp3suit.SetupScreen.Keys.MXPREF
-
 
 class Translate(val main: MainActivity) {
   fun Logd(msg: String) {
     Log.d(TAG, msg)
   }
   companion object Keys {
-    val LANG_OF = "lang_of"
-    val LANG_TO = "lang_to"
+    val LANG_OF   = "lang_of"
+    val LANG_TO   = "lang_to"
+    val LAST_FILE = "last_file"
   }
 
   val EOL = "\n"
@@ -104,17 +100,27 @@ class Translate(val main: MainActivity) {
       }
    }
 
+  val DELIM = "乌克兰 " // some wierd trick, 'cause translator removes EOLs in translated text
   fun translateText(originalText: String) {
+    val t1 = originalText.replace("\n", DELIM)
     commonTranslator
-      .translate(originalText)
+      .translate(t1)
       .addOnSuccessListener { translatedText ->
         val msg1 = "$EOL[$langOfUpper]:$EOL$originalText$EOL"
-        val translatedTextUpd = translatedText.replace("[", "$EOL[").trim()
+        val msg1_ = "$EOL[1_]:$EOL$t1$EOL"
+        val msg2_ = "$EOL[2_]:$EOL$translatedText$EOL"
+//        val translatedTextUpd = translatedText.replace("[", "$EOL[").trim()
+        val translatedTextUpd = translatedText.replace(DELIM, "\n").trim()
         val msg2 = "$EOL[$langToUpper]:$EOL$translatedTextUpd$EOL"
-//        Logd(msg1)
+        Logd(msg1)
+        Logd(msg1_)
+        Logd(msg2_)
         Logd(msg2)
-//        main.add2MainLog(msg1)
-        main.add2MainLog(msg2)
+        val newFileName = main.chosenFileName.value.replace(".txt", ".22.txt")
+        main.libFileIO.writeString2File(newFileName, msg2, false)
+        main.add2MainLog(msg1 + msg1_ + msg2_ + msg2)
+//        main.add2MainLog(msg1_)
+//        main.add2MainLog(msg2)
       }
       .addOnFailureListener { exception ->
         Logd("Translate ERR: [$exception]")
