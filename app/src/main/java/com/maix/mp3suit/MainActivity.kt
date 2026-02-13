@@ -32,7 +32,8 @@ class MainActivity: ComponentActivity() {
   val LOGFILENAME = "mp3suit_log.txt"
   val NOTFOUNDMP3FILE = "_notfound2_mp3.txt"
   val NOTFOUNDLRCFILE = "_notfound2_lrc.txt"
-  var fileForChoose = "/storage/emulated/0/xMx/77/79.txt"
+//  var fileForChoose = "/storage/emulated/0/xMx/77/79.txt"
+  val fileForChoose = "/storage/emulated/0/Pictures/88/79.txt"
 
   // !!! Turn OFF service for debug
 //  val runSERVICE = true
@@ -73,7 +74,8 @@ class MainActivity: ComponentActivity() {
   val mainScreen = MainScreen(this)
   val setupScreen = SetupScreen(this)
   val toolScreen = ToolScreen(this)
-  var libTranslate: Translate = Translate(this)
+  val libTranslate: Translate = Translate(this)
+  val mxTests = Tests(this)
   var context: Context? = null
 
   fun Toast(msg: String) {

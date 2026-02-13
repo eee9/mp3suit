@@ -25,6 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.android.gms.tasks.Tasks.await
 import com.maix.mp3suit.MainActivity.Const.TAG
 import com.maix.mp3suit.ui.theme.MxCyan
 
@@ -112,11 +113,12 @@ class MainScreen(val main: MainActivity) {
           // Test button
           ButtonMx(onClick = {
             main.Toast("Test pressed")
-            if (content.isNotEmpty()) {
-              main.add2MainLog(content)
-            } else {
-              main.add2MainLog("No data in '$filename'")
-            }
+            main.mxTests.runTest()
+//            if (content.isNotEmpty()) {
+//              main.add2MainLog(content)
+//            } else {
+//              main.add2MainLog("No data in '$filename'")
+//            }
           }, enabled = main.showTestButton.value) {
             Text("Test")
           }

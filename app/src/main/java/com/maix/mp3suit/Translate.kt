@@ -6,6 +6,11 @@ import com.google.mlkit.nl.translate.TranslateLanguage
 import com.google.mlkit.nl.translate.Translation
 import com.google.mlkit.nl.translate.TranslatorOptions
 import com.maix.mp3suit.MainActivity.Const.TAG
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 
 class Translate(val main: MainActivity) {
   fun Logd(msg: String) {
@@ -116,15 +121,47 @@ class Translate(val main: MainActivity) {
         Logd(msg1_)
         Logd(msg2_)
         Logd(msg2)
-        val newFileName = main.chosenFileName.value.replace(".txt", ".22.txt")
-        main.libFileIO.writeString2File(newFileName, msg2, false)
-        main.add2MainLog(msg1 + msg1_ + msg2_ + msg2)
-//        main.add2MainLog(msg1_)
-//        main.add2MainLog(msg2)
+//        val newFileName = main.chosenFileName.value.replace(".txt", ".22.txt")
+//        main.libFileIO.writeString2File(newFileName, msg2, false)
+//        main.add2MainLog(msg1 + msg1_ + msg2_ + msg2)
+        main.add2MainLog(msg1)
+        main.add2MainLog(msg2)
       }
       .addOnFailureListener { exception ->
         Logd("Translate ERR: [$exception]")
       }
+  }
+
+  fun stringToDeferred(data: String): Deferred<String> {
+    val deferred = CompletableDeferred<String>()
+    // Immediately complete the deferred with the given string
+    deferred.complete(data)
+    return deferred
+  }
+
+  // Translate line by line, 'cause the translator is very ....
+  suspend fun translateText2(originalText: String)  {
+    val lines: List<String> = originalText.split(EOL)
+//    val result: MutableList<String> = arrayListOf()
+    val deferredResults = mutableListOf<Deferred<String>>()
+    lines.forEach { line ->
+      commonTranslator
+        .translate(line)
+        .addOnSuccessListener { translatedLine: String ->
+//          main.add2MainLog(" 1: $line")
+//          main.add2MainLog(" 2: $translatedLine")
+          val dres: Deferred<String> = stringToDeferred(translatedLine)
+          deferredResults.add(dres)
+//          result.add(translatedLine)
+        }
+        .addOnFailureListener { exception ->
+          Logd("Translate ERR: [$exception]")
+        }
+    }
+    val results = deferredResults.awaitAll()
+    val translatedText = results.joinToString()
+    main.add2MainLog("ORIGINAL:$EOL$originalText")
+    main.add2MainLog("TRANSLATE:$EOL$translatedText")
   }
 
 }
