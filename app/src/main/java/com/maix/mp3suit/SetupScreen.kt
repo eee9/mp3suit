@@ -38,19 +38,21 @@ import com.maix.mp3suit.MainActivity.Companion.EOL
 import com.maix.mp3suit.ui.theme.MxCyan
 import com.maix.mp3suit.ui.theme.MxGreen
 
-class SetupScreen: ComponentActivity() {
+class SetupScreen(val main: MainActivity): ComponentActivity() {
   val TAG = "xMx5"
   fun Logd(msg: String) {
     Log.d(TAG, msg)
   }
 
   companion object {
-    val MXPREF = "MXPREF2"
-    val SUFFIX = "_URI"
-    val KEYMP3 = "mp3path"
-    val KEYLOG = "logpath"
-    val KEYTXT = "textpath"
-    val KEYLRC = "lyricpath"
+    val MXPREF  = "MXPREF2"
+    val SUFFIX  = "_URI"
+    val KEYMP3  = "mp3path"
+    val KEYLOG  = "logpath"
+    val KEYTXT  = "textpath"
+    val KEYLRC  = "lyricpath"
+    val LANG_OF = "lang_of"
+    val LANG_TO = "lang_to"
   }
 
   lateinit var mp3path: MutableState<String>
@@ -63,7 +65,7 @@ class SetupScreen: ComponentActivity() {
   lateinit var txtpath: MutableState<String>
 
   @Composable
-  fun SetupDialog(main: MainActivity, showSetupDialog: MutableState<Boolean>) {
+  fun SetupDialog() {
 
     val sharedPreferences: SharedPreferences = main.getSharedPreferences(MXPREF, MODE_PRIVATE)
     val _mp3path = sharedPreferences.getString(KEYMP3, null) ?: "No MP3 path found."
@@ -107,7 +109,7 @@ class SetupScreen: ComponentActivity() {
 //    main.add2SetupLog(_msgSetupLog)
 
     Dialog(
-      onDismissRequest = { showSetupDialog.value = false },
+      onDismissRequest = { main.showSetupDialog.value = false },
       properties = DialogProperties(
         usePlatformDefaultWidth = false, // Crucial for full width
         decorFitsSystemWindows = false // Optional: allows drawing under system bars
@@ -233,7 +235,7 @@ class SetupScreen: ComponentActivity() {
     Button(
       onClick = {
 //        main.addMessage("Change:")
-        main.openDirectory0(key, path, uri.value)
+        main.openDirectory(key, path, uri.value)
 //        openDirectory(main, key, path, uri.value)
       },
       shape = RoundedCornerShape(4.dp),

@@ -39,6 +39,9 @@ class MainScreen {
     Log.d(TAG, msg)
   }
 
+  val testMode = true
+//  val testMode = false
+
   @Composable
   fun ShowMainScreen(main: MainActivity) {
     Column(modifier = Modifier
@@ -48,10 +51,10 @@ class MainScreen {
     ) {
       Header(main)
       // Body
-      var largeText by remember { mutableStateOf("...") }
+//      var largeText by remember { mutableStateOf("...") }
       OutlinedTextField(
         value = main.msgMainLog.value,
-        onValueChange = { largeText = it },
+        onValueChange = { /* largeText = it */ },
         label = { Text("Logging", color = Color.Black) },
         modifier = Modifier
 //          .background(Color.LightGray)
@@ -109,42 +112,44 @@ class MainScreen {
         val filename = main.chosenFileName?.value ?: main.fileForChoose
         val content = main.readFile(filename)
 
-        // Test button
-        ButtonMx(onClick = {
-          main.Toast("Test pressed")
-          if (content.isNotEmpty()) {
-            main.add2MainLog(content)
-          } else {
-            main.add2MainLog("No data in '$filename'")
+        if (testMode) {
+          // Test button
+          ButtonMx(onClick = {
+            main.Toast("Test pressed")
+            if (content.isNotEmpty()) {
+              main.add2MainLog(content)
+            } else {
+              main.add2MainLog("No data in '$filename'")
+            }
+          }, enabled = main.showTestButton.value) {
+            Text("Test")
           }
-        }, enabled = main.showTestButton.value) {
-          Text("Test")
-        }
 
-        // Translate button
-        if (main.runTRANSLATE) {
-          Button(
-            onClick = {
-              main.Toast("Translate pressed")
+          // Translate button
+          if (main.runTRANSLATE) {
+            Button(
+              onClick = {
+                main.Toast("Translate pressed")
 //              val translator = main.translator
-              if (content.isEmpty()) {
-                main.add2MainLog("Nothing to translate in '$filename'")
-              } else {
-                main.translator.translateText(content)
-              }
+                if (content.isEmpty()) {
+                  main.add2MainLog("Nothing to translate in '$filename'")
+                } else {
+                  main.libTranslate.translateText(content)
+                }
 //              val langToUpper = translator.langToUpper
 //              val msg = "[$langToUpper]: $translated"
 //              Logd(msg)
 //              main.add2MainLog(msg)
 //              main.showSetupButton.value = !main.showSetupButton.value
-            }, enabled = main.showTranslateButton.value) {
-            Text("Translate")
+              }, enabled = main.showTranslateButton.value
+            ) {
+              Text("Translate")
+            }
           }
         }
-
-        // Clear button
+        // Clean button
         Button(onClick = { main.msgMainLog.value = "" }) {
-          Text("Clear log")
+          Text("Clean")
         }
 
         // Tools button
@@ -152,7 +157,7 @@ class MainScreen {
           Text("Tools")
         }
         if (main.showToolDialog.value) {
-          main.toolScreen.ToolDialog(main)
+          main.toolScreen.ToolDialog()
         }
 
         // Setup button
@@ -160,7 +165,7 @@ class MainScreen {
           Text("Setup")
         }
         if (main.showSetupDialog.value) {
-          main.setupScreen.SetupDialog(main, main.showSetupDialog)
+          main.setupScreen.SetupDialog()
         }
 
         // Exit button

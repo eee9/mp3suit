@@ -20,12 +20,14 @@ import androidx.core.net.toUri
 import com.maix.lib.FileIO
 import com.maix.lib.FileURI
 import com.maix.lib.Maix
+import com.maix.mp3suit.SetupScreen.Companion.LANG_OF
+import com.maix.mp3suit.SetupScreen.Companion.LANG_TO
 import com.maix.mp3suit.SetupScreen.Companion.MXPREF
 import com.maix.mp3suit.SetupScreen.Companion.SUFFIX
 
 class MainActivity: ComponentActivity() {
 
-  val version = "mp3suit (ver 0.5.4, Q2C)"
+  val version = "mp3suit (ver 0.5.5, Q2D)"
   val LOGFILENAME = "mp3suit_log.txt"
   val NOTFOUNDMP3FILE = "_notfound2_mp3.txt"
   val NOTFOUNDLRCFILE = "_notfound2_lrc.txt"
@@ -67,9 +69,9 @@ class MainActivity: ComponentActivity() {
   val libMaix = Maix()
   val libFileIO = FileIO()
   val libFileURI = FileURI()
-  val setupScreen = SetupScreen()
-  val toolScreen = ToolScreen()
-  val translator = Translate(this)
+  val setupScreen = SetupScreen(this)
+  val toolScreen = ToolScreen(this)
+  var libTranslate: Translate = Translate(this)
   var context: Context? = null
 
   fun Toast(msg: String) {
@@ -116,11 +118,7 @@ class MainActivity: ComponentActivity() {
       libFileURI.initMapExt(it)
     }
 
-//    setupScreen.Initializate(mainActivity)
 
-    if (runTRANSLATE) {
-      translator.downloadModel()
-    }
 
     setContent {
 //      Mp3suitTheme {
@@ -131,16 +129,23 @@ class MainActivity: ComponentActivity() {
 //      }
 //        Column {
       showSetupDialog = rememberSaveable { mutableStateOf(false) }
-      showSetupButton = rememberSaveable { mutableStateOf(false) }
+      showSetupButton = rememberSaveable { mutableStateOf(true) }
       showTestButton = rememberSaveable { mutableStateOf(true) }
       showTranslateButton = rememberSaveable { mutableStateOf(false) }
-      showToolDialog = rememberSaveable { mutableStateOf(true) }
+      showToolDialog = rememberSaveable { mutableStateOf(false) }
       msgMainLog = remember { mutableStateOf("MAIN LOG:$EOL") }
       chosenFileName  = remember { mutableStateOf(fileForChoose) }
-//          msgSetupLog = remember { mutableStateOf("SETUP LOG:$EOL") }
+
+      if (runTRANSLATE) {
+        val sharedPreferences: SharedPreferences = getSharedPreferences(MXPREF, MODE_PRIVATE)
+        val langOf = sharedPreferences.getString(LANG_OF, null) ?: "English"
+        val langTo = sharedPreferences.getString(LANG_TO, null) ?: "French"
+        libTranslate.setupTranslator(langOf, langTo)
+      }
+
       MainScreen().ShowMainScreen(mainActivity)
-//      setupScreen.SetupDialog(mainActivity, showSetupDialog)
-//      toolScreen.ToolDialog(mainActivity, showToolDialog)
+//      setupScreen.SetupDialog()
+//      toolScreen.ToolDialog(mainActivity)
 //        }
 //      }
     }
@@ -168,7 +173,7 @@ class MainActivity: ComponentActivity() {
   // Initialize the ActivityResultLauncher
   var proxyState: MutableState<String>? = null
   var proxyKey: String = ""
-  fun openDirectory0(key: String, text: MutableState<String>, uri: String) {
+  fun openDirectory(key: String, text: MutableState<String>, uri: String) {
     if (text.value.isNotEmpty()) {
       proxyState = text
       proxyKey = key
