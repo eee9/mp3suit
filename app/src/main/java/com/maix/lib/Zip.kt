@@ -1,6 +1,6 @@
 package com.maix.lib
 
-import com.maix.mp3suit.MainActivity.Companion.Logd
+import android.util.Log
 import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileInputStream
@@ -10,6 +10,11 @@ import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 
 class Zip {
+
+  val TAG = "xMx Zip"
+  fun Logd(msg: String) {
+    Log.d(TAG, msg)
+  }
   //==============================================================================================
   fun readFileInZip(zipFile: String, file: String, outFile: String): Boolean {
     var res = false

@@ -20,10 +20,10 @@ import androidx.core.net.toUri
 import com.maix.lib.FileIO
 import com.maix.lib.FileURI
 import com.maix.lib.Maix
-import com.maix.mp3suit.SetupScreen.Companion.LANG_OF
-import com.maix.mp3suit.SetupScreen.Companion.LANG_TO
-import com.maix.mp3suit.SetupScreen.Companion.MXPREF
-import com.maix.mp3suit.SetupScreen.Companion.SUFFIX
+import com.maix.mp3suit.Translate.Keys.LANG_OF
+import com.maix.mp3suit.Translate.Keys.LANG_TO
+import com.maix.mp3suit.SetupScreen.Keys.MXPREF
+import com.maix.mp3suit.SetupScreen.Keys.SUFFIX
 
 class MainActivity: ComponentActivity() {
 
@@ -40,7 +40,7 @@ class MainActivity: ComponentActivity() {
   val runTRANSLATE = true
 //  val runTRANSLATE = false
 
-  companion object {
+  companion object Const {
     const val TAG = "xMx3"
     val EOL = "\n"
     val SLASH = "/"
@@ -69,6 +69,7 @@ class MainActivity: ComponentActivity() {
   val libMaix = Maix()
   val libFileIO = FileIO()
   val libFileURI = FileURI()
+  val mainScreen = MainScreen(this)
   val setupScreen = SetupScreen(this)
   val toolScreen = ToolScreen(this)
   var libTranslate: Translate = Translate(this)
@@ -132,7 +133,7 @@ class MainActivity: ComponentActivity() {
       showSetupButton = rememberSaveable { mutableStateOf(true) }
       showTestButton = rememberSaveable { mutableStateOf(true) }
       showTranslateButton = rememberSaveable { mutableStateOf(false) }
-      showToolDialog = rememberSaveable { mutableStateOf(false) }
+      showToolDialog = rememberSaveable { mutableStateOf(true) }
       msgMainLog = remember { mutableStateOf("MAIN LOG:$EOL") }
       chosenFileName  = remember { mutableStateOf(fileForChoose) }
 
@@ -143,9 +144,9 @@ class MainActivity: ComponentActivity() {
         libTranslate.setupTranslator(langOf, langTo)
       }
 
-      MainScreen().ShowMainScreen(mainActivity)
+      mainScreen.ShowMainScreen()
 //      setupScreen.SetupDialog()
-//      toolScreen.ToolDialog(mainActivity)
+//      toolScreen.ToolDialog()
 //        }
 //      }
     }
@@ -167,6 +168,11 @@ class MainActivity: ComponentActivity() {
   fun add2MainLog(msg: String) {
     Logd(msg)
     msgMainLog.value += msg + EOL
+  }
+
+  fun SaveInShared(key: String, value: String) {
+    val sharedPreferences: SharedPreferences = getSharedPreferences(MXPREF, MODE_PRIVATE)
+    sharedPreferences.edit { putString(key, value) }
   }
 
   //==============================================================================================

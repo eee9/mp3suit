@@ -1,17 +1,26 @@
 package com.maix.mp3suit
 
+import android.content.Context.MODE_PRIVATE
+import android.content.SharedPreferences
 import android.util.Log
+import androidx.core.content.edit
 import com.google.mlkit.common.model.DownloadConditions
 import com.google.mlkit.nl.translate.TranslateLanguage
 import com.google.mlkit.nl.translate.Translation
 import com.google.mlkit.nl.translate.TranslatorOptions
-import com.maix.mp3suit.MainActivity.Companion.TAG
+import com.maix.mp3suit.MainActivity.Const.TAG
+import com.maix.mp3suit.SetupScreen.Keys.MXPREF
 
 
 class Translate(val main: MainActivity) {
   fun Logd(msg: String) {
     Log.d(TAG, msg)
   }
+  companion object Keys {
+    val LANG_OF = "lang_of"
+    val LANG_TO = "lang_to"
+  }
+
   val EOL = "\n"
 
   val mapLanguage = hashMapOf(
@@ -68,6 +77,7 @@ class Translate(val main: MainActivity) {
     commonTranslator = Translation.getClient(options)
 
     downloadModel()
+
   }
 
   fun downloadModel() {
@@ -84,6 +94,8 @@ class Translate(val main: MainActivity) {
         Logd(msg)
         main.Toast(msg)
         main.showTranslateButton.value = true
+        main.SaveInShared(LANG_OF, langOf)
+        main.SaveInShared(LANG_TO, langTo)
       }
       .addOnFailureListener { exception ->
         val msg = "Model download failed: [$exception]"

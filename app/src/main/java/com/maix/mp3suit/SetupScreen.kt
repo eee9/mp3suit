@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.maix.mp3suit.MainActivity.Companion.EOL
+import com.maix.mp3suit.MainActivity.Const.EOL
 import com.maix.mp3suit.ui.theme.MxCyan
 import com.maix.mp3suit.ui.theme.MxGreen
 
@@ -44,15 +44,13 @@ class SetupScreen(val main: MainActivity): ComponentActivity() {
     Log.d(TAG, msg)
   }
 
-  companion object {
+  companion object Keys {
     val MXPREF  = "MXPREF2"
     val SUFFIX  = "_URI"
     val KEYMP3  = "mp3path"
     val KEYLOG  = "logpath"
     val KEYTXT  = "textpath"
     val KEYLRC  = "lyricpath"
-    val LANG_OF = "lang_of"
-    val LANG_TO = "lang_to"
   }
 
   lateinit var mp3path: MutableState<String>

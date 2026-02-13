@@ -1,5 +1,7 @@
 package com.maix.mp3suit
 
+import android.content.Context.MODE_PRIVATE
+import android.content.SharedPreferences
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -8,9 +10,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -38,6 +39,8 @@ import com.maix.mp3suit.ui.theme.Purple80
 
 class ToolScreen(val main: MainActivity) {
 
+//  val libTranslate = main.libTranslate
+
   @Composable
   fun ToolDialog() {
     var selectedLangOf = remember { mutableStateOf(main.libTranslate.langOf) }
@@ -51,25 +54,42 @@ class ToolScreen(val main: MainActivity) {
     ) {
       Surface(
         modifier = Modifier
-          .fillMaxWidth(0.93f),
+          .fillMaxWidth(0.70f),
         shape = MaterialTheme.shapes.large,
         color = MaterialTheme.colorScheme.surface,
         contentColor = contentColorFor(MaterialTheme.colorScheme.surface)
       ) {
         Column(modifier = Modifier
-//          .fillMaxHeight(fraction = 0.7f)
+          .fillMaxHeight(fraction = 0.70f)
           .background(Purple80)
           .padding(6.dp)
         ) {
-          Text("Tools Screen", style = MaterialTheme.typography.titleLarge, fontSize = 16.sp)
-          ChooseLang(selectedLangOf)
-          ChooseLang(selectedLangTo)
-          Text(
-            main.chosenFileName?.value ?: "No file chosen",
-            style = MaterialTheme.typography.titleLarge,
-            fontSize = 14.sp,
-            modifier = Modifier.padding(10.dp))
-          ChooseFileButton(main)
+          Text("Tools Screen (uncompleted)", style = MaterialTheme.typography.titleLarge, fontSize = 16.sp)
+          Row(
+            modifier = Modifier
+              .fillMaxWidth()
+              .padding(1.dp),
+//            horizontalArrangement = Arrangement.SpaceEvenly,
+//            verticalAlignment = Alignment.CenterVertically
+          ) {
+            ChooseLang(selectedLangOf)
+            ChooseLang(selectedLangTo)
+          }
+          Row(
+            modifier = Modifier
+              .fillMaxWidth()
+              .padding(1.dp),
+//            horizontalArrangement = Arrangement.SpaceEvenly,
+//            verticalAlignment = Alignment.CenterVertically
+          ) {
+            ChooseFileButton(main)
+            Text(
+              main.chosenFileName?.value ?: "No file chosen",
+              style = MaterialTheme.typography.titleLarge,
+              fontSize = 14.sp,
+              modifier = Modifier.padding(10.dp)
+            )
+          }
           Row(
             modifier = Modifier
               .fillMaxWidth()
@@ -79,9 +99,11 @@ class ToolScreen(val main: MainActivity) {
           ) {
 
             Button(onClick = {
-              val msg = "Langs chosen: '${selectedLangOf.value}' -> '${selectedLangTo.value}'"
-              main.Toast(msg)
-              main.libTranslate.setupTranslator(selectedLangOf.value, selectedLangTo.value)
+              if (selectedLangOf.value != main.libTranslate.langOf || selectedLangTo.value != main.libTranslate.langTo) {
+                val msg = "Langs chosen: '${selectedLangOf.value}' -> '${selectedLangTo.value}'"
+                main.Toast(msg)
+                main.libTranslate.setupTranslator(selectedLangOf.value, selectedLangTo.value)
+              }
               main.showToolDialog.value = false
             }) {
               Text(" OK ")
@@ -99,14 +121,7 @@ class ToolScreen(val main: MainActivity) {
     // State to hold the currently selected option.
     var selectedOption by remember { mutableStateOf(lang) }
 
-    Column(
-      modifier = Modifier
-        .fillMaxWidth()
-        .padding(16.dp),
-      horizontalAlignment = Alignment.CenterHorizontally,
-      verticalArrangement = Arrangement.Center
-    ) {
-      Box(contentAlignment = Alignment.Center) {
+      Box(contentAlignment = Alignment.Center, modifier = Modifier.padding(16.dp)) {
         // Button to open the dropdown menu
         Button(onClick = { expanded = true }) {
           Text(text = selectedOption.value)
@@ -135,9 +150,7 @@ class ToolScreen(val main: MainActivity) {
           }
         }
       }
-//      Spacer(modifier = Modifier.height(20.dp))
-//      Text(text = "Selected: $selectedOption", style = MaterialTheme.typography.bodyLarge)
-    }
+
   }
 
   //==============================================================================================

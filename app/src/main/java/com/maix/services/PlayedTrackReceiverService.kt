@@ -8,8 +8,8 @@ import android.os.IBinder
 import android.os.Message
 import android.os.Messenger
 import android.util.Log
-import com.maix.mp3suit.SetupScreen.Companion.KEYMP3
-import com.maix.mp3suit.SetupScreen.Companion.MXPREF
+import com.maix.mp3suit.SetupScreen.Keys.KEYMP3
+import com.maix.mp3suit.SetupScreen.Keys.MXPREF
 
 class PlayedTrackReceiverService : Service(), PlayedTrackReceiverInterface {
   companion object {
