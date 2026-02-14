@@ -8,9 +8,7 @@ import com.google.mlkit.nl.translate.TranslatorOptions
 import com.maix.mp3suit.MainActivity.Const.TAG
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
 
 class Translate(val main: MainActivity) {
   fun Logd(msg: String) {
@@ -121,15 +119,68 @@ class Translate(val main: MainActivity) {
         Logd(msg1_)
         Logd(msg2_)
         Logd(msg2)
-//        val newFileName = main.chosenFileName.value.replace(".txt", ".22.txt")
-//        main.libFileIO.writeString2File(newFileName, msg2, false)
+        val arrOrigin = originalText.split(EOL)
+        val arrTranslated = translatedTextUpd.split(EOL)
+//    main.add2MainLog("Lines 1 = [${arr1.size}]")
+//    main.add2MainLog("Lines 2 = [${arr2.size}]\n")
+//    listOfTimes(arr1)
+        val mapTr = getTranslatedMap(arrTranslated)
+        val newLrc = createNewLrc(arrOrigin, mapTr)
+        main.msgMainLog.value = ""
+        main.add2MainLog(newLrc)
+        val newFileName = main.chosenFileName.value.replace(".lrc", ".4.lrc")
+        main.libFileIO.writeString2File(newFileName, newLrc, false)
 //        main.add2MainLog(msg1 + msg1_ + msg2_ + msg2)
-        main.add2MainLog(msg1)
-        main.add2MainLog(msg2)
+//        main.add2MainLog(msg1)
+//        main.add2MainLog(msg2)
       }
       .addOnFailureListener { exception ->
         Logd("Translate ERR: [$exception]")
       }
+  }
+
+  val timeRx = Regex("(\\[[0-9].+])(.+)")
+  fun createNewLrc(arr: List<String>, trans: Map<String, String>): String {
+    val res = mutableListOf<String>()
+    arr.forEach {
+      if (it.contains("# http")) { // for info in the end of files
+        res.add(it)
+      } else {
+        val matchResult = timeRx.find(it)
+        if (matchResult == null) {
+          res.add(it)
+        } else {
+          if (matchResult.groups.size > 2) {
+            val time: String = matchResult.groups[1]?.value.toString()
+            val text: String = matchResult.groups[2]?.value.toString()
+            if (text.trim().isEmpty()) res.add(time) // for empty line translate isn't need
+            else {
+              val textTr: String = trans[time] ?: ""
+              res.add("$time $text")
+              res.add("$time${textTr.trim()}")
+            }
+          } else {
+            res.add(it)
+          }
+        }
+      }
+    }
+    return res.joinToString(EOL)
+  }
+  fun getTranslatedMap(arr: List<String>): Map<String, String> {
+    val res =  mutableMapOf<String, String>()
+    arr.forEach {
+      val matchResult = timeRx.find(it)
+      if (matchResult != null) {
+        if (matchResult.groups.size > 2) {
+          val time: String = matchResult.groups[1]?.value.toString()
+          val text: String = matchResult.groups[2]?.value.toString()
+          val time_upd = time.replace(" ", "")
+          res[time_upd] = text
+        }
+      }
+    }
+    return res
   }
 
   fun stringToDeferred(data: String): Deferred<String> {
