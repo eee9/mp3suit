@@ -11,12 +11,26 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.core.content.edit
 import androidx.core.net.toUri
+import androidx.lifecycle.lifecycleScope
 import com.maix.lib.FileIO
 import com.maix.lib.FileURI
 import com.maix.lib.Maix
@@ -25,6 +39,8 @@ import com.maix.mp3suit.Translate.Keys.LANG_TO
 import com.maix.mp3suit.Translate.Keys.LAST_FILE
 import com.maix.mp3suit.SetupScreen.Keys.MXPREF
 import com.maix.mp3suit.SetupScreen.Keys.SUFFIX
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 class MainActivity: ComponentActivity() {
 
@@ -104,7 +120,9 @@ class MainActivity: ComponentActivity() {
     Logd("Main OnDestroy")
     if (runSERVICE) libMaix.doUnbindService(this)
   }
-
+  
+  var jobWebview: Job? = null
+  var jobControl: Job? = null
   //==============================================================================================
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -121,8 +139,26 @@ class MainActivity: ComponentActivity() {
     context?.let {
       libFileURI.initMapExt(it)
     }
-
-    setContent {
+    
+    //==============================================================================================
+    fun translateCallBack(msg: String) {
+      Logd("TRANSLATED msg: '$msg'")
+    }
+    val translateG = TranslateG()
+    jobWebview = lifecycleScope.launch {
+      setContent {
+        MaterialTheme {
+          translateG.WebView4Translate(jobControl, callback = { translateCallBack(it) })
+        }
+      }
+    }
+    jobControl = lifecycleScope.launch {
+      translateG.controlJob(1000, jobWebview, callback = { translateCallBack(it) })
+    }
+    //==============================================================================================
+    
+    if (false) {
+      setContent {
 //      Mp3suitTheme {
 ////              MainScreen().ShowScreen2(mainActivity)
 //        showSetupDialog = rememberSaveable { mutableStateOf(false) }
@@ -130,29 +166,30 @@ class MainActivity: ComponentActivity() {
 //        MainScreen().ShowMainScreen(mainActivity, setupScreen)
 //      }
 //        Column {
-      showSetupDialog = rememberSaveable { mutableStateOf(false) }
-      showSetupButton = rememberSaveable { mutableStateOf(true) }
-      showTestButton = rememberSaveable { mutableStateOf(true) }
-      showTranslateButton = rememberSaveable { mutableStateOf(false) }
-      showToolDialog = rememberSaveable { mutableStateOf(false) }
-      msgMainLog = remember { mutableStateOf("MAIN LOG:$EOL") }
-      chosenFileName  = remember { mutableStateOf(fileForChoose) }
+        showSetupDialog = rememberSaveable { mutableStateOf(false) }
+        showSetupButton = rememberSaveable { mutableStateOf(true) }
+        showTestButton = rememberSaveable { mutableStateOf(true) }
+        showTranslateButton = rememberSaveable { mutableStateOf(false) }
+        showToolDialog = rememberSaveable { mutableStateOf(false) }
+        msgMainLog = remember { mutableStateOf("MAIN LOG:$EOL") }
+        chosenFileName = remember { mutableStateOf(fileForChoose) }
+        
+        if (runTRANSLATE) {
+          val sharedPreferences: SharedPreferences = getSharedPreferences(MXPREF, MODE_PRIVATE)
+          val langOf = sharedPreferences.getString(LANG_OF, null) ?: "English"
+          val langTo = sharedPreferences.getString(LANG_TO, null) ?: "French"
+          val lastFilePath = sharedPreferences.getString(LAST_FILE, null) ?: fileForChoose
+          chosenFileName.value = lastFilePath
+          libTranslate.setupTranslator(langOf, langTo)
+        }
 
-      if (runTRANSLATE) {
-        val sharedPreferences: SharedPreferences = getSharedPreferences(MXPREF, MODE_PRIVATE)
-        val langOf = sharedPreferences.getString(LANG_OF, null) ?: "English"
-        val langTo = sharedPreferences.getString(LANG_TO, null) ?: "French"
-        val lastFilePath = sharedPreferences.getString(LAST_FILE, null) ?: fileForChoose
-        chosenFileName.value = lastFilePath
-        libTranslate.setupTranslator(langOf, langTo)
-      }
 
-
-      mainScreen.ShowMainScreen()
+//      mainScreen.ShowMainScreen()
 //      setupScreen.SetupDialog()
 //      toolScreen.ToolDialog()
 //        }
 //      }
+      }
     }
   }
 
