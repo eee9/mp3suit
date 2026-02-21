@@ -15,6 +15,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,6 +43,7 @@ class MainScreen(val main: MainActivity) {
 
   @Composable
   fun ShowMainScreen() {
+    val largeText = remember { mutableStateOf(main.msgMainLog.value) }
     Column(modifier = Modifier
       .fillMaxSize()
       .background(MxCyan)
@@ -50,9 +53,9 @@ class MainScreen(val main: MainActivity) {
       // Body
 //      var largeText by remember { mutableStateOf("...") }
       OutlinedTextField(
-        value = main.msgMainLog.value,
-        onValueChange = { /* largeText = it */ },
-        label = { Text("Logging", color = Color.Black) },
+        value = largeText.value,
+        onValueChange = { largeText.value = it },
+        label = { Text("Main log:", color = Color.Black) },
         modifier = Modifier
 //          .background(Color.LightGray)
           .fillMaxWidth()

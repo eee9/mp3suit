@@ -55,14 +55,12 @@ class MainActivity: ComponentActivity() {
 //  val runSERVICE = true
     val runSERVICE = false
   // !!! Turn OFF translate for debug
-  val runTRANSLATE = true
-//  val runTRANSLATE = false
+//  val runTRANSLATE = true
+  val runTRANSLATE = false
 
   companion object Const {
-    const val TAG = "xMx3"
     val EOL = "\n"
-    val SLASH = "/"
-
+    const val TAG = "xMx3"
     fun Logd(msg: String) {
       Log.d(TAG, msg)
     }
@@ -145,20 +143,24 @@ class MainActivity: ComponentActivity() {
       Logd("TRANSLATED msg: '$msg'")
     }
     val translateG = TranslateG()
-    jobWebview = lifecycleScope.launch {
-      setContent {
-        MaterialTheme {
-          translateG.WebView4Translate(jobControl, callback = { translateCallBack(it) })
-        }
-      }
-    }
-    jobControl = lifecycleScope.launch {
-      translateG.controlJob(1000, jobWebview, callback = { translateCallBack(it) })
-    }
+//    jobWebview = lifecycleScope.launch {
+//      setContent {
+//        MaterialTheme {
+//          translateG.WebView4Translate(jobControl, callback = { translateCallBack(it) })
+//        }
+//      }
+//    }
+
     //==============================================================================================
+    val msg = """
+      {1) It's line 1
+      {2) Sun is yellow
+    """.trimIndent()
     
-    if (false) {
+    if (true) {
       setContent {
+        translateG.WebView4Translate(jobControl, callback = { translateCallBack(it) },
+          msg, "en", "fr")
 //      Mp3suitTheme {
 ////              MainScreen().ShowScreen2(mainActivity)
 //        showSetupDialog = rememberSaveable { mutableStateOf(false) }
@@ -190,6 +192,9 @@ class MainActivity: ComponentActivity() {
 //        }
 //      }
       }
+    }
+    jobControl = lifecycleScope.launch {
+      translateG.controlJob(5000, jobWebview, callback = { translateCallBack(it) })
     }
   }
 

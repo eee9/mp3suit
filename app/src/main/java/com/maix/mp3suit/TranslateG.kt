@@ -2,6 +2,7 @@ package com.maix.mp3suit
 
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
+import android.util.Log
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.ComponentActivity
@@ -18,9 +19,15 @@ import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
 class TranslateG : ComponentActivity() {
+  
+  val TAG = "xMx3"
+  fun Logd(msg: String) {
+    Log.d(TAG, msg)
+  }
+  
   val EOL = "\n"
   val langOf = "en"
-  val langTo = "en"
+  val langTo = "fr"
 //  val langTo = "fr"
 //  val langTo = "it"
   val MARKB = "##"
@@ -31,16 +38,20 @@ class TranslateG : ComponentActivity() {
     "uk" to "стіна",
     "it" to "muro",
   )
-  val MARKWORDOF: String = MARKMAP[langOf] ?: "wall"
-  val MARKWORDTO: String = MARKMAP[langTo] ?: "mur"
+  var MARKWORDOF: String = MARKMAP[langOf] ?: "wall"
+  var MARKWORDTO: String = MARKMAP[langTo] ?: "mur"
 
   val textOrigin = "Some spark of text."
+//  val textOrigin = """
+//[01:04.88]Devant moi nébuleuses obscures
+//[01:10.83]Moi diffuse, j'ai fait ce que j'ai pu
+//"""
   var textTranslated: String = ""
   var pageFinished = false
   
 //  val url = "https://example.com/"
-    val url = "https://www.wufoo.com/gallery/templates/search/?s={ORIGIN}"
-//    val url = "https://translate.google.com/?sl={LANGOF}&tl={LANGTO}&text={ORIGIN}&op=translate"
+//    val url = "https://www.wufoo.com/gallery/templates/search/?s={ORIGIN}"
+    val url = "https://translate.google.com/?sl={LANGOF}&tl={LANGTO}&text={ORIGIN}&op=translate"
   
   fun encodeText(text: String): String {
     return URLEncoder.encode(text, StandardCharsets.UTF_8.name())
@@ -49,8 +60,8 @@ class TranslateG : ComponentActivity() {
     return URLDecoder.decode(text, StandardCharsets.UTF_8.name())
   }
   
-  val marksRxString ="$MARKB\\s+${MARKWORDTO}\\s+(.+?)\\s+$MARKE"
   fun findTextByMarks(rawText: String): String {
+    val marksRxString ="$MARKB\\s+${MARKWORDTO}\\s+(.+?)\\s+$MARKE"
     var res = ""
     val matchResult = marksRxString.toRegex().find(rawText)
     if (matchResult != null) {
@@ -94,17 +105,31 @@ class TranslateG : ComponentActivity() {
   
   @SuppressLint("SetJavaScriptEnabled")
   @Composable
-  fun WebView4Translate(control: Job?, callback: (String) -> Unit) {
+  fun WebView4Translate(
+    control: Job?,
+    callback: (String) -> Unit,
+    text: String = "",
+    lang_of: String = "",
+    lang_to: String = ""
+  ) {
     webView = remember { mutableListOf(null) }
     
-    val textMarked = "$MARKB\n $MARKWORDOF \n$textOrigin\n $MARKE"
+    val text2translate = text.ifEmpty { textOrigin }
+    val sLangOf = lang_of.ifEmpty { langOf }
+    val sLangTo = lang_to.ifEmpty { langTo }
+    val markOfNow: String = MARKMAP[sLangOf] ?: ""
+    if (markOfNow.isNotEmpty() && markOfNow.compareTo(MARKWORDOF) != 0) MARKWORDOF = markOfNow
+    val markToNow: String = MARKMAP[sLangTo] ?: ""
+    if (markToNow.isNotEmpty() && markToNow.compareTo(MARKWORDTO) != 0) MARKWORDTO = markToNow
+    val textMarked = "$MARKB $MARKWORDOF \n$text2translate\n $MARKE"
     val textEncoded = encodeText(textMarked)
     val urlFull: String = url
       .replace("{ORIGIN}", textEncoded)
-      .replace("{LANGOF}", langOf)
-      .replace("{LANGTO}", langTo)
+      .replace("{LANGOF}", sLangOf)
+      .replace("{LANGTO}", sLangTo)
+    Logd("Wv: [$sLangOf]->[$sLangTo] '$text2translate' {$MARKWORDOF}/{$MARKWORDTO}")
     Box(
-      modifier = Modifier.fillMaxSize(0.01f)
+      modifier = Modifier.fillMaxSize(1f)
     ) {
       // WebView
       AndroidView(
