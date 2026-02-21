@@ -53,8 +53,9 @@ class MainScreen(val main: MainActivity) {
       // Body
 //      var largeText by remember { mutableStateOf("...") }
       OutlinedTextField(
-        value = largeText.value,
-        onValueChange = { largeText.value = it },
+//        value = largeText.value,
+        value = main.msgMainLog.value,
+        onValueChange = { /* largeText.value = it */ },
         label = { Text("Main log:", color = Color.Black) },
         modifier = Modifier
 //          .background(Color.LightGray)
@@ -116,7 +117,9 @@ class MainScreen(val main: MainActivity) {
           // Test button
           ButtonMx(onClick = {
             main.Toast("Test pressed")
-            main.mxTests.runTest()
+            main.doWebview.value = true
+//            main.libTranslateG.WebView4Translate(main.jobControl, callback = { main.translateCallBack(it) })
+//            main.mxTests.runTest()
 //            if (content.isNotEmpty()) {
 //              main.add2MainLog(content)
 //            } else {

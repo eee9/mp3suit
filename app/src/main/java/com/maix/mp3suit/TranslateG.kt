@@ -49,9 +49,14 @@ class TranslateG : ComponentActivity() {
   var textTranslated: String = ""
   var pageFinished = false
   
+  val urls = listOf(
+    "https://example.com/",
+    "https://www.wufoo.com/gallery/templates/search/?s={ORIGIN}",
+    "https://translate.google.com/?sl={LANGOF}&tl={LANGTO}&text={ORIGIN}&op=translate",
+  )
 //  val url = "https://example.com/"
 //    val url = "https://www.wufoo.com/gallery/templates/search/?s={ORIGIN}"
-    val url = "https://translate.google.com/?sl={LANGOF}&tl={LANGTO}&text={ORIGIN}&op=translate"
+//    val url = "https://translate.google.com/?sl={LANGOF}&tl={LANGTO}&text={ORIGIN}&op=translate"
   
   fun encodeText(text: String): String {
     return URLEncoder.encode(text, StandardCharsets.UTF_8.name())
@@ -89,7 +94,7 @@ class TranslateG : ComponentActivity() {
   suspend fun controlJob(timeOut: Long, jobWebview: Job?, callback: (String) -> Unit) {
     delay(timeOut)
     jobWebview?.cancel()
-    callback("")
+    callback("NO TRANSLATE")
   }
   
   //================================================================================================
@@ -110,7 +115,8 @@ class TranslateG : ComponentActivity() {
     callback: (String) -> Unit,
     text: String = "",
     lang_of: String = "",
-    lang_to: String = ""
+    lang_to: String = "",
+    urlIdx: Int = 0,
   ) {
     webView = remember { mutableListOf(null) }
     
@@ -123,13 +129,14 @@ class TranslateG : ComponentActivity() {
     if (markToNow.isNotEmpty() && markToNow.compareTo(MARKWORDTO) != 0) MARKWORDTO = markToNow
     val textMarked = "$MARKB $MARKWORDOF \n$text2translate\n $MARKE"
     val textEncoded = encodeText(textMarked)
+    val url = urls[urlIdx]
     val urlFull: String = url
       .replace("{ORIGIN}", textEncoded)
       .replace("{LANGOF}", sLangOf)
       .replace("{LANGTO}", sLangTo)
-    Logd("Wv: [$sLangOf]->[$sLangTo] '$text2translate' {$MARKWORDOF}/{$MARKWORDTO}")
+    Logd("Tr GG: [$sLangOf]->[$sLangTo] {$MARKWORDOF}/{$MARKWORDTO}$EOL-->$EOL$text2translate$EOL<--")
     Box(
-      modifier = Modifier.fillMaxSize(1f)
+      modifier = Modifier.fillMaxSize(0.00f)
     ) {
       // WebView
       AndroidView(

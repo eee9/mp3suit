@@ -11,23 +11,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import androidx.core.content.edit
 import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
@@ -89,6 +76,7 @@ class MainActivity: ComponentActivity() {
   val setupScreen = SetupScreen(this)
   val toolScreen = ToolScreen(this)
   val libTranslate: Translate = Translate(this)
+  val libTranslateG = TranslateG()
   val mxTests = Tests(this)
   var context: Context? = null
 
@@ -121,6 +109,10 @@ class MainActivity: ComponentActivity() {
   
   var jobWebview: Job? = null
   var jobControl: Job? = null
+  fun translateCallBack(msg: String) {
+    Logd("TRANSLATED msg: '$msg'")
+    msgMainLog.value = msg.replace("{", "$EOL{").trim()
+  }
   //==============================================================================================
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -139,10 +131,8 @@ class MainActivity: ComponentActivity() {
     }
     
     //==============================================================================================
-    fun translateCallBack(msg: String) {
-      Logd("TRANSLATED msg: '$msg'")
-    }
-    val translateG = TranslateG()
+
+
 //    jobWebview = lifecycleScope.launch {
 //      setContent {
 //        MaterialTheme {
@@ -152,50 +142,48 @@ class MainActivity: ComponentActivity() {
 //    }
 
     //==============================================================================================
+    val TRANSLATE_TIMEOUT = 1000L
     val msg = """
       {1) It's line 1
       {2) Sun is yellow
     """.trimIndent()
     
-    if (true) {
-      setContent {
-        translateG.WebView4Translate(jobControl, callback = { translateCallBack(it) },
-          msg, "en", "fr")
-//      Mp3suitTheme {
-////              MainScreen().ShowScreen2(mainActivity)
-//        showSetupDialog = rememberSaveable { mutableStateOf(false) }
-//        msgMainLog = remember { mutableStateOf("MAIN LOG:$EOL") }
-//        MainScreen().ShowMainScreen(mainActivity, setupScreen)
-//      }
-//        Column {
-        showSetupDialog = rememberSaveable { mutableStateOf(false) }
-        showSetupButton = rememberSaveable { mutableStateOf(true) }
-        showTestButton = rememberSaveable { mutableStateOf(true) }
-        showTranslateButton = rememberSaveable { mutableStateOf(false) }
-        showToolDialog = rememberSaveable { mutableStateOf(false) }
-        msgMainLog = remember { mutableStateOf("MAIN LOG:$EOL") }
-        chosenFileName = remember { mutableStateOf(fileForChoose) }
-        
-        if (runTRANSLATE) {
-          val sharedPreferences: SharedPreferences = getSharedPreferences(MXPREF, MODE_PRIVATE)
-          val langOf = sharedPreferences.getString(LANG_OF, null) ?: "English"
-          val langTo = sharedPreferences.getString(LANG_TO, null) ?: "French"
-          val lastFilePath = sharedPreferences.getString(LAST_FILE, null) ?: fileForChoose
-          chosenFileName.value = lastFilePath
-          libTranslate.setupTranslator(langOf, langTo)
-        }
+    
+    setContent {
 
-
-//      mainScreen.ShowMainScreen()
-//      setupScreen.SetupDialog()
-//      toolScreen.ToolDialog()
-//        }
-//      }
+      showSetupDialog = rememberSaveable { mutableStateOf(false) }
+      showSetupButton = rememberSaveable { mutableStateOf(true) }
+      showTestButton = rememberSaveable { mutableStateOf(true) }
+      showTranslateButton = rememberSaveable { mutableStateOf(false) }
+      showToolDialog = rememberSaveable { mutableStateOf(false) }
+      msgMainLog = remember { mutableStateOf("MAIN LOG:$EOL") }
+      chosenFileName = remember { mutableStateOf(fileForChoose) }
+      doWebview = rememberSaveable { mutableStateOf(false) }
+      
+      if (doWebview.value) {
+        libTranslateG.WebView4Translate(
+          jobControl, callback = { translateCallBack(it) },
+          msg, "en", "en", 0
+        )
       }
+      if (runTRANSLATE) {
+        val sharedPreferences: SharedPreferences = getSharedPreferences(MXPREF, MODE_PRIVATE)
+        val langOf = sharedPreferences.getString(LANG_OF, null) ?: "English"
+        val langTo = sharedPreferences.getString(LANG_TO, null) ?: "French"
+        val lastFilePath = sharedPreferences.getString(LAST_FILE, null) ?: fileForChoose
+        chosenFileName.value = lastFilePath
+        libTranslate.setupTranslator(langOf, langTo)
+      }
+      mainScreen.ShowMainScreen()
     }
-    jobControl = lifecycleScope.launch {
-      translateG.controlJob(5000, jobWebview, callback = { translateCallBack(it) })
-    }
+    
+      jobControl = lifecycleScope.launch {
+        Logd("Control starts.")
+        libTranslateG.controlJob(
+          TRANSLATE_TIMEOUT,
+          jobWebview,
+          callback = { translateCallBack(it) })
+      }
   }
 
   lateinit var showSetupDialog: MutableState<Boolean>
@@ -206,6 +194,7 @@ class MainActivity: ComponentActivity() {
   lateinit var msgMainLog: MutableState<String>
   var msgSetupLog: MutableState<String>? = null
   lateinit var chosenFileName: MutableState<String>
+  lateinit var doWebview: MutableState<Boolean>
 
   fun add2SetupLog(msg: String) {
     Logd(msg)
